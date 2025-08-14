@@ -12,6 +12,7 @@ import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
+from .port_manager import PortManager
 
 class PortableConfig:
     def __init__(self):
