@@ -72,7 +72,10 @@ class PortManager:
             # Vérifier que les ports par défaut sont libres
             if all(self.is_port_free(port) for port in default_config.values()):
                 self._save_config(default_config)
+                print(f"✅ Ports par défaut disponibles: {default_config}")
                 return default_config
+            else:
+                print("⚠️ Ports par défaut occupés, recherche d'alternatives...")
         
         # Charger config existante si présente
         if self.config_file.exists():
@@ -82,7 +85,10 @@ class PortManager:
                     
                 # Vérifier que les ports sont toujours libres
                 if all(self.is_port_free(port) for port in config.values()):
+                    print(f"✅ Configuration existante valide: {config}")
                     return config
+                else:
+                    print("⚠️ Ports de la configuration existante occupés, recherche d'alternatives...")
             except Exception as e:
                 print(f"⚠️ Erreur chargement config ports: {e}")
         
@@ -97,10 +103,12 @@ class PortManager:
                 "database": ports[2]
             }
             self._save_config(config)
+            print(f"✅ Nouveaux ports détectés et sauvegardés: {config}")
             return config
             
         # Fallback absolu avec ports fixes projet
-        print("⚠️ Utilisation fallback ports fixes")
+        print("⚠️ Utilisation fallback ports fixes (peuvent être occupés)")
+        self._save_config(default_config)
         return default_config
     
     def _save_config(self, config):
