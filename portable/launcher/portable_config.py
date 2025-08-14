@@ -12,7 +12,13 @@ import subprocess
 import time
 from datetime import datetime
 from pathlib import Path
-from .port_manager import PortManager
+
+# Import local du PortManager 
+try:
+    from .port_manager import PortManager
+except ImportError:
+    # Import direct si exécuté en tant que script
+    from port_manager import PortManager
 
 class PortableConfig:
     def __init__(self):
