@@ -1,5 +1,5 @@
 {
-  "backend": 8000,
-  "frontend": 8002,
-  "database": 8003
+  "backend": 8002,
+  "frontend": 8003,
+  "database": 8004
 }
