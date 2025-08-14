@@ -1,0 +1,10 @@
+[autorun]
+label=CyberSec Toolkit Pro 2025
+icon=portable\assets\toolkit.ico
+open=START_TOOLKIT.bat
+action=Démarrer CyberSec Toolkit Pro 2025
+
+[Content]
+MusicFiles=false
+PictureFiles=false
+VideoFiles=false

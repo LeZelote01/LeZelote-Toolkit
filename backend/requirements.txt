@@ -1,0 +1,20 @@
+# Synced from requirements_portable.txt to satisfy platform install hooks
+fastapi>=0.110.0
+uvicorn[standard]>=0.25.0
+aiosqlite>=0.19.0
+emergentintegrations
+openai>=1.10.0
+anthropic>=0.18.0
+reportlab>=4.0.0
+jinja2>=3.1.0
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+httpx>=0.26.0
+requests>=2.31.0
+aiofiles>=23.2.1
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+psutil>=5.9.0
+portalocker>=2.7.0

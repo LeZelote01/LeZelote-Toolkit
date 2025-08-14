@@ -1,0 +1,52 @@
+{
+  "cybersecurity": {
+    "enabled": true,
+    "services": [
+      "audit",
+      "pentest",
+      "incident_response",
+      "digital_forensics",
+      "vulnerability_management",
+      "compliance",
+      "monitoring",
+      "red_team",
+      "blue_team",
+      "cloud_security",
+      "mobile_security",
+      "iot_security",
+      "web3_security",
+      "ai_security",
+      "network_security",
+      "api_security",
+      "container_security",
+      "iac_security",
+      "social_engineering",
+      "threat_intelligence",
+      "security_orchestration",
+      "risk_assessment",
+      "security_training"
+    ]
+  },
+  "ai_core": {
+    "enabled": true,
+    "services": [
+      "assistant",
+      "cyber_ai",
+      "conversational_ai",
+      "predictive_ai",
+      "business_ai",
+      "automation_ai",
+      "code_analysis_ai"
+    ]
+  },
+  "business": {
+    "enabled": true,
+    "services": [
+      "crm",
+      "billing",
+      "analytics",
+      "planning",
+      "training"
+    ]
+  }
+}
