@@ -80,7 +80,7 @@ class PortableConfig:
         }
     
     def setup_environment(self, force_defaults=True, production_mode=False):
-        """Configure l'environnement portable avec validation"""
+        """Configure l'environnement portable avec détection automatique des ports"""
         print("🔧 Configuration environnement portable CyberSec Toolkit Pro 2025...")
         
         # Info système
@@ -90,11 +90,15 @@ class PortableConfig:
         except:
             print("💻 Système: Détection basique")
         
-        # Configuration des ports
-        if force_defaults:
-            ports = [8000, 8002, 8003]  # Ports fixes du projet
-        else:
-            ports = self.find_free_ports()
+        # Configuration des ports via PortManager
+        print("🔍 Détection automatique des ports disponibles...")
+        ports_config = self.port_manager.get_ports_config(force_defaults=force_defaults)
+        
+        if not ports_config:
+            print("⚠️ Erreur détection ports, utilisation des ports par défaut")
+            ports_config = {"backend": 8000, "frontend": 8002, "database": 8003}
+        
+        print(f"📊 Ports détectés: Backend={ports_config['backend']}, Frontend={ports_config['frontend']}")
         
         # Configuration de base
         env_config = {
@@ -103,20 +107,20 @@ class PortableConfig:
             "PORTABLE_ROOT": str(self.root_dir),
             "PORTABLE_DATA": str(self.data_dir),
             
-            # Ports fixes du projet pour cohérence
-            "BACKEND_PORT": str(ports[0]),
-            "FRONTEND_PORT": str(ports[1]), 
-            "DATABASE_PORT": str(ports[2]),
+            # Ports détectés dynamiquement
+            "BACKEND_PORT": str(ports_config["backend"]),
+            "FRONTEND_PORT": str(ports_config["frontend"]), 
+            "DATABASE_PORT": str(ports_config["database"]),
             
-            # URLs absolues mais portables
-            "REACT_APP_BACKEND_URL": f"http://localhost:{ports[0]}",
+            # URLs dynamiques basées sur les ports détectés
+            "REACT_APP_BACKEND_URL": f"http://localhost:{ports_config['backend']}",
             "MONGO_URL": f"sqlite:///{self.data_dir}/cybersec_toolkit.db",
             
             # Configuration technique
             "DATABASE_TYPE": "sqlite",
             "CACHE_TYPE": "memory",
             "LOG_LEVEL": "INFO",
-            "CORS_ORIGINS": f"http://localhost:{ports[1]}",
+            "CORS_ORIGINS": f"http://localhost:{ports_config['frontend']}",
             
             # Sécurité portable
             "EMERGENT_LLM_KEY": "sk-emergent-portable-2025",
@@ -163,7 +167,7 @@ class PortableConfig:
         
         # Sauvegarder la configuration
         self._save_env_config(env_config)
-        print(f"✅ Configuration terminée - Backend: {ports[0]}, Frontend: {ports[1]}")
+        print(f"✅ Configuration terminée - Backend: {ports_config['backend']}, Frontend: {ports_config['frontend']}")
         
         return env_config
     
