@@ -373,12 +373,21 @@ if __name__ == "__main__":
     
     config = PortableConfig()
     
+    # Vérifier les arguments pour mode production
+    import sys
+    production_mode = "--production" in sys.argv or "--optimize" in sys.argv
+    
     # Créer requirements portable si manquant
     if not (config.root_dir / "backend" / "requirements_portable.txt").exists():
         config.create_requirements_portable()
     
     # Configuration automatique
-    env_config = config.setup_environment()
+    env_config = config.setup_environment(production_mode=production_mode)
+    
+    # Optimisation production si demandée
+    if production_mode:
+        config.optimize_production()
+        config.create_monitoring_report()
     
     # Validation finale
     if config.is_portable_ready():
@@ -386,5 +395,7 @@ if __name__ == "__main__":
         print(f"🚀 Backend: http://localhost:{env_config['BACKEND_PORT']}")
         print(f"🌐 Frontend: http://localhost:{env_config['FRONTEND_PORT']}")
         print(f"📊 Services: {env_config['SERVICES_COUNT']} opérationnels")
+        if production_mode:
+            print("⚡ Mode production: Optimisations appliquées")
     else:
         print("\n❌ Configuration incomplète, vérifiez les erreurs ci-dessus")
