@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-08-14T23:31:18.470661",
+  "version": "1.8.0-production-portable",
+  "toolkit_dir": "/app",
+  "services": {
+    "total_planned": 35,
+    "total_implemented": 35,
+    "status": "operational"
+  },
+  "infrastructure": {
+    "backend_port": 8000,
+    "frontend_port": 8002,
+    "database_type": "sqlite",
+    "mode": "portable"
+  },
+  "platform": "Linux",
+  "portable_ready": true
+}
