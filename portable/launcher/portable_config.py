@@ -167,6 +167,10 @@ class PortableConfig:
         
         # Sauvegarder la configuration
         self._save_env_config(env_config)
+        
+        # Mettre à jour les fichiers .env backend et frontend avec les ports détectés
+        self._update_service_env_files(ports_config)
+        
         print(f"✅ Configuration terminée - Backend: {ports_config['backend']}, Frontend: {ports_config['frontend']}")
         
         return env_config
