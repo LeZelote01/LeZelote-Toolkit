@@ -207,6 +207,64 @@ class PortableConfig:
             print(f"❌ Erreur sauvegarde configuration: {e}")
             raise
     
+    def _update_service_env_files(self, ports_config):
+        """Met à jour les fichiers .env des services avec les ports détectés"""
+        try:
+            # Mise à jour backend/.env
+            backend_env_file = self.root_dir / "backend" / ".env"
+            backend_env_content = []
+            
+            # Lire le fichier existant s'il existe
+            if backend_env_file.exists():
+                with open(backend_env_file, 'r') as f:
+                    lines = f.readlines()
+                
+                # Filtrer les lignes de ports pour les remplacer
+                for line in lines:
+                    if not any(port_var in line for port_var in ['BACKEND_PORT=', 'FRONTEND_PORT=', 'REACT_APP_BACKEND_URL=']):
+                        backend_env_content.append(line.strip())
+            
+            # Ajouter les nouvelles configurations de ports
+            backend_env_content.extend([
+                f"BACKEND_PORT={ports_config['backend']}",
+                f"FRONTEND_PORT={ports_config['frontend']}",
+                f"REACT_APP_BACKEND_URL=http://localhost:{ports_config['backend']}"
+            ])
+            
+            # Sauvegarder backend/.env
+            with open(backend_env_file, 'w') as f:
+                f.write('\n'.join(backend_env_content) + '\n')
+            
+            # Mise à jour frontend/.env
+            frontend_env_file = self.root_dir / "frontend" / ".env"
+            frontend_env_content = []
+            
+            # Lire le fichier existant s'il existe
+            if frontend_env_file.exists():
+                with open(frontend_env_file, 'r') as f:
+                    lines = f.readlines()
+                
+                # Filtrer les lignes de ports pour les remplacer
+                for line in lines:
+                    if not any(port_var in line for port_var in ['REACT_APP_BACKEND_URL=', 'BACKEND_PORT=', 'FRONTEND_PORT=']):
+                        frontend_env_content.append(line.strip())
+            
+            # Ajouter la nouvelle configuration
+            frontend_env_content.extend([
+                f"REACT_APP_BACKEND_URL=http://localhost:{ports_config['backend']}",
+                f"BACKEND_PORT={ports_config['backend']}",
+                f"FRONTEND_PORT={ports_config['frontend']}"
+            ])
+            
+            # Sauvegarder frontend/.env
+            with open(frontend_env_file, 'w') as f:
+                f.write('\n'.join(frontend_env_content) + '\n')
+            
+            print(f"📝 Fichiers .env mis à jour avec ports détectés")
+            
+        except Exception as e:
+            print(f"⚠️ Erreur mise à jour fichiers .env: {e}")
+    
     def is_portable_ready(self):
         """Vérifie si l'environnement portable est prêt pour les 35 services"""
         checks = {
