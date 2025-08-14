@@ -25,6 +25,9 @@ class PortableConfig:
         self.logs_dir = self.portable_dir / "logs"
         self.system = platform.system().lower()
         
+        # Initialiser le gestionnaire de ports
+        self.port_manager = PortManager()
+        
         # Créer la structure portable
         self._setup_portable_structure()
         
