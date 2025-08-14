@@ -44,24 +44,18 @@ class PortableConfig:
             directory.mkdir(parents=True, exist_ok=True)
     
     def find_free_ports(self, start_port=8000, count=3):
-        """Trouve des ports libres en privilégiant les ports par défaut du projet"""
-        # Ports par défaut du projet (8000 backend, 8002 frontend)
-        default_ports = [8000, 8002, 8003]
+        """Trouve des ports libres en utilisant le PortManager"""
+        # Utiliser le PortManager pour la détection intelligente des ports
+        ports_config = self.port_manager.get_ports_config(force_defaults=False)
         
-        # Vérifier d'abord les ports par défaut
-        if all(self._is_port_free(port) for port in default_ports):
-            return default_ports
+        if ports_config:
+            return [ports_config["backend"], ports_config["frontend"], ports_config["database"]]
         
-        # Sinon chercher des ports libres
-        free_ports = []
-        port = start_port
+        # Fallback sur la détection basique si PortManager échoue
+        preferred = [8000, 8002, 8003]
+        ports = self.port_manager.find_free_ports(preferred_ports=preferred)
         
-        while len(free_ports) < count and port < start_port + 1000:
-            if self._is_port_free(port):
-                free_ports.append(port)
-            port += 1
-            
-        return free_ports if len(free_ports) >= count else [8000, 8002, 8003]
+        return ports if ports and len(ports) >= 3 else [8000, 8002, 8003]
     
     def _is_port_free(self, port):
         """Vérifie si un port est libre"""
