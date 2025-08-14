@@ -10,7 +10,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PORTABLE_DIR="$ROOT_DIR/portable"
 
 # Configuration portable
-python3 "$PORTABLE_DIR/launcher/portable_config.py"
+python3 "$PORTABLE_DIR/launcher/portable_config.py" --production
 
 # Charger la configuration portable avec priorité
 source "$PORTABLE_DIR/config/portable.env"
