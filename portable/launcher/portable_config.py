@@ -80,7 +80,7 @@ class PortableConfig:
             "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
         }
     
-    def setup_environment(self, force_defaults=True):
+    def setup_environment(self, force_defaults=True, production_mode=False):
         """Configure l'environnement portable avec validation"""
         print("🔧 Configuration environnement portable CyberSec Toolkit Pro 2025...")
         
@@ -133,10 +133,30 @@ class PortableConfig:
             "LOG_ROTATION": "true",
             
             # Métadonnées
-            "TOOLKIT_VERSION": "1.7.3-portable-35services-final",
+            "TOOLKIT_VERSION": "1.8.0-production-portable",
             "SERVICES_COUNT": "35",
             "LAST_CONFIG": str(int(time.time()))
         }
+        
+        # Configuration production additionnelle (Sprint 1.8)
+        if production_mode:
+            env_config.update({
+                # Optimisations Performance
+                "PYTHON_OPTIMIZE": "2",
+                "NODE_ENV": "production",
+                "PYTHONDONTWRITEBYTECODE": "1",
+                "PYTHONUNBUFFERED": "1",
+                
+                # Cache et Mémoire
+                "ENABLE_CACHE": "true",
+                "MAX_MEMORY_USAGE": "2GB",
+                "ENABLE_COMPRESSION": "true",
+                
+                # Sécurité Production
+                "SECURE_MODE": "true",
+                "DISABLE_DEBUG": "true",
+                "ENABLE_LOGGING": "true"
+            })
         
         # Validation de l'environnement
         if not self._validate_environment():
