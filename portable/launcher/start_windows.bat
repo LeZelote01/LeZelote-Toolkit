@@ -45,7 +45,7 @@ if not exist "%ROOT_DIR%\frontend\package.json" (
 REM Configuration portable automatique
 cd /d "%SCRIPT_DIR%"
 echo 📊 Configuration automatique des ports et services...
-python portable_config.py
+python portable_config.py --production
 if errorlevel 1 (
     echo ❌ Erreur configuration portable
     pause
