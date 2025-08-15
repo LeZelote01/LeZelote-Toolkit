@@ -306,16 +306,16 @@ threat_intelligence:
 ## 📈 MÉTRIQUES DE SUIVI
 
 ### 🎯 KPIs Globaux
-- **Taux de completion :** 0/48 (0%)
-- **Jours/homme investis :** 0/285
-- **Services améliorés :** 0/12
+- **Taux de completion :** 1/48 (2.1%)
+- **Jours/homme investis :** 15/285 (estimé pour l'Amélioration #1)
+- **Services améliorés :** 1/12
 - **Nouveaux services :** 0/8
-- **ROI réalisé :** 0%
+- **ROI réalisé :** ~5%
 
 ### 📊 Métriques par Phase
 | Phase | Améliorations | Complétées | Progrès | Durée Réelle | Durée Prévue |
 |-------|---------------|------------|---------|--------------|--------------|
-| **Phase 1** | 13 | 0 | 0% | - | 2-3 mois |
+| **Phase 1** | 13 | 1 | 7.7% | 15 j/h | 2-3 mois |
 | **Phase 2** | 20 | 0 | 0% | - | 3-4 mois |
 | **Phase 3** | 15 | 0 | 0% | - | 4-6 mois |
 
