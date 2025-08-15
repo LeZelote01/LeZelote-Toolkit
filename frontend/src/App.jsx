@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { Shield, Brain, Building2, FileText, Settings, ShieldAlert, Search, ClipboardCheck, Code, Smartphone, Cloud, Wifi, Globe, Lock, EyeSlash } from 'lucide-react';
+import { Shield, Brain, Building2, FileText, Settings, ShieldAlert, Search, ClipboardCheck, Code, Smartphone, Cloud, Wifi, Globe, Lock, Eye } from 'lucide-react';
 import AssistantPage from './pages/Assistant.jsx';
 import PentestPage from './pages/PentestPage.jsx';
 import IncidentResponse from './pages/IncidentResponse.jsx';
