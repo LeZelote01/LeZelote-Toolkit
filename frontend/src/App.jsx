@@ -268,6 +268,7 @@ function App() {
             <Route path="/social-engineering" element={<SocialEngineeringPage />} />
             <Route path="/security-orchestration" element={<SecurityOrchestrationPage />} />
             <Route path="/risk-assessment" element={<RiskAssessmentPage />} />
+            <Route path="/stealth-mode" element={<StealthMode />} />
             <Route path="/reports" element={<div className="p-6">Rapports - À implémenter</div>} />
           </Routes>
         </div>
