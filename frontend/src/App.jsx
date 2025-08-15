@@ -206,6 +206,7 @@ function Sidebar() {
     { name: 'Social Engineering', path: '/social-engineering', icon: <ShieldAlert className="w-5 h-5" /> },
     { name: 'Security Orchestration', path: '/security-orchestration', icon: <Settings className="w-5 h-5" /> },
     { name: 'Risk Assessment', path: '/risk-assessment', icon: <ShieldAlert className="w-5 h-5" /> },
+    { name: 'Stealth Mode', path: '/stealth-mode', icon: <EyeSlash className="w-5 h-5" /> },
     { name: 'CRM', path: '/crm', icon: <Building2 className="w-5 h-5" /> },
     { name: 'Billing', path: '/billing', icon: <FileText className="w-5 h-5" /> },
     { name: 'Analytics', path: '/analytics', icon: <Settings className="w-5 h-5" /> },
