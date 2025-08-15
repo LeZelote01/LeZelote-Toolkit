@@ -26,6 +26,7 @@ import IaCSecurityPage from './pages/IaCSecurityPage.jsx';
 import SocialEngineeringPage from './pages/SocialEngineeringPage.jsx';
 import SecurityOrchestrationPage from './pages/SecurityOrchestrationPage.jsx';
 import RiskAssessmentPage from './pages/RiskAssessmentPage.jsx';
+import StealthMode from './pages/StealthMode.jsx';
 import api from './services/api.js';
 
 // Composants
