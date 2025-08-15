@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRightIcon, ShieldIcon, EyeSlashIcon, GlobeAltIcon, LockClosedIcon, CpuChipIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon, ShieldCheckIcon, EyeOffIcon, GlobeIcon, LockIcon, CpuIcon, ClockIcon } from 'lucide-react';
 
 const StealthMode = () => {
   const [sessions, setSessions] = useState([]);
