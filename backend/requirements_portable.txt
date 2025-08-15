@@ -24,6 +24,7 @@ python-multipart              # Form data
 httpx>=0.26.0                 # HTTP client
 requests>=2.31.0              # HTTP requests
 aiofiles>=23.2.1              # Async file operations
+aiohttp>=3.12.0               # Async HTTP client
 
 # Utilitaires (conservés)
 python-dotenv>=1.0.0          # Environment variables
@@ -33,3 +34,29 @@ pydantic-settings>=2.1.0      # Settings management
 # Portabilité spécifique
 psutil>=5.9.0                 # System utilities
 portalocker>=2.7.0           # File locking portable
+
+# IA et Machine Learning (ajouts depuis requirements_current.txt)
+numpy>=2.3.0                  # Numerical computing
+pandas>=2.3.0                 # Data manipulation  
+scikit-learn>=1.7.0           # Machine learning
+scipy>=1.16.0                 # Scientific computing
+
+# Validation et communication (ajouts)
+email-validator>=2.2.0        # Email validation
+dnspython>=2.7.0              # DNS resolution
+pillow>=11.0.0                # Image processing
+stripe>=12.0.0                # Payment processing
+
+# Tokenization et NLP (ajouts)
+tiktoken>=0.11.0              # Token counting
+tokenizers>=0.21.0            # Text tokenization
+
+# Google AI (ajouts)
+google-generativeai>=0.8.0    # Google AI API
+google-ai-generativelanguage>=0.6.0  # Google AI Language
+
+# Utilitaires avancés (ajouts)
+tenacity>=9.1.0               # Retry library
+filelock>=3.19.0              # File locking
+tqdm>=4.67.0                  # Progress bars
+PyYAML>=6.0.0                 # YAML parsing
