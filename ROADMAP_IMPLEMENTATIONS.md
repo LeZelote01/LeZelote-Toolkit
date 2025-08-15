@@ -355,6 +355,15 @@ threat_intelligence:
 
 ## 🔄 CHANGELOG
 
+### Version 1.1 - 15 Août 2025
+- ✅ **AMÉLIORATION #1 TERMINÉE** : Mode Furtif Avancé (Stealth Mode)
+  - Implémentation complète backend avec API REST complète
+  - Interface frontend React opérationnelle
+  - Fonctionnalités : Tor, VPN chaining, signature evasion, anti-forensics
+  - Sessions stealth configurables avec 4 niveaux de furtivité
+  - 35 services de base tous opérationnels et validés
+  - Architecture portable maintenue (ports 8000/8002)
+
 ### Version 1.0 - 15 Août 2025
 - ✅ Création du Roadmap initial
 - ✅ Définition de la méthodologie
