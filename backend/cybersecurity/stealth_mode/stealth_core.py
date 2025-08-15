@@ -324,6 +324,10 @@ class StealthCore:
         
         session = self.sessions[session_id]
         
+        # Conversion manuelle pour éviter les problèmes de sérialisation
+        config_dict = asdict(session.config)
+        config_dict['level'] = session.config.level.value  # Convertir enum en string
+        
         return {
             'session_id': session.session_id,
             'level': session.level.value,
@@ -332,7 +336,7 @@ class StealthCore:
             'active_operations': len(session.active_operations),
             'network_identity': session.network_identity,
             'forensic_protection': session.forensic_protection,
-            'config': asdict(session.config)
+            'config': config_dict
         }
     
     async def terminate_stealth_session(self, session_id: str) -> Dict[str, str]:
