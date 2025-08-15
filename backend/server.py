@@ -1297,6 +1297,21 @@ except ImportError as e:
         """Risk Assessment - Erreur de chargement"""
         return {"status": "error", "service": "Risk Assessment", "error": risk_assessment_error}
 
+# Import Stealth Mode (Amélioration #1 - MODE FURTIF AVANCÉ)
+try:
+    from cybersecurity.stealth_mode.routes import stealth_router
+    app.include_router(stealth_router)
+    print("✅ Routes stealth mode chargées - MODE FURTIF AVANCÉ activé")
+except ImportError as e:
+    stealth_mode_error = str(e)
+    print(f"⚠️ Erreur chargement routes stealth mode: {stealth_mode_error}")
+    
+    # Route placeholder si l'import échoue
+    @app.get("/api/stealth-mode/")
+    async def stealth_mode_placeholder():
+        """Stealth Mode - Erreur de chargement"""
+        return {"status": "error", "service": "Stealth Mode", "error": stealth_mode_error}
+
 # Import Services IA Avancés (Sprint 1.5)
 # Import Cyber AI
 try:
