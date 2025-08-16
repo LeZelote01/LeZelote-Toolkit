@@ -472,6 +472,68 @@ exec python3 "$(dirname "$0")/{binary_name}" "$@"
             
         return results
     
+    def install_by_category(self, category: str, platform: str = None) -> Dict:
+        """Install all tools from a specific category"""
+        if platform is None:
+            platform = self.detect_platform()
+        
+        from scripts.install.tools_config import get_tools_by_category
+        category_tools = get_tools_by_category(category)
+        
+        if not category_tools:
+            self.logger.error(f"No tools found for category: {category}")
+            return {}
+        
+        results = {}
+        self.logger.info(f"Installing {category} tools for {platform}...")
+        self.logger.info(f"Tools in category: {', '.join(category_tools.keys())}")
+        
+        # Update tools config with category tools
+        original_config = self.tools_config
+        self.tools_config = category_tools
+        
+        for tool_name in category_tools:
+            self.download_stats['total'] += 1
+            results[tool_name] = self.install_tool(tool_name, platform)
+        
+        # Restore original config
+        self.tools_config = original_config
+        
+        return results
+    
+    def list_categories(self) -> List[str]:
+        """List all available categories"""
+        from scripts.install.tools_config import get_all_categories
+        return get_all_categories()
+    
+    def check_license_requirements(self, tool_name: str) -> Dict:
+        """Check license requirements for a tool"""
+        from scripts.install.tools_config import get_license_info, has_license_upgrade
+        
+        if tool_name not in self.tools_config:
+            return {"error": f"Tool {tool_name} not found"}
+        
+        license_info = get_license_info(tool_name)
+        has_upgrade = has_license_upgrade(tool_name)
+        
+        return {
+            "tool": tool_name,
+            "license_info": license_info,
+            "has_upgrade": has_upgrade,
+            "recommendation": self._get_license_recommendation(license_info)
+        }
+    
+    def _get_license_recommendation(self, license_info: Dict) -> str:
+        """Get license recommendation"""
+        if license_info.get('type') == 'free':
+            return "✅ Free to use"
+        elif license_info.get('type') == 'community_pro':
+            return "🆓 Community version available, Pro version for advanced features"
+        elif license_info.get('type') == 'commercial':
+            return "💰 Commercial license required"
+        else:
+            return "❓ License status unknown"
+    
     def install_all_tools(self, platform: str = None) -> Dict:
         """Install all configured tools"""
         if platform is None:
