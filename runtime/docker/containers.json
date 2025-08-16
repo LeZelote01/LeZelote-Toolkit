@@ -1,0 +1,489 @@
+{
+  "pentest_containers_configuration": {
+    "version": "1.0.0",
+    "last_updated": "2024-12-16",
+    "description": "Container configuration mapping for Pentest-USB Toolkit",
+    "documentation": "https://github.com/LeZelote01/LeZelote-Toolkit/docs/docker.md"
+  },
+  
+  "network_configuration": {
+    "primary_network": {
+      "name": "pentest_network",
+      "driver": "bridge",
+      "subnet": "172.20.0.0/16",
+      "gateway": "172.20.0.1",
+      "internal": false,
+      "enable_ipv6": false
+    },
+    "dns_configuration": {
+      "dns_servers": ["8.8.8.8", "1.1.1.1"],
+      "search_domains": ["pentest.local"]
+    }
+  },
+
+  "volume_configuration": {
+    "shared_volumes": {
+      "pentest_data": {
+        "type": "local",
+        "mount_point": "/opt/pentest-usb/data",
+        "description": "Persistent data storage"
+      },
+      "pentest_logs": {
+        "type": "local", 
+        "mount_point": "/opt/pentest-usb/logs",
+        "description": "Centralized logging"
+      },
+      "pentest_outputs": {
+        "type": "local",
+        "mount_point": "/opt/pentest-usb/outputs", 
+        "description": "Scan results and outputs"
+      },
+      "postgresql_data": {
+        "type": "local",
+        "mount_point": "/var/lib/postgresql/data",
+        "description": "PostgreSQL database files"
+      },
+      "neo4j_data": {
+        "type": "local",
+        "mount_point": "/data",
+        "description": "Neo4j graph database for BloodHound"
+      }
+    }
+  },
+
+  "container_profiles": {
+    "core": {
+      "description": "Essential services (orchestrator, database, cache)",
+      "services": ["pentest-orchestrator", "postgresql", "redis"],
+      "startup_order": 1,
+      "dependencies": [],
+      "resource_limits": {
+        "cpu_limit": "2.0",
+        "memory_limit": "4GB"
+      }
+    },
+    "scanning": {
+      "description": "Vulnerability scanning tools",
+      "services": ["nuclei", "nessus", "openvas"],
+      "startup_order": 2,
+      "dependencies": ["core"],
+      "resource_limits": {
+        "cpu_limit": "4.0", 
+        "memory_limit": "8GB"
+      }
+    },
+    "web_security": {
+      "description": "Web application security testing",
+      "services": ["zaproxy", "burpsuite"],
+      "startup_order": 2,
+      "dependencies": ["core"],
+      "resource_limits": {
+        "cpu_limit": "2.0",
+        "memory_limit": "4GB"
+      }
+    },
+    "exploitation": {
+      "description": "Exploitation frameworks",
+      "services": ["metasploit", "kali-tools"],
+      "startup_order": 3,
+      "dependencies": ["core", "scanning"],
+      "resource_limits": {
+        "cpu_limit": "6.0",
+        "memory_limit": "12GB"
+      }
+    },
+    "post_exploitation": {
+      "description": "Post-exploitation and AD tools",
+      "services": ["bloodhound"],
+      "startup_order": 3,
+      "dependencies": ["core"],
+      "resource_limits": {
+        "cpu_limit": "2.0",
+        "memory_limit": "4GB"
+      }
+    },
+    "monitoring": {
+      "description": "Logging and monitoring services",
+      "services": ["elasticsearch", "kibana"],
+      "startup_order": 2,
+      "dependencies": ["core"],
+      "resource_limits": {
+        "cpu_limit": "4.0",
+        "memory_limit": "8GB"
+      }
+    },
+    "utilities": {
+      "description": "Support services",
+      "services": ["file-transfer", "vnc-server"],
+      "startup_order": 4,
+      "dependencies": ["core"],
+      "resource_limits": {
+        "cpu_limit": "1.0",
+        "memory_limit": "2GB"
+      }
+    }
+  },
+
+  "services_configuration": {
+    "pentest-orchestrator": {
+      "image": "pentest-usb:base",
+      "container_name": "pentest_orchestrator",
+      "hostname": "orchestrator",
+      "ip_address": "172.20.0.10",
+      "ports": {
+        "8080": "Web Interface",
+        "8081": "API Interface"
+      },
+      "volumes": [
+        "../../:/pentest-usb:rw",
+        "pentest_data:/data",
+        "pentest_logs:/logs", 
+        "pentest_outputs:/outputs"
+      ],
+      "environment": {
+        "PENTEST_MODE": "docker",
+        "LOG_LEVEL": "INFO",
+        "DATA_PATH": "/data",
+        "OUTPUTS_PATH": "/outputs"
+      },
+      "health_check": {
+        "endpoint": "http://localhost:8080/health",
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "postgresql": {
+      "image": "postgres:15-alpine",
+      "container_name": "pentest_postgresql", 
+      "hostname": "postgresql",
+      "ip_address": "172.20.0.11",
+      "ports": {
+        "5432": "PostgreSQL Database"
+      },
+      "volumes": [
+        "postgresql_data:/var/lib/postgresql/data",
+        "../../data/databases:/docker-entrypoint-initdb.d:ro"
+      ],
+      "environment": {
+        "POSTGRES_DB": "pentest_usb",
+        "POSTGRES_USER": "pentest",
+        "POSTGRES_PASSWORD": "pentest_secure_2024"
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "redis": {
+      "image": "redis:7-alpine",
+      "container_name": "pentest_redis",
+      "hostname": "redis", 
+      "ip_address": "172.20.0.12",
+      "ports": {
+        "6379": "Redis Cache"
+      },
+      "volumes": [
+        "pentest_data:/data"
+      ],
+      "restart_policy": "unless-stopped"
+    },
+
+    "nessus": {
+      "build_context": "../../tools/containers/nessus",
+      "container_name": "pentest_nessus",
+      "hostname": "nessus",
+      "ip_address": "172.20.0.20", 
+      "ports": {
+        "8834": "Nessus Web Interface"
+      },
+      "volumes": [
+        "pentest_data:/opt/nessus/var/nessus",
+        "pentest_logs:/opt/nessus/var/nessus/logs"
+      ],
+      "environment": {
+        "NESSUS_ACTIVATION_CODE": "${NESSUS_ACTIVATION_CODE}",
+        "NESSUS_USERNAME": "admin",
+        "NESSUS_PASSWORD": "pentest_nessus_2024"
+      },
+      "privileged": true,
+      "restart_policy": "unless-stopped"
+    },
+
+    "openvas": {
+      "build_context": "../../tools/containers/openvas",
+      "container_name": "pentest_openvas",
+      "hostname": "openvas",
+      "ip_address": "172.20.0.21",
+      "ports": {
+        "9392": "GSA Web Interface",
+        "9390": "GMP Protocol"
+      },
+      "volumes": [
+        "pentest_data:/var/lib/gvm",
+        "pentest_logs:/var/log/gvm"
+      ],
+      "environment": {
+        "OPENVAS_ADMIN_USER": "admin", 
+        "OPENVAS_ADMIN_PASSWORD": "pentest_openvas_2024"
+      },
+      "privileged": true,
+      "restart_policy": "unless-stopped"
+    },
+
+    "nuclei": {
+      "build_context": "../../tools/containers/nuclei",
+      "container_name": "pentest_nuclei",
+      "hostname": "nuclei",
+      "ip_address": "172.20.0.22",
+      "volumes": [
+        "pentest_outputs:/nuclei-output",
+        "../../data/templates:/nuclei-templates:ro"
+      ],
+      "environment": {
+        "NUCLEI_CONFIG": "/config/nuclei.yaml"
+      },
+      "restart_policy": "no"
+    },
+
+    "zaproxy": {
+      "build_context": "../../tools/containers/zaproxy",
+      "container_name": "pentest_zap",
+      "hostname": "zaproxy",
+      "ip_address": "172.20.0.30",
+      "ports": {
+        "8082": "ZAP Proxy (mapped from 8080)",
+        "8083": "ZAP API (mapped from 8090)"
+      },
+      "volumes": [
+        "pentest_outputs:/zap/wrk:rw",
+        "pentest_logs:/zap/logs:rw"
+      ],
+      "environment": {
+        "ZAP_PROXY_PORT": "8080",
+        "ZAP_API_PORT": "8090"
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "burpsuite": {
+      "build_context": "../../tools/containers/burpsuite",
+      "container_name": "pentest_burp",
+      "hostname": "burpsuite", 
+      "ip_address": "172.20.0.31",
+      "ports": {
+        "8084": "Burp Proxy (mapped from 8080)",
+        "1337": "Burp REST API"
+      },
+      "volumes": [
+        "pentest_outputs:/burp-output:rw",
+        "pentest_logs:/burp-logs:rw"
+      ],
+      "environment": {
+        "BURP_LICENSE_KEY": "${BURP_LICENSE_KEY}",
+        "BURP_HEADLESS": "true"
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "metasploit": {
+      "build_context": "../../tools/containers/metasploit",
+      "container_name": "pentest_metasploit",
+      "hostname": "metasploit",
+      "ip_address": "172.20.0.40",
+      "ports": {
+        "4444": "Default Metasploit listener",
+        "55553": "Metasploit RPC"
+      },
+      "volumes": [
+        "pentest_data:/root/.msf4",
+        "pentest_outputs:/tmp/msf-output",
+        "pentest_logs:/var/log/metasploit"
+      ],
+      "environment": {
+        "MSF_DATABASE_CONFIG": "/root/.msf4/database.yml",
+        "POSTGRES_CONNECTION": "postgresql://pentest:pentest_secure_2024@postgresql:5432/msf_db"
+      },
+      "privileged": true,
+      "restart_policy": "unless-stopped",
+      "depends_on": ["postgresql"]
+    },
+
+    "kali-tools": {
+      "build_context": "../../tools/containers/kali-tools",
+      "container_name": "pentest_kali",
+      "hostname": "kali-tools",
+      "ip_address": "172.20.0.41",
+      "volumes": [
+        "pentest_outputs:/kali-output:rw",
+        "pentest_logs:/var/log/kali:rw",
+        "../../:/pentest-usb:ro"
+      ],
+      "environment": {
+        "DISPLAY": "${DISPLAY}",
+        "TERM": "xterm-256color"
+      },
+      "privileged": true,
+      "restart_policy": "no"
+    },
+
+    "bloodhound": {
+      "build_context": "../../tools/containers/bloodhound",
+      "container_name": "pentest_bloodhound",
+      "hostname": "bloodhound",
+      "ip_address": "172.20.0.50",
+      "ports": {
+        "7474": "Neo4j HTTP Interface",
+        "7687": "Neo4j Bolt Protocol", 
+        "3000": "BloodHound UI"
+      },
+      "volumes": [
+        "neo4j_data:/data",
+        "pentest_outputs:/bloodhound-output:rw"
+      ],
+      "environment": {
+        "NEO4J_AUTH": "neo4j/bloodhound123",
+        "NEO4J_PLUGINS": "[\"apoc\", \"graph-data-science\"]"
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "elasticsearch": {
+      "image": "docker.elastic.co/elasticsearch/elasticsearch:8.11.0",
+      "container_name": "pentest_elasticsearch",
+      "hostname": "elasticsearch",
+      "ip_address": "172.20.0.60",
+      "ports": {
+        "9200": "Elasticsearch HTTP",
+        "9300": "Elasticsearch Transport"
+      },
+      "volumes": [
+        "pentest_data:/usr/share/elasticsearch/data"
+      ],
+      "environment": {
+        "discovery.type": "single-node",
+        "ES_JAVA_OPTS": "-Xms1g -Xmx1g",
+        "xpack.security.enabled": "false"
+      },
+      "restart_policy": "unless-stopped"
+    },
+
+    "kibana": {
+      "image": "docker.elastic.co/kibana/kibana:8.11.0",
+      "container_name": "pentest_kibana",
+      "hostname": "kibana",
+      "ip_address": "172.20.0.61",
+      "ports": {
+        "5601": "Kibana Web Interface"
+      },
+      "environment": {
+        "ELASTICSEARCH_HOSTS": "http://elasticsearch:9200"
+      },
+      "restart_policy": "unless-stopped",
+      "depends_on": ["elasticsearch"]
+    },
+
+    "file-transfer": {
+      "image": "nginx:alpine",
+      "container_name": "pentest_filetransfer",
+      "hostname": "filetransfer",
+      "ip_address": "172.20.0.70",
+      "ports": {
+        "8085": "File Transfer HTTP (mapped from 80)"
+      },
+      "volumes": [
+        "pentest_outputs:/usr/share/nginx/html/files:ro",
+        "../../config/nginx.conf:/etc/nginx/nginx.conf:ro"
+      ],
+      "restart_policy": "unless-stopped"
+    },
+
+    "vnc-server": {
+      "image": "consol/ubuntu-xfce-vnc:latest",
+      "container_name": "pentest_vnc",
+      "hostname": "vnc-server",
+      "ip_address": "172.20.0.71",
+      "ports": {
+        "6901": "VNC Web Interface",
+        "5901": "VNC Direct Connection"
+      },
+      "volumes": [
+        "pentest_outputs:/headless/Documents:rw"
+      ],
+      "environment": {
+        "VNC_PW": "pentest123",
+        "VNC_RESOLUTION": "1920x1080"
+      },
+      "restart_policy": "unless-stopped"
+    }
+  },
+
+  "deployment_strategies": {
+    "minimal": {
+      "description": "Core services only - minimal resource usage",
+      "services": ["pentest-orchestrator", "postgresql", "redis"],
+      "system_requirements": {
+        "cpu_cores": 2,
+        "memory_gb": 4,
+        "disk_gb": 20
+      }
+    },
+    "standard": {
+      "description": "Standard penetration testing setup",
+      "services": ["pentest-orchestrator", "postgresql", "redis", "zaproxy", "nuclei", "metasploit"],
+      "system_requirements": {
+        "cpu_cores": 4,
+        "memory_gb": 8,
+        "disk_gb": 50
+      }
+    },
+    "comprehensive": {
+      "description": "Full-featured setup with all tools",
+      "services": ["pentest-orchestrator", "postgresql", "redis", "nessus", "openvas", "zaproxy", "burpsuite", "metasploit", "bloodhound", "kali-tools"],
+      "system_requirements": {
+        "cpu_cores": 8,
+        "memory_gb": 16,
+        "disk_gb": 100
+      }
+    },
+    "enterprise": {
+      "description": "Enterprise setup with monitoring and premium tools",
+      "services": ["all"],
+      "system_requirements": {
+        "cpu_cores": 16,
+        "memory_gb": 32,
+        "disk_gb": 200
+      }
+    }
+  },
+
+  "management_commands": {
+    "start_core": "docker-compose up -d pentest-orchestrator postgresql redis",
+    "start_scanning": "docker-compose --profile scanning up -d",
+    "start_web_security": "docker-compose --profile web_security up -d", 
+    "start_exploitation": "docker-compose --profile exploitation up -d",
+    "start_monitoring": "docker-compose --profile monitoring up -d",
+    "start_all": "docker-compose --profile all up -d",
+    "stop_all": "docker-compose down",
+    "restart_core": "docker-compose restart pentest-orchestrator postgresql redis",
+    "logs_core": "docker-compose logs -f pentest-orchestrator",
+    "stats": "docker stats",
+    "cleanup": "docker-compose down -v && docker system prune -f"
+  },
+
+  "security_configuration": {
+    "network_isolation": true,
+    "container_user": "pentest",
+    "readonly_filesystems": false,
+    "capability_restrictions": [
+      "CAP_NET_ADMIN",
+      "CAP_NET_RAW", 
+      "CAP_SYS_ADMIN"
+    ],
+    "secret_management": {
+      "api_keys": "environment_variables",
+      "passwords": "docker_secrets",
+      "certificates": "mounted_volumes"
+    }
+  }
+}

@@ -1,0 +1,734 @@
+/*
+ * Responsive CSS for Pentest-USB Toolkit Web Interface
+ * ===================================================
+ */
+
+/* Mobile-First Approach */
+/* Base styles are mobile-friendly, then enhanced for larger screens */
+
+/* Extra Small devices (phones, 576px and down) */
+@media (max-width: 575.98px) {
+    /* Layout Adjustments */
+    .main-content {
+        padding-top: 60px;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    
+    .container-fluid {
+        padding: 0.5rem;
+    }
+    
+    /* Navigation */
+    .navbar {
+        padding: 0.5rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1rem;
+    }
+    
+    .navbar-brand img {
+        height: 24px;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .dropdown-menu {
+        font-size: 0.875rem;
+    }
+    
+    /* Page Headers */
+    .page-title {
+        font-size: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .page-subtitle {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    /* Cards */
+    .card {
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.125rem;
+    }
+    
+    /* Buttons */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        border-radius: 0.375rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        border-radius: 0.375rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Forms */
+    .form-control,
+    .form-select {
+        padding: 0.75rem;
+        font-size: 1rem; /* Prevent zoom on mobile */
+        border-radius: 0.375rem;
+    }
+    
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group .form-control,
+    .input-group .btn {
+        border-radius: 0.375rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Tables */
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .table th,
+    .table td {
+        padding: 0.5rem 0.25rem;
+        white-space: nowrap;
+    }
+    
+    .table thead th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Hide less important columns on mobile */
+    .table .d-none.d-sm-table-cell {
+        display: none !important;
+    }
+    
+    /* Modals */
+    .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.125rem;
+    }
+    
+    /* Dashboard Grid */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Statistics Cards */
+    .stats-row {
+        flex-direction: column;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    
+    .stat-card .stat-number {
+        font-size: 2rem;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 0.75rem;
+    }
+    
+    /* Charts */
+    .chart-container {
+        height: 200px;
+        margin: 1rem 0;
+    }
+    
+    /* Progress Bars */
+    .progress {
+        height: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .progress-label {
+        font-size: 0.75rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Alerts */
+    .alert {
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.5rem;
+    }
+    
+    /* Toast Notifications */
+    .toast-container {
+        padding: 0.5rem;
+        top: 70px;
+    }
+    
+    .toast {
+        font-size: 0.875rem;
+    }
+    
+    /* Scan Results */
+    .scan-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+    }
+    
+    .scan-progress {
+        margin: 0.75rem 0;
+    }
+    
+    /* Vulnerability Cards */
+    .vuln-card {
+        margin-bottom: 1rem;
+        padding: 1rem;
+    }
+    
+    .vuln-severity {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    /* Report Elements */
+    .report-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .evidence-item {
+        border-radius: 0.5rem;
+    }
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .main-content {
+        padding-top: 70px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.75rem;
+    }
+    
+    .btn-group {
+        flex-direction: row;
+        width: auto;
+    }
+    
+    .btn-group .btn {
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+    
+    .btn-group .btn:first-child {
+        border-radius: 0.375rem 0 0 0.375rem;
+    }
+    
+    .btn-group .btn:last-child {
+        border-radius: 0 0.375rem 0.375rem 0;
+    }
+    
+    .input-group {
+        flex-direction: row;
+    }
+    
+    .input-group .form-control,
+    .input-group .btn {
+        margin-bottom: 0;
+        border-radius: 0;
+    }
+    
+    .input-group .form-control:first-child {
+        border-radius: 0.375rem 0 0 0.375rem;
+    }
+    
+    .input-group .btn:last-child {
+        border-radius: 0 0.375rem 0.375rem 0;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .stats-row {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        flex: 0 0 calc(50% - 0.5rem);
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .table .d-none.d-sm-table-cell {
+        display: table-cell !important;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .main-content {
+        padding-top: 76px;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+    
+    .stats-row {
+        justify-content: space-between;
+    }
+    
+    .stat-card {
+        flex: 0 0 calc(25% - 0.75rem);
+    }
+    
+    .chart-container {
+        height: 300px;
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .modal-dialog {
+        max-width: 600px;
+    }
+    
+    .scan-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .vuln-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+    
+    .stats-row {
+        justify-content: space-between;
+    }
+    
+    .stat-card {
+        flex: 0 0 calc(25% - 1rem);
+    }
+    
+    .chart-container {
+        height: 350px;
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .scan-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .vuln-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .modal-lg {
+        max-width: 800px;
+    }
+    
+    .sidebar {
+        width: 250px;
+    }
+    
+    .main-content.with-sidebar {
+        margin-left: 250px;
+    }
+}
+
+/* Extra Large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+    }
+    
+    .stats-row {
+        justify-content: flex-start;
+    }
+    
+    .stat-card {
+        flex: 0 0 calc(20% - 1rem);
+        margin-right: 1.25rem;
+    }
+    
+    .chart-container {
+        height: 400px;
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .scan-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .vuln-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .modal-xl {
+        max-width: 1140px;
+    }
+    
+    .sidebar {
+        width: 280px;
+    }
+    
+    .main-content.with-sidebar {
+        margin-left: 280px;
+    }
+    
+    .container-fluid {
+        max-width: 1400px;
+    }
+}
+
+/* Ultra Wide displays (1400px and up) */
+@media (min-width: 1400px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .scan-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .vuln-grid {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .evidence-gallery {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    
+    .container-fluid {
+        max-width: 1600px;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (pointer: coarse) {
+    /* Increase touch target sizes */
+    .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+    
+    .dropdown-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Increase spacing for easier interaction */
+    .btn-group .btn {
+        margin-right: 2px;
+    }
+    
+    .pagination .page-link {
+        min-height: 44px;
+        min-width: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Better hover states for touch */
+    .card:hover {
+        transform: none;
+    }
+    
+    .btn:hover {
+        transform: none;
+    }
+}
+
+/* High DPI Display Optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .navbar-brand img {
+        image-rendering: -webkit-optimize-contrast;
+    }
+    
+    .chart-container canvas {
+        image-rendering: -webkit-optimize-contrast;
+    }
+    
+    /* Crisper icons and graphics */
+    .fa, .fas, .far, .fab {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Landscape Orientation Adjustments */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .navbar {
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .main-content {
+        padding-top: 60px;
+    }
+    
+    .modal-dialog {
+        margin: 0.25rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Print Media Queries */
+@media print {
+    .navbar,
+    .btn,
+    .modal,
+    .toast-container,
+    .loading-overlay,
+    .dropdown-menu {
+        display: none !important;
+    }
+    
+    .main-content {
+        padding-top: 0 !important;
+        margin-left: 0 !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+    }
+    
+    .page-title {
+        color: #000 !important;
+        border-bottom: 2px solid #000;
+        padding-bottom: 0.5rem;
+    }
+    
+    .table {
+        border: 1px solid #000 !important;
+    }
+    
+    .table th,
+    .table td {
+        border: 1px solid #000 !important;
+    }
+    
+    .chart-container {
+        height: auto !important;
+    }
+    
+    /* Ensure good contrast for printing */
+    .text-muted {
+        color: #666 !important;
+    }
+    
+    .bg-primary {
+        background-color: #007bff !important;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    .bg-success {
+        background-color: #28a745 !important;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    .bg-warning {
+        background-color: #ffc107 !important;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    .bg-danger {
+        background-color: #dc3545 !important;
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+/* Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .progress-bar {
+        transition: none !important;
+    }
+    
+    .spinner-border {
+        animation: none !important;
+    }
+    
+    .status-indicator.online {
+        animation: none !important;
+    }
+}
+
+/* Dark Mode Responsive Adjustments */
+@media (prefers-color-scheme: dark) {
+    @media (max-width: 575.98px) {
+        .navbar {
+            background: linear-gradient(135deg, #1a1a1a, #2d3748) !important;
+        }
+        
+        .card {
+            background-color: #2d3748 !important;
+            border-color: #4a5568 !important;
+        }
+        
+        .table {
+            background-color: #2d3748 !important;
+            color: #e2e8f0 !important;
+        }
+    }
+}
+
+/* Accessibility Improvements */
+@media (prefers-contrast: high) {
+    .btn-outline-primary {
+        border-width: 3px;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-width: 3px;
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.5);
+    }
+    
+    .nav-link:focus,
+    .btn:focus {
+        outline: 3px solid #007bff;
+        outline-offset: 2px;
+    }
+}
+
+/* Custom Scrollbars for Responsive */
+@media (min-width: 768px) {
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+}

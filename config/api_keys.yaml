@@ -1,0 +1,267 @@
+# Configuration des Clés API - Pentest-USB Toolkit
+# AVERTISSEMENT: Ce fichier peut contenir des informations sensibles
+# Assurez-vous qu'il soit exclu du versioning (.gitignore)
+
+# Template de configuration des clés API
+# Copiez ce fichier vers api_keys_local.yaml et remplissez vos vraies clés
+
+# APIs de Threat Intelligence
+threat_intelligence:
+  # Shodan - Moteur de recherche pour appareils connectés
+  shodan:
+    api_key: "YOUR_SHODAN_API_KEY_HERE"
+    enabled: false
+    rate_limit: 1           # requêtes par seconde
+    plan: "free"            # free, member, corporate
+    endpoints:
+      search: "https://api.shodan.io/shodan/host/search"
+      host: "https://api.shodan.io/shodan/host/"
+    
+  # VirusTotal - Analyse de fichiers et URLs
+  virustotal:
+    api_key: "YOUR_VIRUSTOTAL_API_KEY_HERE"
+    enabled: false
+    rate_limit: 4           # requêtes par minute pour compte gratuit
+    plan: "free"            # free, premium
+    endpoints:
+      url_scan: "https://www.virustotal.com/vtapi/v2/url/scan"
+      url_report: "https://www.virustotal.com/vtapi/v2/url/report"
+      file_scan: "https://www.virustotal.com/vtapi/v2/file/scan"
+    
+  # IBM X-Force Exchange
+  xforce:
+    api_key: "YOUR_XFORCE_API_KEY_HERE"
+    api_password: "YOUR_XFORCE_API_PASSWORD_HERE"
+    enabled: false
+    endpoints:
+      base: "https://api.xforce.ibmcloud.com"
+    
+  # AlienVault OTX (AT&T Cybersecurity)
+  otx:
+    api_key: "YOUR_OTX_API_KEY_HERE"
+    enabled: false
+    endpoints:
+      base: "https://otx.alienvault.com/api/v1"
+
+# APIs de Géolocalisation et OSINT
+osint_apis:
+  # IPGeolocation
+  ipgeolocation:
+    api_key: "YOUR_IPGEOLOCATION_API_KEY_HERE"
+    enabled: false
+    rate_limit: 1000        # requêtes par jour (plan gratuit)
+    endpoints:
+      base: "https://api.ipgeolocation.io"
+    
+  # MaxMind GeoIP
+  maxmind:
+    user_id: "YOUR_MAXMIND_USER_ID"
+    license_key: "YOUR_MAXMIND_LICENSE_KEY"
+    enabled: false
+    endpoints:
+      base: "https://geoip.maxmind.com/geoip/v2.1"
+    
+  # Hunter.io - Email finder
+  hunter:
+    api_key: "YOUR_HUNTER_API_KEY_HERE"
+    enabled: false
+    rate_limit: 25          # requêtes par jour (plan gratuit)
+    endpoints:
+      base: "https://api.hunter.io/v2"
+    
+  # Have I Been Pwned
+  hibp:
+    api_key: "YOUR_HIBP_API_KEY_HERE"
+    enabled: false
+    rate_limit: 10          # requêtes par minute
+    endpoints:
+      base: "https://haveibeenpwned.com/api/v3"
+
+# APIs de Sécurité Cloud
+cloud_security:
+  # AWS Security APIs
+  aws:
+    access_key_id: "YOUR_AWS_ACCESS_KEY_ID"
+    secret_access_key: "YOUR_AWS_SECRET_ACCESS_KEY"
+    region: "us-east-1"
+    enabled: false
+    
+  # Azure Security APIs
+  azure:
+    client_id: "YOUR_AZURE_CLIENT_ID"
+    client_secret: "YOUR_AZURE_CLIENT_SECRET"
+    tenant_id: "YOUR_AZURE_TENANT_ID"
+    enabled: false
+    
+  # Google Cloud Security APIs
+  gcp:
+    service_account_key: "path/to/service-account-key.json"
+    project_id: "YOUR_GCP_PROJECT_ID"
+    enabled: false
+
+# APIs de Vulnérabilités
+vulnerability_apis:
+  # National Vulnerability Database
+  nvd:
+    api_key: "YOUR_NVD_API_KEY_HERE"
+    enabled: false
+    rate_limit: 5           # requêtes par seconde
+    endpoints:
+      base: "https://services.nvd.nist.gov/rest/json"
+    
+  # VulnDB
+  vulndb:
+    api_key: "YOUR_VULNDB_API_KEY_HERE"
+    enabled: false
+    endpoints:
+      base: "https://vuldb.com/api/v1"
+    
+  # SecurityTrails
+  securitytrails:
+    api_key: "YOUR_SECURITYTRAILS_API_KEY_HERE"
+    enabled: false
+    rate_limit: 50          # requêtes par jour (plan gratuit)
+    endpoints:
+      base: "https://api.securitytrails.com/v1"
+
+# APIs de Réseaux Sociaux (OSINT)
+social_media:
+  # Twitter API (pour OSINT légitime)
+  twitter:
+    api_key: "YOUR_TWITTER_API_KEY"
+    api_secret: "YOUR_TWITTER_API_SECRET"
+    access_token: "YOUR_TWITTER_ACCESS_TOKEN"
+    access_token_secret: "YOUR_TWITTER_ACCESS_TOKEN_SECRET"
+    enabled: false
+    
+  # LinkedIn API (pour OSINT légitime)
+  linkedin:
+    client_id: "YOUR_LINKEDIN_CLIENT_ID"
+    client_secret: "YOUR_LINKEDIN_CLIENT_SECRET"
+    enabled: false
+
+# APIs de Moteurs de Recherche
+search_engines:
+  # Google Custom Search
+  google:
+    api_key: "YOUR_GOOGLE_API_KEY"
+    search_engine_id: "YOUR_CUSTOM_SEARCH_ENGINE_ID"
+    enabled: false
+    
+  # Bing Search API
+  bing:
+    api_key: "YOUR_BING_API_KEY"
+    enabled: false
+
+# APIs de Certificats SSL
+ssl_certificate:
+  # Certificate Transparency Logs
+  crtsh:
+    # Pas de clé API requise
+    enabled: true
+    endpoints:
+      base: "https://crt.sh"
+    
+  # SSL Labs API
+  ssllabs:
+    # Pas de clé API requise
+    enabled: true
+    rate_limit: 25          # évaluations simultanées
+    endpoints:
+      base: "https://api.ssllabs.com/api/v3"
+
+# APIs de Communication (pour notifications)
+communication:
+  # Slack (pour notifications)
+  slack:
+    webhook_url: "YOUR_SLACK_WEBHOOK_URL"
+    bot_token: "YOUR_SLACK_BOT_TOKEN"
+    enabled: false
+    
+  # Discord (pour notifications)
+  discord:
+    webhook_url: "YOUR_DISCORD_WEBHOOK_URL"
+    bot_token: "YOUR_DISCORD_BOT_TOKEN"
+    enabled: false
+    
+  # Telegram (pour notifications)
+  telegram:
+    bot_token: "YOUR_TELEGRAM_BOT_TOKEN"
+    chat_id: "YOUR_TELEGRAM_CHAT_ID"
+    enabled: false
+
+# Configuration globale des APIs
+global_settings:
+  # Timeouts généraux
+  timeouts:
+    default: 30             # secondes
+    long_running: 300       # secondes (5 minutes)
+    
+  # Retry policy
+  retry_policy:
+    max_retries: 3
+    backoff_factor: 2       # délai doublé à chaque retry
+    retry_on_timeout: true
+    
+  # Rate limiting global
+  rate_limiting:
+    enabled: true
+    respect_api_limits: true
+    safety_margin: 0.8      # utilise 80% de la limite
+    
+  # Proxies pour les APIs (optionnel)
+  proxy:
+    enabled: false
+    http_proxy: ""
+    https_proxy: ""
+    
+  # User Agent pour les requêtes API
+  user_agent: "Pentest-USB-Toolkit/1.0 (Security Research)"
+
+# Validation et sécurité
+security:
+  # Chiffrement des clés stockées
+  encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    key_file: "config/api_encryption.key"
+    
+  # Validation des clés API
+  validation:
+    test_on_startup: false   # test des clés au démarrage
+    warn_invalid_keys: true
+    disable_invalid_apis: true
+    
+  # Audit des utilisations d'API
+  audit:
+    log_api_calls: true
+    log_responses: false    # pour la confidentialité
+    track_usage: true
+
+# Instructions d'utilisation
+usage_instructions: |
+  1. Copiez ce fichier vers 'api_keys_local.yaml'
+  2. Remplacez 'YOUR_*_HERE' par vos vraies clés API
+  3. Activez les APIs nécessaires en mettant 'enabled: true'
+  4. Ajoutez 'api_keys_local.yaml' à votre .gitignore
+  5. Ne partagez jamais vos vraies clés API
+  
+  IMPORTANT: 
+  - Utilisez uniquement des APIs légitimes
+  - Respectez les conditions d'utilisation
+  - N'utilisez que pour des tests autorisés
+  - Surveillez vos quotas d'utilisation
+
+# Environnements spécifiques
+environments:
+  development:
+    use_test_keys: true
+    validate_responses: true
+    
+  production:
+    use_production_keys: true
+    strict_validation: true
+    
+  demo:
+    use_demo_keys: true
+    limited_calls: true

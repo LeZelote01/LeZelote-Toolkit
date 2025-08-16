@@ -1,0 +1,379 @@
+version: '3.8'
+
+services:
+  # =============================================================================
+  # PENTEST-USB TOOLKIT - DOCKER COMPOSE CONFIGURATION
+  # =============================================================================
+  # Multi-container orchestration for security tools
+  # Optimized for portable USB deployment
+  # =============================================================================
+
+  # Base Network Configuration
+  networks:
+    pentest_network:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 172.20.0.0/16
+
+  # Shared Volumes
+  volumes:
+    pentest_data:
+      driver: local
+    pentest_logs:
+      driver: local
+    pentest_outputs:
+      driver: local
+    postgresql_data:
+      driver: local
+    neo4j_data:
+      driver: local
+
+  # =============================================================================
+  # CORE SERVICES
+  # =============================================================================
+
+  # Main Pentest Orchestrator
+  pentest-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+    container_name: pentest_orchestrator
+    hostname: orchestrator
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.10
+    volumes:
+      - ../../:/pentest-usb:rw
+      - pentest_data:/data
+      - pentest_logs:/logs
+      - pentest_outputs:/outputs
+    ports:
+      - "8080:8080"  # Web Interface
+      - "8081:8081"  # API Interface
+    environment:
+      - PENTEST_MODE=docker
+      - LOG_LEVEL=INFO
+      - DATA_PATH=/data
+      - OUTPUTS_PATH=/outputs
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+      - redis
+    command: ["python", "/pentest-usb/interfaces/web/app.py"]
+
+  # PostgreSQL Database
+  postgresql:
+    image: postgres:15-alpine
+    container_name: pentest_postgresql
+    hostname: postgresql
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.11
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ../../data/databases:/docker-entrypoint-initdb.d:ro
+    environment:
+      - POSTGRES_DB=pentest_usb
+      - POSTGRES_USER=pentest
+      - POSTGRES_PASSWORD=pentest_secure_2024
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: pentest_redis
+    hostname: redis
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.12
+    volumes:
+      - pentest_data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+
+  # =============================================================================
+  # VULNERABILITY SCANNERS
+  # =============================================================================
+
+  # Nessus Professional
+  nessus:
+    build:
+      context: ../../tools/containers/nessus
+      dockerfile: Dockerfile
+    container_name: pentest_nessus
+    hostname: nessus
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.20
+    volumes:
+      - pentest_data:/opt/nessus/var/nessus
+      - pentest_logs:/opt/nessus/var/nessus/logs
+    ports:
+      - "8834:8834"
+    environment:
+      - NESSUS_ACTIVATION_CODE=${NESSUS_ACTIVATION_CODE}
+      - NESSUS_USERNAME=admin
+      - NESSUS_PASSWORD=pentest_nessus_2024
+    restart: unless-stopped
+    privileged: true
+
+  # OpenVAS Scanner
+  openvas:
+    build:
+      context: ../../tools/containers/openvas
+      dockerfile: Dockerfile
+    container_name: pentest_openvas
+    hostname: openvas
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.21
+    volumes:
+      - pentest_data:/var/lib/gvm
+      - pentest_logs:/var/log/gvm
+    ports:
+      - "9392:9392"   # GSA Web Interface
+      - "9390:9390"   # GMP Protocol
+    environment:
+      - OPENVAS_ADMIN_USER=admin
+      - OPENVAS_ADMIN_PASSWORD=pentest_openvas_2024
+    restart: unless-stopped
+    privileged: true
+
+  # Nuclei Template Scanner
+  nuclei:
+    build:
+      context: ../../tools/containers/nuclei
+      dockerfile: Dockerfile
+    container_name: pentest_nuclei
+    hostname: nuclei
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.22
+    volumes:
+      - pentest_outputs:/nuclei-output
+      - ../../data/templates:/nuclei-templates:ro
+    environment:
+      - NUCLEI_CONFIG=/config/nuclei.yaml
+    restart: "no"
+    profiles: ["scanning"]
+
+  # =============================================================================
+  # WEB APPLICATION SECURITY
+  # =============================================================================
+
+  # OWASP ZAP Proxy
+  zaproxy:
+    build:
+      context: ../../tools/containers/zaproxy
+      dockerfile: Dockerfile
+    container_name: pentest_zap
+    hostname: zaproxy
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.30
+    volumes:
+      - pentest_outputs:/zap/wrk:rw
+      - pentest_logs:/zap/logs:rw
+    ports:
+      - "8082:8080"   # ZAP Proxy
+      - "8083:8090"   # ZAP API
+    environment:
+      - ZAP_PROXY_PORT=8080
+      - ZAP_API_PORT=8090
+    restart: unless-stopped
+    command: ["zap.sh", "-daemon", "-host", "0.0.0.0", "-port", "8080", "-config", "api.addrs.addr.name=.*", "-config", "api.addrs.addr.regex=true"]
+
+  # Burp Suite Professional
+  burpsuite:
+    build:
+      context: ../../tools/containers/burpsuite
+      dockerfile: Dockerfile
+    container_name: pentest_burp
+    hostname: burpsuite
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.31
+    volumes:
+      - pentest_outputs:/burp-output:rw
+      - pentest_logs:/burp-logs:rw
+    ports:
+      - "8084:8080"   # Burp Proxy
+      - "1337:1337"   # Burp REST API
+    environment:
+      - BURP_LICENSE_KEY=${BURP_LICENSE_KEY}
+      - BURP_HEADLESS=true
+    restart: unless-stopped
+    profiles: ["premium"]
+
+  # =============================================================================
+  # EXPLOITATION FRAMEWORKS
+  # =============================================================================
+
+  # Metasploit Framework
+  metasploit:
+    build:
+      context: ../../tools/containers/metasploit
+      dockerfile: Dockerfile
+    container_name: pentest_metasploit
+    hostname: metasploit
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.40
+    volumes:
+      - pentest_data:/root/.msf4
+      - pentest_outputs:/tmp/msf-output
+      - pentest_logs:/var/log/metasploit
+    ports:
+      - "4444:4444"   # Default Metasploit listener
+      - "55553:55553" # Metasploit RPC
+    environment:
+      - MSF_DATABASE_CONFIG=/root/.msf4/database.yml
+      - POSTGRES_CONNECTION=postgresql://pentest:pentest_secure_2024@postgresql:5432/msf_db
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+    privileged: true
+
+  # Kali Linux Tools Container
+  kali-tools:
+    build:
+      context: ../../tools/containers/kali-tools
+      dockerfile: Dockerfile
+    container_name: pentest_kali
+    hostname: kali-tools
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.41
+    volumes:
+      - pentest_outputs:/kali-output:rw
+      - pentest_logs:/var/log/kali:rw
+      - ../../:/pentest-usb:ro
+    environment:
+      - DISPLAY=${DISPLAY}
+      - TERM=xterm-256color
+    restart: "no"
+    privileged: true
+    profiles: ["tools"]
+
+  # =============================================================================
+  # ACTIVE DIRECTORY & POST-EXPLOITATION
+  # =============================================================================
+
+  # BloodHound + Neo4j
+  bloodhound:
+    build:
+      context: ../../tools/containers/bloodhound
+      dockerfile: Dockerfile
+    container_name: pentest_bloodhound
+    hostname: bloodhound
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.50
+    volumes:
+      - neo4j_data:/data
+      - pentest_outputs:/bloodhound-output:rw
+    ports:
+      - "7474:7474"   # Neo4j HTTP
+      - "7687:7687"   # Neo4j Bolt
+      - "3000:3000"   # BloodHound UI
+    environment:
+      - NEO4J_AUTH=neo4j/bloodhound123
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+    restart: unless-stopped
+
+  # =============================================================================
+  # MONITORING & LOGGING
+  # =============================================================================
+
+  # ELK Stack for Log Analysis
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: pentest_elasticsearch
+    hostname: elasticsearch
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.60
+    volumes:
+      - pentest_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    restart: unless-stopped
+    profiles: ["monitoring"]
+
+  # Kibana Dashboard
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: pentest_kibana
+    hostname: kibana
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.61
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    profiles: ["monitoring"]
+
+  # =============================================================================
+  # UTILITY SERVICES
+  # =============================================================================
+
+  # File Transfer Service
+  file-transfer:
+    image: nginx:alpine
+    container_name: pentest_filetransfer
+    hostname: filetransfer
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.70
+    volumes:
+      - pentest_outputs:/usr/share/nginx/html/files:ro
+      - ../../config/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8085:80"
+    restart: unless-stopped
+
+  # VNC Server for GUI Tools
+  vnc-server:
+    image: consol/ubuntu-xfce-vnc:latest
+    container_name: pentest_vnc
+    hostname: vnc-server
+    networks:
+      pentest_network:
+        ipv4_address: 172.20.0.71
+    volumes:
+      - pentest_outputs:/headless/Documents:rw
+    ports:
+      - "6901:6901"   # VNC Web Interface
+      - "5901:5901"   # VNC Direct
+    environment:
+      - VNC_PW=pentest123
+      - VNC_RESOLUTION=1920x1080
+    restart: unless-stopped
+    profiles: ["gui"]
+
+# =============================================================================
+# PROFILES CONFIGURATION
+# =============================================================================
+# Usage examples:
+# docker-compose up                              # Core services only
+# docker-compose --profile scanning up          # Add scanning tools
+# docker-compose --profile premium up           # Add premium tools (Burp, Nessus)
+# docker-compose --profile monitoring up        # Add ELK monitoring
+# docker-compose --profile tools up             # Add Kali tools container
+# docker-compose --profile gui up               # Add VNC GUI support
+# docker-compose --profile all up               # All services (requires powerful system)

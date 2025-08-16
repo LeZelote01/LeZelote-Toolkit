@@ -1,0 +1,267 @@
+# Nuclei Configuration File
+# Pentest-USB Toolkit - Nuclei Container Configuration
+# Version: 1.0.0
+
+# Templates configuration
+templates:
+  - /opt/nuclei-templates
+  - /home/nuclei/templates
+
+# Template update settings
+update-templates: true
+update-directory: /opt/nuclei-templates
+automatic-scan: false
+
+# Output configuration
+output: ""
+json: false
+jsonl: false
+markdown-export: ""
+sarif-export: ""
+json-export: ""
+
+# Silent mode and verbosity
+silent: false
+verbose: false
+very-verbose: false
+debug: false
+debug-req: false
+debug-resp: false
+
+# Network configuration
+timeout: 10
+retries: 3
+rate-limit: 150
+rate-limit-minute: 0
+bulk-size: 25
+concurrency: 25
+
+# HTTP configuration
+follow-redirects: true
+max-redirects: 10
+disable-redirects: false
+random-agent: false
+custom-headers:
+  - "User-Agent: Nuclei-Pentest-USB-Toolkit/1.0"
+
+# TLS configuration
+tls-impersonate: false
+sni-name: ""
+
+# Severity filtering
+severity:
+  - info
+  - low
+  - medium
+  - high
+  - critical
+
+# Include/exclude tags
+include-tags: []
+exclude-tags: 
+  - "dos"
+  - "intrusive"
+
+# Include/exclude template IDs
+include-id: []
+exclude-id: []
+
+# Include/exclude templates
+include-templates: []
+exclude-templates: []
+
+# Author filtering
+author: []
+exclude-authors: []
+
+# Conditional filtering
+include-conditions: []
+exclude-conditions: []
+
+# Matchers filtering
+exclude-matchers: []
+
+# Target configuration
+target: ""
+list: ""
+resume: ""
+exclude-hosts: []
+include-hosts: []
+
+# Scan configuration
+new-templates: false
+new-templates-version: []
+automatic-scan: false
+templated-requests: 100
+
+# Payloads configuration
+payloads: ""
+
+# Variables
+vars: {}
+
+# Environment variables
+env-vars: true
+
+# System configuration
+system-resolvers: false
+disable-clustering: false
+offline-scan: false
+stats: true
+stats-interval: 5
+metrics: false
+metrics-port: 9092
+
+# Cloud configuration
+cloud-upload: false
+cloud-url: ""
+cloud-token: ""
+
+# Interactsh configuration
+no-interactsh: false
+interactsh-server: ""
+interactsh-token: ""
+interactsh-cache-size: 5000
+interactsh-eviction: 60
+interactsh-poll-duration: 5
+interactsh-cooldown-period: 5
+
+# Reporting configuration
+markdown-export: ""
+json-export: ""
+junit-export: ""
+sarif-export: ""
+csv-export: ""
+
+# Project configuration
+project: false
+project-path: ""
+
+# Resume configuration
+resume: ""
+
+# Code configuration
+code: false
+
+# Hostname configuration
+sni-name: ""
+
+# Interface configuration
+interface: ""
+source-ip: ""
+
+# Config file paths
+config: []
+
+# Proxy configuration
+proxy-url: ""
+proxy-socks-url: ""
+
+# Certificate configuration
+client-cert: ""
+client-key: ""
+client-ca: ""
+
+# Attack mode configuration
+attack-type: ""
+
+# Flow configuration
+flow: ""
+
+# Headless configuration
+headless: false
+page-timeout: 20
+show-browser: false
+store-response: false
+store-response-dir: ""
+
+# Fuzzing configuration
+fuzz: false
+fuzz-param: []
+fuzz-header: []
+
+# Output format options
+no-color: false
+no-meta: false
+no-timestamp: false
+trace-log: ""
+error-log: ""
+
+# JavaScript configuration
+enable-js: false
+
+# Health check configuration
+health-check: false
+
+# Input configuration
+stdin: false
+
+# Certificate transparency
+ct: false
+
+# DNS configuration
+resolver: []
+system-resolvers: false
+
+# Custom CA configuration
+ca-cert: ""
+
+# Maximum response body size
+max-response-size: 10485760
+
+# Custom nuclei home directory
+nuclei-home: "/home/nuclei/.config/nuclei"
+
+# Pentest-USB specific configurations
+pentest-usb:
+  # Integration settings
+  integration-mode: true
+  toolkit-version: "1.0.0"
+  
+  # Default scan profiles
+  scan-profiles:
+    quick:
+      severity: ["medium", "high", "critical"]
+      tags: ["exposure", "misconfiguration", "cve"]
+      exclude-tags: ["dos", "intrusive", "fuzzing"]
+      
+    comprehensive:
+      severity: ["info", "low", "medium", "high", "critical"]
+      tags: []
+      exclude-tags: ["dos"]
+      
+    targeted:
+      severity: ["high", "critical"]
+      tags: ["rce", "sqli", "xss", "lfi", "rfi"]
+      exclude-tags: ["dos", "intrusive"]
+  
+  # Output preferences
+  output-preferences:
+    default-format: "json"
+    auto-export: true
+    report-directory: "/home/nuclei/reports"
+    
+  # Network settings
+  network-settings:
+    timeout: 10
+    retries: 3
+    rate-limit: 150
+    concurrent-hosts: 25
+    
+  # Custom templates
+  custom-templates:
+    enabled: true
+    directory: "/home/nuclei/templates/custom"
+    auto-load: true
+    
+  # Automation settings
+  automation:
+    enabled: true
+    script-path: "/opt/nuclei-scripts/nuclei-automation.py"
+    update-templates: true
+    
+  # Integration endpoints
+  integration:
+    webhook-url: ""
+    api-key: ""
+    export-results: true

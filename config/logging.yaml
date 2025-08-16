@@ -1,0 +1,79 @@
+# Logging Configuration for Pentest-USB Toolkit
+# ================================================
+
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  default:
+    format: '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+    
+  detailed:
+    format: '[%(asctime)s] %(levelname)s in %(name)s [%(filename)s:%(lineno)d]: %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+    
+  audit:
+    format: '[%(asctime)s] AUDIT - %(levelname)s - %(name)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: default
+    stream: ext://sys.stdout
+    
+  file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: ./logs/system.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+    
+  error_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: ./logs/error.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 3
+    
+  audit_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: audit
+    filename: ./logs/audit_trail.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 10
+
+loggers:
+  core.engine:
+    level: INFO
+    handlers: [console, file_handler]
+    propagate: false
+    
+  core.security:
+    level: DEBUG
+    handlers: [console, file_handler, audit_handler]
+    propagate: false
+    
+  modules:
+    level: INFO
+    handlers: [console, file_handler]
+    propagate: false
+    
+  tools:
+    level: WARNING
+    handlers: [file_handler]
+    propagate: false
+    
+  audit:
+    level: INFO
+    handlers: [audit_handler]
+    propagate: false
+
+root:
+  level: INFO
+  handlers: [console, file_handler, error_handler]
