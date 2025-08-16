@@ -237,7 +237,7 @@ Chaque conteneur inclut :
 - **Modules Core** : 100% ✅
 - **Modules Fonctionnels** : 100% ✅  
 - **Outils intégrés** : 100% ✅ **[PHASE 4 TERMINÉE]**
-- **Interfaces** : 0% 🔄 **[PROCHAINE PRIORITÉ]**
+- **Interfaces** : 50% ✅ **[PHASE 5.1 TERMINÉE - CLI COMPLET]**
 
 #### 🔄 PROCHAINES ÉTAPES POUR LA SUITE DU DÉVELOPPEMENT
 
