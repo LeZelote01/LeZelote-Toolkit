@@ -1,1 +1,1 @@
-sqlmap/sqlmap.py
+/app/tools/binaries/linux/sqlmap/sqlmap.py
