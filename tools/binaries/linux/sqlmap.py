@@ -1,1 +1,0 @@
-/app/tools/binaries/linux/sqlmap/sqlmap.py

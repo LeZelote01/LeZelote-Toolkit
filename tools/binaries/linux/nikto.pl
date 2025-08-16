@@ -1,1 +1,0 @@
-/app/tools/binaries/linux/nikto/program/nikto.pl
