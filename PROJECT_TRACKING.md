@@ -243,10 +243,22 @@ Chaque conteneur inclut :
 
 **Prochaine phase à développer (selon ROADMAP_DEVELOPMENT.md) :**
 
-#### 🔄 PHASE 5 - INTERFACES UTILISATEUR (20 jours) - PROCHAINE PRIORITÉ
-**Objectif :** Créer les interfaces CLI et Web pour le toolkit
-- **Étape 5.1** - Interface CLI (8 jours) 
-- **Étape 5.2** - Interface Web (12 jours)
+#### ✅ PHASE 5.1 - INTERFACE CLI (8 jours) - TERMINÉE (100%)
+**Objectif :** Interface CLI pour tous les modules
+- ✅ **main_cli.py** - Interface CLI principale 
+- ✅ **recon_cli.py** - Module reconnaissance CLI
+- ✅ **vuln_cli.py** - Module vulnérabilités CLI  
+- ✅ **exploit_cli.py** - Module exploitation CLI
+- ✅ **post_exploit_cli.py** - Module post-exploitation CLI
+- ✅ **report_cli.py** - Module reporting CLI
+- ✅ **config_cli.py** - Module configuration CLI
+
+#### 🔄 PHASE 5.2 - INTERFACE WEB (12 jours) - PROCHAINE PRIORITÉ
+**Objectif :** Interface Web avec Flask
+- ❌ **app.py** - Application Flask principale
+- ❌ **Templates HTML** - Interfaces web
+- ❌ **Routes API** - Endpoints REST
+- ❌ **Dashboard web** - Interface de monitoring
 
 ---
 
