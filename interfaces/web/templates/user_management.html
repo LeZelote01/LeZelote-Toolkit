@@ -1,0 +1,901 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Pentest-USB Toolkit{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/reports.css') }}" rel="stylesheet">
+<style>
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #007bff, #6f42c1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.user-role-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+}
+
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.permission-item {
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    background-color: #f8f9fa;
+}
+
+.activity-timeline {
+    position: relative;
+    padding-left: 2rem;
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0.75rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.3rem;
+    top: 0.3rem;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #007bff;
+}
+
+.user-stats-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-users me-3"></i>User Management
+                    </h1>
+                    <p class="page-subtitle">Manage user accounts, roles, and permissions</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#bulkActionsModal">
+                        <i class="fas fa-tasks me-2"></i>Bulk Actions
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <i class="fas fa-user-plus me-2"></i>Add User
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-users fa-2x text-primary me-3"></i>
+                        <div>
+                            <h3 class="mb-0" id="totalUsersCount">{{ users|length if users else 0 }}</h3>
+                            <small class="text-muted">Total Users</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-user-check fa-2x text-success me-3"></i>
+                        <div>
+                            <h3 class="mb-0" id="activeUsersCount">{{ active_users_count or 0 }}</h3>
+                            <small class="text-muted">Active Users</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-shield-alt fa-2x text-warning me-3"></i>
+                        <div>
+                            <h3 class="mb-0" id="adminUsersCount">{{ admin_users_count or 0 }}</h3>
+                            <small class="text-muted">Administrators</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <i class="fas fa-clock fa-2x text-info me-3"></i>
+                        <div>
+                            <h3 class="mb-0" id="onlineUsersCount">{{ online_users_count or 0 }}</h3>
+                            <small class="text-muted">Online Now</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table me-2"></i>Users List
+                        </h5>
+                        <div class="d-flex gap-2">
+                            <div class="input-group" style="width: 250px;">
+                                <input type="text" class="form-control" id="userSearch" placeholder="Search users...">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                            <select class="form-select" id="roleFilter" style="width: 150px;">
+                                <option value="">All Roles</option>
+                                <option value="admin">Administrator</option>
+                                <option value="pentester">Pentester</option>
+                                <option value="analyst">Analyst</option>
+                                <option value="viewer">Viewer</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAllUsers" class="form-check-input">
+                                    </th>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Last Active</th>
+                                    <th>Projects</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                {% if users %}
+                                    {% for user in users %}
+                                    <tr data-user-id="{{ user.id }}" data-role="{{ user.role }}" data-status="{{ user.status }}">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input user-checkbox" value="{{ user.id }}">
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-3">
+                                                    {{ user.username[0].upper() if user.username else 'U' }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold">{{ user.username }}</div>
+                                                    <small class="text-muted">{{ user.email }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge user-role-badge {{ 'bg-danger' if user.role == 'admin' else 'bg-primary' if user.role == 'pentester' else 'bg-info' if user.role == 'analyst' else 'bg-secondary' }}">
+                                                {{ user.role.title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="status-indicator {{ 'online' if user.is_online else 'offline' }} me-2"></span>
+                                                <span class="badge {{ 'bg-success' if user.status == 'active' else 'bg-warning' if user.status == 'inactive' else 'bg-danger' }}">
+                                                    {{ user.status.title() }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted" data-bs-toggle="tooltip" title="{{ user.last_login_at }}">
+                                                {{ user.last_login_relative or 'Never' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">{{ user.project_count or 0 }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button type="button" class="btn btn-outline-primary" onclick="viewUserDetails('{{ user.id }}')" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="editUser('{{ user.id }}')" title="Edit User">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" title="More Actions">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="#" onclick="resetUserPassword('{{ user.id }}')">
+                                                            <i class="fas fa-key me-2"></i>Reset Password</a></li>
+                                                        <li><a class="dropdown-item" href="#" onclick="toggleUserStatus('{{ user.id }}', '{{ user.status }}')">
+                                                            <i class="fas fa-{{ 'pause' if user.status == 'active' else 'play' }} me-2"></i>
+                                                            {{ 'Deactivate' if user.status == 'active' else 'Activate' }}</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="#" onclick="deleteUser('{{ user.id }}')">
+                                                            <i class="fas fa-trash me-2"></i>Delete User</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                <tr class="no-data">
+                                    <td colspan="7" class="text-center py-5">
+                                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                        <div class="text-muted mb-3">No users found</div>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                            <i class="fas fa-user-plus me-2"></i>Add First User
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% if users and users|length > 0 %}
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            Showing {{ users|length }} of {{ total_users or users|length }} users
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus me-2"></i>Add New User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addUserForm" class="ajax-form" method="POST" action="/auth/users/create">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username *</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                                <div class="form-text">Must be unique and 3-50 characters long</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password *</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePasswordVisibility('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text">Minimum 8 characters</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="confirmPassword" class="form-label">Confirm Password *</label>
+                                <input type="password" class="form-control" id="confirmPassword" name="confirm_password" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role *</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="">Select Role...</option>
+                                    <option value="viewer">Viewer - Read-only access</option>
+                                    <option value="analyst">Analyst - Can view and analyze</option>
+                                    <option value="pentester">Pentester - Can create scans and tests</option>
+                                    <option value="admin">Administrator - Full access</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="active">Active</option>
+                                    <option value="inactive">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Permissions</label>
+                        <div class="permissions-grid" id="permissionsGrid">
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="scan_create" id="perm_scan_create">
+                                    <label class="form-check-label" for="perm_scan_create">
+                                        <strong>Create Scans</strong><br>
+                                        <small class="text-muted">Can initiate new security scans</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="scan_view" id="perm_scan_view">
+                                    <label class="form-check-label" for="perm_scan_view">
+                                        <strong>View Scans</strong><br>
+                                        <small class="text-muted">Can view scan results and reports</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="project_manage" id="perm_project_manage">
+                                    <label class="form-check-label" for="perm_project_manage">
+                                        <strong>Manage Projects</strong><br>
+                                        <small class="text-muted">Can create and edit projects</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="report_generate" id="perm_report_generate">
+                                    <label class="form-check-label" for="perm_report_generate">
+                                        <strong>Generate Reports</strong><br>
+                                        <small class="text-muted">Can create and export reports</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="user_manage" id="perm_user_manage">
+                                    <label class="form-check-label" for="perm_user_manage">
+                                        <strong>Manage Users</strong><br>
+                                        <small class="text-muted">Can add, edit, and remove users</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="permission-item">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="system_config" id="perm_system_config">
+                                    <label class="form-check-label" for="perm_system_config">
+                                        <strong>System Configuration</strong><br>
+                                        <small class="text-muted">Can modify system settings</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sendWelcomeEmail" name="send_welcome_email" checked>
+                        <label class="form-check-label" for="sendWelcomeEmail">
+                            Send welcome email to user
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user me-2"></i>User Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="userDetailsContent">
+                <!-- Dynamic content loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions Modal -->
+<div class="modal fade" id="bulkActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-tasks me-2"></i>Bulk Actions
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select an action to apply to <span id="selectedUsersCount">0</span> selected users:</p>
+                
+                <div class="list-group">
+                    <button type="button" class="list-group-item list-group-item-action" onclick="bulkAction('activate')">
+                        <i class="fas fa-play text-success me-3"></i>Activate Selected Users
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="bulkAction('deactivate')">
+                        <i class="fas fa-pause text-warning me-3"></i>Deactivate Selected Users
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="bulkAction('reset_password')">
+                        <i class="fas fa-key text-info me-3"></i>Reset Passwords
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action text-danger" onclick="bulkAction('delete')">
+                        <i class="fas fa-trash text-danger me-3"></i>Delete Selected Users
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+// User management JavaScript functionality
+document.addEventListener('DOMContentLoaded', function() {
+    initializeUserManagement();
+});
+
+function initializeUserManagement() {
+    // Setup search functionality
+    document.getElementById('userSearch').addEventListener('input', filterUsers);
+    document.getElementById('roleFilter').addEventListener('change', filterUsers);
+    
+    // Setup select all checkbox
+    document.getElementById('selectAllUsers').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        updateSelectedUsersCount();
+    });
+    
+    // Setup individual checkboxes
+    document.querySelectorAll('.user-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateSelectedUsersCount);
+    });
+    
+    // Setup role-based permissions
+    document.getElementById('role').addEventListener('change', updatePermissionsByRole);
+}
+
+function filterUsers() {
+    const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+    const roleFilter = document.getElementById('roleFilter').value;
+    const rows = document.querySelectorAll('#usersTableBody tr:not(.no-data)');
+    
+    rows.forEach(row => {
+        const username = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        const role = row.getAttribute('data-role');
+        
+        const matchesSearch = username.includes(searchTerm);
+        const matchesRole = !roleFilter || role === roleFilter;
+        
+        row.style.display = matchesSearch && matchesRole ? '' : 'none';
+    });
+}
+
+function updateSelectedUsersCount() {
+    const selected = document.querySelectorAll('.user-checkbox:checked').length;
+    document.getElementById('selectedUsersCount').textContent = selected;
+    
+    // Update select all checkbox state
+    const allCheckboxes = document.querySelectorAll('.user-checkbox');
+    const selectAllCheckbox = document.getElementById('selectAllUsers');
+    
+    if (selected === 0) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = false;
+    } else if (selected === allCheckboxes.length) {
+        selectAllCheckbox.indeterminate = false;
+        selectAllCheckbox.checked = true;
+    } else {
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+function updatePermissionsByRole() {
+    const role = document.getElementById('role').value;
+    const permissions = {
+        'viewer': ['scan_view'],
+        'analyst': ['scan_view', 'report_generate'],
+        'pentester': ['scan_create', 'scan_view', 'project_manage', 'report_generate'],
+        'admin': ['scan_create', 'scan_view', 'project_manage', 'report_generate', 'user_manage', 'system_config']
+    };
+    
+    // Reset all permissions
+    document.querySelectorAll('[name="permissions[]"]').forEach(cb => {
+        cb.checked = false;
+    });
+    
+    // Set permissions for selected role
+    if (permissions[role]) {
+        permissions[role].forEach(perm => {
+            const checkbox = document.getElementById(`perm_${perm}`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+    }
+}
+
+function togglePasswordVisibility(fieldId) {
+    const field = document.getElementById(fieldId);
+    const button = field.nextElementSibling.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        button.className = 'fas fa-eye-slash';
+    } else {
+        field.type = 'password';
+        button.className = 'fas fa-eye';
+    }
+}
+
+function viewUserDetails(userId) {
+    // Show loading in modal
+    document.getElementById('userDetailsContent').innerHTML = `
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary mb-3"></div>
+            <div>Loading user details...</div>
+        </div>
+    `;
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('userDetailsModal')).show();
+    
+    // Load user details
+    fetch(`/auth/users/${userId}/details`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('userDetailsContent').innerHTML = generateUserDetailsHTML(data.user);
+            } else {
+                throw new Error(data.message);
+            }
+        })
+        .catch(error => {
+            document.getElementById('userDetailsContent').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Failed to load user details: ${error.message}
+                </div>
+            `;
+        });
+}
+
+function generateUserDetailsHTML(user) {
+    return `
+        <div class="row">
+            <div class="col-md-4">
+                <div class="user-stats-card text-center">
+                    <div class="user-avatar mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                        ${user.username[0].upper()}
+                    </div>
+                    <h4>${user.username}</h4>
+                    <p class="text-muted mb-3">${user.email}</p>
+                    <span class="badge user-role-badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'} fs-6">
+                        ${user.role.title()}
+                    </span>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">Statistics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <h4 class="text-primary mb-0">${user.scan_count || 0}</h4>
+                                    <small class="text-muted">Scans</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-2">
+                                    <h4 class="text-success mb-0">${user.project_count || 0}</h4>
+                                    <small class="text-muted">Projects</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">User Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <strong>Created:</strong><br>
+                                <span class="text-muted">${formatDate(user.created_at)}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong>Last Login:</strong><br>
+                                <span class="text-muted">${user.last_login_at ? formatDate(user.last_login_at) : 'Never'}</span>
+                            </div>
+                            <div class="col-sm-6 mt-3">
+                                <strong>Status:</strong><br>
+                                <span class="badge ${user.status === 'active' ? 'bg-success' : 'bg-warning'}">${user.status.title()}</span>
+                            </div>
+                            <div class="col-sm-6 mt-3">
+                                <strong>Two-Factor Auth:</strong><br>
+                                <span class="badge ${user.two_factor_enabled ? 'bg-success' : 'bg-secondary'}">
+                                    ${user.two_factor_enabled ? 'Enabled' : 'Disabled'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Permissions</h6>
+                        <div class="permissions-grid">
+                            ${user.permissions ? user.permissions.map(perm => `
+                                <div class="permission-item">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    ${perm.replace('_', ' ').title()}
+                                </div>
+                            `).join('') : '<span class="text-muted">No specific permissions</span>'}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Recent Activity</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-timeline">
+                            ${user.recent_activity ? user.recent_activity.map(activity => `
+                                <div class="timeline-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span>${activity.description}</span>
+                                        <small class="text-muted">${formatDate(activity.timestamp)}</small>
+                                    </div>
+                                </div>
+                            `).join('') : '<span class="text-muted">No recent activity</span>'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function editUser(userId) {
+    // Implementation for edit user functionality
+    showToast('Edit user functionality coming soon', 'info');
+}
+
+function resetUserPassword(userId) {
+    showConfirmation(
+        'Are you sure you want to reset this user\'s password? They will receive an email with a new temporary password.',
+        () => {
+            fetch(`/auth/users/${userId}/reset-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Password reset email sent successfully', 'success');
+                } else {
+                    showToast(data.message || 'Failed to reset password', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error resetting password: ' + error.message, 'error');
+            });
+        },
+        'Reset Password'
+    );
+}
+
+function toggleUserStatus(userId, currentStatus) {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    const action = newStatus === 'active' ? 'activate' : 'deactivate';
+    
+    showConfirmation(
+        `Are you sure you want to ${action} this user?`,
+        () => {
+            fetch(`/auth/users/${userId}/toggle-status`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(`User ${action}d successfully`, 'success');
+                    location.reload();
+                } else {
+                    showToast(data.message || `Failed to ${action} user`, 'error');
+                }
+            })
+            .catch(error => {
+                showToast(`Error ${action}ing user: ` + error.message, 'error');
+            });
+        },
+        `${action.charAt(0).toUpperCase() + action.slice(1)} User`
+    );
+}
+
+function deleteUser(userId) {
+    showConfirmation(
+        'Are you sure you want to delete this user? This action cannot be undone. All associated data will be permanently deleted.',
+        () => {
+            fetch(`/auth/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('User deleted successfully', 'success');
+                    location.reload();
+                } else {
+                    showToast(data.message || 'Failed to delete user', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error deleting user: ' + error.message, 'error');
+            });
+        },
+        'Delete User'
+    );
+}
+
+function bulkAction(action) {
+    const selectedUsers = Array.from(document.querySelectorAll('.user-checkbox:checked')).map(cb => cb.value);
+    
+    if (selectedUsers.length === 0) {
+        showToast('Please select users first', 'warning');
+        return;
+    }
+    
+    const actionText = {
+        'activate': 'activate',
+        'deactivate': 'deactivate', 
+        'reset_password': 'reset passwords for',
+        'delete': 'delete'
+    };
+    
+    showConfirmation(
+        `Are you sure you want to ${actionText[action]} ${selectedUsers.length} selected user(s)?`,
+        () => {
+            fetch('/auth/users/bulk-action', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: action,
+                    user_ids: selectedUsers
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(`Bulk ${action} completed successfully`, 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('bulkActionsModal')).hide();
+                    location.reload();
+                } else {
+                    showToast(data.message || `Failed to perform bulk ${action}`, 'error');
+                }
+            })
+            .catch(error => {
+                showToast(`Error performing bulk ${action}: ` + error.message, 'error');
+            });
+        },
+        `Bulk ${actionText[action].charAt(0).toUpperCase() + actionText[action].slice(1)}`
+    );
+}
+
+// Form validation
+document.getElementById('addUserForm').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password !== confirmPassword) {
+        e.preventDefault();
+        showToast('Passwords do not match', 'error');
+        return false;
+    }
+    
+    if (password.length < 8) {
+        e.preventDefault();
+        showToast('Password must be at least 8 characters long', 'error');
+        return false;
+    }
+});
+</script>
+{% endblock %}
