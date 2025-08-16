@@ -1,712 +1,614 @@
-/**
- * Dashboard Specific JavaScript
- * ============================
- * 
- * Dashboard functionality, charts, and real-time updates
+/*
+ * Dashboard JavaScript for Pentest-USB Toolkit
+ * ===========================================
  */
 
-(function() {
-    'use strict';
+// Dashboard state
+let dashboardChart = null;
+let refreshTimer = null;
 
-    let performanceChart = null;
-    let chartData = {
-        labels: [],
-        cpu: [],
-        memory: [],
-        disk: []
-    };
+/**
+ * Initialize dashboard
+ */
+function initializeDashboard() {
+    console.log('Initializing dashboard...');
+    
+    // Load initial data
+    loadDashboardData();
+    
+    // Initialize charts
+    initializePerformanceChart();
+    
+    // Setup periodic updates
+    startPeriodicUpdates();
+    
+    // Setup event listeners
+    setupDashboardEventListeners();
+    
+    console.log('Dashboard initialized');
+}
 
-    const maxDataPoints = 20; // Keep last 20 data points
+/**
+ * Load initial dashboard data
+ */
+function loadDashboardData() {
+    // Fetch system statistics
+    fetchSystemStats();
+    
+    // Fetch active scans
+    fetchActiveScans();
+    
+    // Fetch recent activity
+    fetchRecentActivity();
+    
+    // Update date/time
+    updateDateTime();
+}
 
-    /**
-     * Initialize dashboard
-     */
-    function initializeDashboard() {
-        console.log('Initializing dashboard...');
-        
-        // Initialize performance chart
-        initializePerformanceChart();
-        
-        // Set up real-time updates
-        initializeRealTimeUpdates();
-        
-        // Set up new scan modal
-        setupNewScanModal();
-        
-        // Load initial data
-        loadInitialData();
-        
-        console.log('Dashboard initialized');
-    }
-
-    /**
-     * Initialize performance chart
-     */
-    function initializePerformanceChart() {
-        const ctx = document.getElementById('performanceChart');
-        if (!ctx) return;
-
-        const config = {
-            type: 'line',
-            data: {
-                labels: chartData.labels,
-                datasets: [
-                    {
-                        label: 'CPU %',
-                        data: chartData.cpu,
-                        borderColor: PentestApp.config.chartColors.primary,
-                        backgroundColor: PentestApp.config.chartColors.primary + '20',
-                        fill: false,
-                        tension: 0.4,
-                        pointRadius: 2,
-                        pointHoverRadius: 4
-                    },
-                    {
-                        label: 'Memory %',
-                        data: chartData.memory,
-                        borderColor: PentestApp.config.chartColors.success,
-                        backgroundColor: PentestApp.config.chartColors.success + '20',
-                        fill: false,
-                        tension: 0.4,
-                        pointRadius: 2,
-                        pointHoverRadius: 4
-                    },
-                    {
-                        label: 'Disk %',
-                        data: chartData.disk,
-                        borderColor: PentestApp.config.chartColors.warning,
-                        backgroundColor: PentestApp.config.chartColors.warning + '20',
-                        fill: false,
-                        tension: 0.4,
-                        pointRadius: 2,
-                        pointHoverRadius: 4
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: 'white',
-                        bodyColor: 'white',
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        borderWidth: 1,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%';
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Time',
-                            font: {
-                                size: 12,
-                                weight: 'bold'
-                            }
-                        },
-                        ticks: {
-                            maxTicksLimit: 10,
-                            font: {
-                                size: 10
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)',
-                            drawBorder: false
-                        }
-                    },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: 'Usage %',
-                            font: {
-                                size: 12,
-                                weight: 'bold'
-                            }
-                        },
-                        min: 0,
-                        max: 100,
-                        ticks: {
-                            stepSize: 25,
-                            font: {
-                                size: 10
-                            },
-                            callback: function(value) {
-                                return value + '%';
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)',
-                            drawBorder: false
-                        }
-                    }
-                },
-                elements: {
-                    line: {
-                        borderWidth: 2
-                    },
-                    point: {
-                        borderWidth: 1,
-                        hoverBorderWidth: 2
-                    }
-                },
-                animation: {
-                    duration: 750,
-                    easing: 'easeInOutQuart'
-                }
+/**
+ * Fetch system statistics
+ */
+function fetchSystemStats() {
+    makeRequest('/api/system/stats')
+        .then(data => {
+            if (data.success || data.cpu_percent !== undefined) {
+                updateSystemMetrics(data);
+                updateStatsBadges(data);
             }
-        };
-
-        performanceChart = new Chart(ctx, config);
-    }
-
-    /**
-     * Update performance chart with new data
-     */
-    function updatePerformanceChart(data) {
-        if (!performanceChart || !data) return;
-
-        const now = new Date();
-        const timeLabel = now.toLocaleTimeString('en-US', { 
-            hour12: false, 
-            hour: '2-digit', 
-            minute: '2-digit',
-            second: '2-digit'
+        })
+        .catch(error => {
+            console.error('Failed to fetch system stats:', error);
         });
+}
 
-        // Add new data point
-        chartData.labels.push(timeLabel);
-        chartData.cpu.push(data.cpu_percent || 0);
-        chartData.memory.push(data.memory_percent || 0);
-        chartData.disk.push(data.disk_usage || 0);
+/**
+ * Fetch active scans
+ */
+function fetchActiveScans() {
+    makeRequest('/api/scans/active')
+        .then(data => {
+            if (data.success) {
+                updateActiveScansList(data.active_scans || []);
+                updateActiveScansBadge(data.count || 0);
+            }
+        })
+        .catch(error => {
+            console.error('Failed to fetch active scans:', error);
+        });
+}
 
-        // Keep only last N data points
-        if (chartData.labels.length > maxDataPoints) {
-            chartData.labels.shift();
-            chartData.cpu.shift();
-            chartData.memory.shift();
-            chartData.disk.shift();
+/**
+ * Fetch recent activity
+ */
+function fetchRecentActivity() {
+    // Mock activity data for now
+    const mockActivity = [
+        {
+            type: 'scan_completed',
+            title: 'Scan Completed',
+            description: 'Network scan on 192.168.1.0/24',
+            time: new Date(Date.now() - 2 * 60 * 1000),
+            icon: 'fas fa-check',
+            color: 'success'
+        },
+        {
+            type: 'vulnerability_found',
+            title: 'High Severity Vulnerability',
+            description: 'SQL Injection found in login form',
+            time: new Date(Date.now() - 15 * 60 * 1000),
+            icon: 'fas fa-exclamation-triangle',
+            color: 'danger'
+        },
+        {
+            type: 'scan_started',
+            title: 'Scan Started',
+            description: 'Web application scan on example.com',
+            time: new Date(Date.now() - 30 * 60 * 1000),
+            icon: 'fas fa-play',
+            color: 'primary'
+        },
+        {
+            type: 'report_generated',
+            title: 'Report Generated',
+            description: 'Executive summary for Project Alpha',
+            time: new Date(Date.now() - 2 * 60 * 60 * 1000),
+            icon: 'fas fa-file-alt',
+            color: 'info'
         }
+    ];
+    
+    updateActivityFeed(mockActivity);
+}
 
-        // Update chart
-        performanceChart.update('none'); // No animation for real-time updates
+/**
+ * Initialize performance chart
+ */
+function initializePerformanceChart() {
+    const ctx = document.getElementById('performanceChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart if exists
+    if (dashboardChart) {
+        dashboardChart.destroy();
     }
-
-    /**
-     * Initialize real-time updates
-     */
-    function initializeRealTimeUpdates() {
-        // Update system stats every 30 seconds
-        setInterval(fetchSystemStats, 30000);
-        
-        // Update active scans every 15 seconds
-        setInterval(fetchActiveScans, 15000);
-        
-        // Update activity feed every 60 seconds
-        setInterval(fetchRecentActivity, 60000);
-    }
-
-    /**
-     * Load initial dashboard data
-     */
-    function loadInitialData() {
-        fetchSystemStats();
-        fetchActiveScans();
-        fetchRecentActivity();
-        fetchThreatLevels();
-    }
-
-    /**
-     * Fetch system statistics
-     */
-    function fetchSystemStats() {
-        PentestApp.api.getSystemStats()
-            .then(data => {
-                if (data) {
-                    updateSystemMetrics(data);
-                    updatePerformanceChart(data);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to fetch system stats:', error);
-            });
-    }
-
-    /**
-     * Fetch active scans
-     */
-    function fetchActiveScans() {
-        PentestApp.api.getActiveScans()
-            .then(data => {
-                if (data && data.active_scans) {
-                    updateActiveScansList(data.active_scans);
-                    updateActiveScansCounter(data.count || data.active_scans.length);
-                }
-            })
-            .catch(error => {
-                console.error('Failed to fetch active scans:', error);
-            });
-    }
-
-    /**
-     * Fetch recent activity
-     */
-    function fetchRecentActivity() {
-        // This would typically fetch from an API endpoint
-        // For now, we'll simulate with local data
-        const mockActivity = [
+    
+    const chartData = {
+        labels: [],
+        datasets: [
             {
-                type: 'scan_completed',
-                title: 'Scan Completed',
-                description: 'Network scan on 192.168.1.0/24',
-                timestamp: new Date().toISOString()
+                label: 'CPU Usage (%)',
+                data: [],
+                borderColor: 'rgb(0, 123, 255)',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'Memory Usage (%)',
+                data: [],
+                borderColor: 'rgb(40, 167, 69)',
+                backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'Active Scans',
+                data: [],
+                borderColor: 'rgb(255, 193, 7)',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                tension: 0.4,
+                fill: true,
+                yAxisID: 'y1'
             }
-        ];
-
-        updateActivityFeed(mockActivity);
-    }
-
-    /**
-     * Fetch threat levels
-     */
-    function fetchThreatLevels() {
-        // Mock threat level data
-        const threatLevels = {
-            critical: 2,
-            high: 5,
-            medium: 12,
-            low: 8
-        };
-
-        updateThreatLevels(threatLevels);
-    }
-
-    /**
-     * Update system metrics
-     */
-    function updateSystemMetrics(data) {
-        // CPU Usage
-        const cpuUsage = document.getElementById('cpuUsage');
-        const cpuProgressBar = document.getElementById('cpuProgressBar');
-        if (cpuUsage && data.cpu_percent !== undefined) {
-            cpuUsage.textContent = Math.round(data.cpu_percent) + '%';
-            if (cpuProgressBar) {
-                PentestApp.ui.updateProgress(cpuProgressBar, data.cpu_percent);
-                
-                // Change color based on usage
-                cpuProgressBar.className = 'progress-bar';
-                if (data.cpu_percent > 80) {
-                    cpuProgressBar.classList.add('bg-danger');
-                } else if (data.cpu_percent > 60) {
-                    cpuProgressBar.classList.add('bg-warning');
-                } else {
-                    cpuProgressBar.classList.add('bg-primary');
+        ]
+    };
+    
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.dataset.yAxisID === 'y1') {
+                            label += context.parsed.y;
+                        } else {
+                            label += context.parsed.y + '%';
+                        }
+                        return label;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Time'
+                }
+            },
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Usage (%)'
+                },
+                min: 0,
+                max: 100
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Active Scans'
+                },
+                min: 0,
+                grid: {
+                    drawOnChartArea: false,
                 }
             }
         }
+    };
+    
+    dashboardChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+    
+    // Initialize with some data points
+    initializeChartData();
+}
 
-        // Memory Usage
-        const memoryUsage = document.getElementById('memoryUsage');
-        const memoryProgressBar = document.getElementById('memoryProgressBar');
-        if (memoryUsage && data.memory_percent !== undefined) {
-            memoryUsage.textContent = Math.round(data.memory_percent) + '%';
-            if (memoryProgressBar) {
-                PentestApp.ui.updateProgress(memoryProgressBar, data.memory_percent);
-                
-                memoryProgressBar.className = 'progress-bar';
-                if (data.memory_percent > 80) {
-                    memoryProgressBar.classList.add('bg-danger');
-                } else if (data.memory_percent > 60) {
-                    memoryProgressBar.classList.add('bg-warning');
-                } else {
-                    memoryProgressBar.classList.add('bg-success');
-                }
-            }
-        }
-
-        // Disk Usage
-        const diskUsage = document.getElementById('diskUsage');
-        const diskProgressBar = document.getElementById('diskProgressBar');
-        if (diskUsage && data.disk_usage !== undefined) {
-            diskUsage.textContent = Math.round(data.disk_usage) + '%';
-            if (diskProgressBar) {
-                PentestApp.ui.updateProgress(diskProgressBar, data.disk_usage);
-                
-                diskProgressBar.className = 'progress-bar';
-                if (data.disk_usage > 90) {
-                    diskProgressBar.classList.add('bg-danger');
-                } else if (data.disk_usage > 75) {
-                    diskProgressBar.classList.add('bg-warning');
-                } else {
-                    diskProgressBar.classList.add('bg-warning');
-                }
-            }
-        }
-
-        // Active Users
-        const activeUsers = document.getElementById('activeUsers');
-        if (activeUsers && data.connected_users !== undefined) {
-            PentestApp.ui.updateCounter(activeUsers, data.connected_users);
-        }
-
-        // Update dashboard stats counters
-        if (data.scans_completed !== undefined) {
-            const element = document.getElementById('completedScansCount');
-            if (element) {
-                PentestApp.ui.updateCounter(element, data.scans_completed);
-            }
-        }
-
-        if (data.vulnerabilities_found !== undefined) {
-            const element = document.getElementById('vulnerabilitiesCount');
-            if (element) {
-                PentestApp.ui.updateCounter(element, data.vulnerabilities_found);
-            }
-        }
+/**
+ * Initialize chart with initial data points
+ */
+function initializeChartData() {
+    if (!dashboardChart) return;
+    
+    const now = new Date();
+    const points = 10;
+    
+    // Generate initial data points
+    for (let i = points - 1; i >= 0; i--) {
+        const time = new Date(now.getTime() - i * 30000); // 30 second intervals
+        const timeLabel = time.toLocaleTimeString();
+        
+        dashboardChart.data.labels.push(timeLabel);
+        dashboardChart.data.datasets[0].data.push(Math.random() * 50 + 20); // CPU
+        dashboardChart.data.datasets[1].data.push(Math.random() * 40 + 30); // Memory
+        dashboardChart.data.datasets[2].data.push(Math.floor(Math.random() * 5)); // Active scans
     }
+    
+    dashboardChart.update('none');
+}
 
-    /**
-     * Update active scans counter
-     */
-    function updateActiveScansCounter(count) {
-        const activeScansCount = document.getElementById('activeScansCount');
-        const activeScansBadge = document.getElementById('activeScansBadge');
-
-        if (activeScansCount) {
-            PentestApp.ui.updateCounter(activeScansCount, count);
-        }
-
-        if (activeScansBadge) {
-            activeScansBadge.textContent = count;
-        }
+/**
+ * Update chart with new data point
+ */
+function updatePerformanceChart(cpuPercent, memoryPercent, activeScans) {
+    if (!dashboardChart) return;
+    
+    const now = new Date();
+    const timeLabel = now.toLocaleTimeString();
+    
+    // Add new data point
+    dashboardChart.data.labels.push(timeLabel);
+    dashboardChart.data.datasets[0].data.push(cpuPercent || 0);
+    dashboardChart.data.datasets[1].data.push(memoryPercent || 0);
+    dashboardChart.data.datasets[2].data.push(activeScans || 0);
+    
+    // Remove old data points (keep last 20)
+    if (dashboardChart.data.labels.length > 20) {
+        dashboardChart.data.labels.shift();
+        dashboardChart.data.datasets.forEach(dataset => {
+            dataset.data.shift();
+        });
     }
+    
+    dashboardChart.update('none');
+}
 
-    /**
-     * Update active scans list
-     */
-    function updateActiveScansList(scans) {
-        const activeScansList = document.getElementById('activeScansList');
-        if (!activeScansList) return;
+/**
+ * Update activity feed
+ */
+function updateActivityFeed(activities) {
+    const feedContainer = document.getElementById('activityFeed');
+    if (!feedContainer) return;
+    
+    // Clear existing activities
+    feedContainer.innerHTML = '';
+    
+    activities.forEach(activity => {
+        const activityItem = createActivityItem(activity);
+        feedContainer.appendChild(activityItem);
+    });
+    
+    // Add animation
+    feedContainer.classList.add('fade-in');
+}
 
-        if (!scans || scans.length === 0) {
-            activeScansList.innerHTML = `
-                <tr class="no-data">
-                    <td colspan="5" class="text-center py-4">
-                        <i class="fas fa-search fa-2x text-muted mb-3"></i>
-                        <div class="text-muted">No active scans</div>
-                        <button type="button" class="btn btn-sm btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#newScanModal">
-                            Start Your First Scan
-                        </button>
-                    </td>
-                </tr>
-            `;
+/**
+ * Create activity item element
+ */
+function createActivityItem(activity) {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    
+    const timeStr = getRelativeTime(activity.time);
+    
+    item.innerHTML = `
+        <div class="activity-icon bg-${activity.color}">
+            <i class="${activity.icon}"></i>
+        </div>
+        <div class="activity-content">
+            <div class="activity-title">${escapeHtml(activity.title)}</div>
+            <div class="activity-description">${escapeHtml(activity.description)}</div>
+            <div class="activity-time">${timeStr}</div>
+        </div>
+    `;
+    
+    return item;
+}
+
+/**
+ * Setup dashboard event listeners
+ */
+function setupDashboardEventListeners() {
+    // New scan modal setup
+    setupNewScanModal();
+    
+    // Chart toggle functionality
+    setupChartToggle();
+    
+    // Activity refresh
+    const refreshActivityBtn = document.querySelector('[onclick="refreshActivity()"]');
+    if (refreshActivityBtn) {
+        refreshActivityBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetchRecentActivity();
+            showToast('Activity feed refreshed', 'info', 2000);
+        });
+    }
+    
+    // Dashboard refresh
+    const refreshDashboardBtn = document.querySelector('[onclick="refreshDashboard()"]');
+    if (refreshDashboardBtn) {
+        refreshDashboardBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            refreshDashboard();
+        });
+    }
+    
+    // WebSocket event listeners
+    document.addEventListener('systemStatsReceived', function(e) {
+        updatePerformanceChart(
+            e.detail.cpu_percent,
+            e.detail.memory_percent,
+            e.detail.active_scans
+        );
+    });
+    
+    document.addEventListener('activeScansReceived', function(e) {
+        updateActiveScansList(e.detail);
+    });
+    
+    document.addEventListener('scanCompleted', function(e) {
+        // Refresh activity feed when scan completes
+        setTimeout(fetchRecentActivity, 1000);
+    });
+}
+
+/**
+ * Setup new scan modal
+ */
+function setupNewScanModal() {
+    const modal = document.getElementById('newScanModal');
+    const form = document.getElementById('newScanForm');
+    const startBtn = document.getElementById('startScanBtn');
+    
+    if (!modal || !form || !startBtn) return;
+    
+    startBtn.addEventListener('click', function() {
+        const formData = new FormData(form);
+        
+        // Validate form
+        if (!formData.get('target') || !formData.get('scan_type')) {
+            showToast('Please fill in all required fields', 'error');
             return;
         }
-
-        let html = '';
-        scans.forEach(scan => {
-            html += `
-                <tr id="scan-row-${scan.id}">
-                    <td>
-                        <div class="fw-semibold">${PentestApp.utils.sanitizeHTML(scan.target)}</div>
-                        <small class="text-muted">${scan.scan_type || 'Unknown'}</small>
-                    </td>
-                    <td><span class="badge bg-primary">${scan.scan_type || 'Unknown'}</span></td>
-                    <td>
-                        <div class="scan-progress">
-                            <div class="progress mb-1">
-                                <div class="progress-bar bg-primary" role="progressbar" 
-                                     id="scan-progress-${scan.id}" 
-                                     style="width: ${scan.progress || 0}%"></div>
-                            </div>
-                            <div class="progress-text">${Math.round(scan.progress || 0)}%</div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="scan-status status-${scan.status || 'running'}" id="scan-status-${scan.id}">
-                            ${scan.status || 'Running'}
-                        </span>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-danger" 
-                                onclick="stopScan('${scan.id}')" title="Stop scan">
-                            <i class="fas fa-stop"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" 
-                                onclick="viewScanDetails('${scan.id}')" title="View details">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        });
-
-        activeScansList.innerHTML = html;
-    }
-
-    /**
-     * Update activity feed
-     */
-    function updateActivityFeed(activities) {
-        const activityFeed = document.getElementById('activityFeed');
-        if (!activityFeed || !activities) return;
-
-        let html = '';
-        activities.forEach(activity => {
-            const iconClass = getActivityIcon(activity.type);
-            const bgClass = getActivityBgClass(activity.type);
-
-            html += `
-                <div class="activity-item">
-                    <div class="activity-icon bg-${bgClass}">
-                        <i class="fas fa-${iconClass}"></i>
-                    </div>
-                    <div class="activity-content">
-                        <div class="activity-title">${PentestApp.utils.sanitizeHTML(activity.title)}</div>
-                        <div class="activity-description">${PentestApp.utils.sanitizeHTML(activity.description)}</div>
-                        <div class="activity-time">${PentestApp.utils.formatRelativeTime(activity.timestamp)}</div>
-                    </div>
-                </div>
-            `;
-        });
-
-        activityFeed.innerHTML = html;
-    }
-
-    /**
-     * Update threat levels
-     */
-    function updateThreatLevels(levels) {
-        const total = levels.critical + levels.high + levels.medium + levels.low;
         
-        // Update counts
-        const criticalCount = document.getElementById('criticalCount');
-        const highCount = document.getElementById('highCount');
-        const mediumCount = document.getElementById('mediumCount');
-        const lowCount = document.getElementById('lowCount');
-
-        if (criticalCount) PentestApp.ui.updateCounter(criticalCount, levels.critical);
-        if (highCount) PentestApp.ui.updateCounter(highCount, levels.high);
-        if (mediumCount) PentestApp.ui.updateCounter(mediumCount, levels.medium);
-        if (lowCount) PentestApp.ui.updateCounter(lowCount, levels.low);
-
-        // Update progress bars
-        if (total > 0) {
-            const criticalProgress = document.getElementById('criticalProgress');
-            const highProgress = document.getElementById('highProgress');
-            const mediumProgress = document.getElementById('mediumProgress');
-            const lowProgress = document.getElementById('lowProgress');
-
-            if (criticalProgress) PentestApp.ui.updateProgress(criticalProgress, (levels.critical / total) * 100);
-            if (highProgress) PentestApp.ui.updateProgress(highProgress, (levels.high / total) * 100);
-            if (mediumProgress) PentestApp.ui.updateProgress(mediumProgress, (levels.medium / total) * 100);
-            if (lowProgress) PentestApp.ui.updateProgress(lowProgress, (levels.low / total) * 100);
-        }
-
-        // Calculate risk score
-        const riskScore = (levels.critical * 4) + (levels.high * 3) + (levels.medium * 2) + (levels.low * 1);
-        const riskScoreElement = document.getElementById('riskScore');
-        if (riskScoreElement) {
-            riskScoreElement.textContent = riskScore;
-            
-            // Update badge color based on risk level
-            riskScoreElement.className = 'badge';
-            if (riskScore > 20) {
-                riskScoreElement.classList.add('bg-danger');
-            } else if (riskScore > 10) {
-                riskScoreElement.classList.add('bg-warning');
-            } else if (riskScore > 5) {
-                riskScoreElement.classList.add('bg-info');
+        // Show loading state
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Starting...';
+        
+        // Submit scan request
+        const scanData = {
+            target: formData.get('target'),
+            type: formData.get('scan_type'),
+            ports: formData.get('ports') || '1-1000',
+            threads: parseInt(formData.get('threads')) || 10,
+            description: formData.get('description') || '',
+            save_project: formData.get('save_project') === 'on',
+            notifications: formData.get('notifications') === 'on'
+        };
+        
+        makeRequest('/scan/api/start', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scanData)
+        })
+        .then(response => {
+            if (response.success) {
+                showToast('Scan started successfully!', 'success');
+                
+                // Close modal
+                bootstrap.Modal.getInstance(modal).hide();
+                
+                // Reset form
+                form.reset();
+                
+                // Refresh active scans
+                setTimeout(fetchActiveScans, 1000);
             } else {
-                riskScoreElement.classList.add('bg-success');
+                throw new Error(response.message || 'Failed to start scan');
             }
-        }
-    }
-
-    /**
-     * Setup new scan modal
-     */
-    function setupNewScanModal() {
-        const newScanForm = document.getElementById('newScanForm');
-        const startScanBtn = document.getElementById('startScanBtn');
-
-        if (!newScanForm || !startScanBtn) return;
-
-        startScanBtn.addEventListener('click', function() {
-            const scanTarget = document.getElementById('scanTarget').value.trim();
-            const scanType = document.getElementById('scanType').value;
-            const scanPorts = document.getElementById('scanPorts').value.trim();
-            const scanThreads = document.getElementById('scanThreads').value;
-            const scanDescription = document.getElementById('scanDescription').value.trim();
-            const saveProject = document.getElementById('saveProject').checked;
-            const enableNotifications = document.getElementById('enableNotifications').checked;
-
-            // Validate form
-            if (!scanTarget) {
-                PentestApp.ui.showToast('Please enter a target', 'error');
-                return;
-            }
-
-            if (!scanType) {
-                PentestApp.ui.showToast('Please select a scan type', 'error');
-                return;
-            }
-
-            // Validate target format
-            if (!isValidTarget(scanTarget)) {
-                PentestApp.ui.showToast('Please enter a valid IP address, domain, or network range', 'error');
-                return;
-            }
-
-            // Prepare scan configuration
-            const scanConfig = {
-                target: scanTarget,
-                type: scanType,
-                ports: scanPorts || '1-1000',
-                threads: parseInt(scanThreads) || 10,
-                description: scanDescription,
-                save_project: saveProject,
-                notifications: enableNotifications
-            };
-
-            // Disable button and show loading
-            startScanBtn.disabled = true;
-            startScanBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Starting...';
-
-            // Start scan
-            PentestApp.api.startScan(scanConfig)
-                .then(response => {
-                    if (response.success) {
-                        PentestApp.ui.showToast('Scan started successfully!', 'success');
-                        
-                        // Close modal
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('newScanModal'));
-                        modal.hide();
-                        
-                        // Reset form
-                        newScanForm.reset();
-                        
-                        // Refresh active scans
-                        setTimeout(fetchActiveScans, 1000);
-                    } else {
-                        PentestApp.ui.showToast(response.message || 'Failed to start scan', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Start scan error:', error);
-                    PentestApp.ui.showToast('Failed to start scan', 'error');
-                })
-                .finally(() => {
-                    // Reset button
-                    startScanBtn.disabled = false;
-                    startScanBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Scan';
-                });
+        })
+        .catch(error => {
+            console.error('Scan start error:', error);
+            showToast(error.message || 'Failed to start scan', 'error');
+        })
+        .finally(() => {
+            // Reset button state
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Scan';
         });
+    });
+    
+    // Reset form when modal is closed
+    modal.addEventListener('hidden.bs.modal', function() {
+        form.reset();
+        startBtn.disabled = false;
+        startBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Scan';
+    });
+}
 
-        // Reset form when modal is closed
-        const modal = document.getElementById('newScanModal');
-        if (modal) {
-            modal.addEventListener('hidden.bs.modal', function() {
-                newScanForm.reset();
-                startScanBtn.disabled = false;
-                startScanBtn.innerHTML = '<i class="fas fa-play me-2"></i>Start Scan';
+/**
+ * Setup chart toggle functionality
+ */
+function setupChartToggle() {
+    const toggleBtn = document.querySelector('[onclick="toggleMetricsView()"]');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const chartContainer = document.querySelector('.chart-container');
+            if (chartContainer) {
+                chartContainer.classList.toggle('expanded');
+                
+                if (chartContainer.classList.contains('expanded')) {
+                    chartContainer.style.height = '400px';
+                } else {
+                    chartContainer.style.height = '300px';
+                }
+                
+                // Resize chart
+                if (dashboardChart) {
+                    setTimeout(() => {
+                        dashboardChart.resize();
+                    }, 300);
+                }
+            }
+        });
+    }
+}
+
+/**
+ * Start periodic updates
+ */
+function startPeriodicUpdates() {
+    // Update every 30 seconds
+    refreshTimer = setInterval(() => {
+        fetchSystemStats();
+        fetchActiveScans();
+        updateDateTime();
+    }, 30000);
+    
+    // Update activity every 2 minutes
+    setInterval(fetchRecentActivity, 120000);
+}
+
+/**
+ * Stop periodic updates
+ */
+function stopPeriodicUpdates() {
+    if (refreshTimer) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+    }
+}
+
+/**
+ * Refresh dashboard data
+ */
+function refreshDashboard() {
+    loadDashboardData();
+    showToast('Dashboard refreshed', 'success', 2000);
+}
+
+/**
+ * Update current date/time display
+ */
+function updateDateTime() {
+    const dateTimeElement = document.getElementById('currentDateTime');
+    if (dateTimeElement) {
+        const now = new Date();
+        const options = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        
+        dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+    }
+}
+
+/**
+ * View scan details
+ */
+function viewScanDetails(scanId) {
+    // Navigate to scan details or show modal
+    window.location.href = `/scan/monitor/${scanId}`;
+}
+
+/**
+ * Stop scan
+ */
+function stopScan(scanId) {
+    showConfirmation(
+        'Are you sure you want to stop this scan?',
+        function() {
+            makeRequest(`/scan/api/stop/${scanId}`, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.success) {
+                    showToast('Scan stopped successfully', 'success');
+                    fetchActiveScans(); // Refresh the list
+                } else {
+                    throw new Error(response.message || 'Failed to stop scan');
+                }
+            })
+            .catch(error => {
+                console.error('Stop scan error:', error);
+                showToast(error.message || 'Failed to stop scan', 'error');
             });
-        }
+        },
+        'Stop Scan'
+    );
+}
+
+/**
+ * Page-specific refresh function
+ */
+function refreshPageData() {
+    refreshDashboard();
+}
+
+/**
+ * Clean up when leaving page
+ */
+function cleanupDashboard() {
+    stopPeriodicUpdates();
+    
+    if (dashboardChart) {
+        dashboardChart.destroy();
+        dashboardChart = null;
     }
+}
 
-    /**
-     * Validate scan target
-     */
-    function isValidTarget(target) {
-        // Check if it's a valid IP address
-        if (PentestApp.utils.isValidIP(target)) {
-            return true;
-        }
-
-        // Check if it's a valid domain
-        if (PentestApp.utils.isValidDomain(target)) {
-            return true;
-        }
-
-        // Check if it's a valid CIDR range
-        const cidrRegex = /^(\d{1,3}\.){3}\d{1,3}\/\d{1,2}$/;
-        if (cidrRegex.test(target)) {
-            return true;
-        }
-
-        // Check if it's a valid URL
-        if (PentestApp.utils.isValidURL(target)) {
-            return true;
-        }
-
-        return false;
+// Handle page visibility changes
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        stopPeriodicUpdates();
+    } else {
+        startPeriodicUpdates();
+        refreshDashboard();
     }
+});
 
-    /**
-     * Get activity icon
-     */
-    function getActivityIcon(type) {
-        const icons = {
-            'scan_started': 'play',
-            'scan_completed': 'check',
-            'scan_failed': 'times',
-            'vulnerability_found': 'exclamation-triangle',
-            'report_generated': 'file-alt',
-            'user_login': 'sign-in-alt',
-            'user_logout': 'sign-out-alt'
-        };
-        return icons[type] || 'info';
-    }
+// Clean up when leaving page
+window.addEventListener('beforeunload', cleanupDashboard);
 
-    /**
-     * Get activity background class
-     */
-    function getActivityBgClass(type) {
-        const classes = {
-            'scan_started': 'primary',
-            'scan_completed': 'success',
-            'scan_failed': 'danger',
-            'vulnerability_found': 'warning',
-            'report_generated': 'info',
-            'user_login': 'success',
-            'user_logout': 'secondary'
-        };
-        return classes[type] || 'secondary';
-    }
+// Expose functions globally
+window.dashboard = {
+    initialize: initializeDashboard,
+    refresh: refreshDashboard,
+    cleanup: cleanupDashboard,
+    viewScanDetails: viewScanDetails,
+    stopScan: stopScan
+};
 
-    // ==========================================================================
-    // Export functions
-    // ==========================================================================
-
-    // Make functions globally available
-    window.initializeDashboard = initializeDashboard;
-    window.fetchSystemStats = fetchSystemStats;
-    window.fetchActiveScans = fetchActiveScans;
-    window.fetchRecentActivity = fetchRecentActivity;
-    window.updatePerformanceChart = updatePerformanceChart;
-
-})();
+window.viewScanDetails = viewScanDetails;
+window.stopScan = stopScan;
