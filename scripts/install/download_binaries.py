@@ -47,13 +47,24 @@ class BinaryDownloadManager:
         
     def _load_tools_config(self) -> Dict:
         """Load tools configuration with download URLs and checksums"""
+        # Import configuration from external file
+        try:
+            from scripts.install.tools_config import COMPLETE_TOOLS_CONFIG
+            return COMPLETE_TOOLS_CONFIG
+        except ImportError:
+            # Fallback to basic configuration if extended config not available
+            self.logger.warning("Extended tools config not found, using basic configuration")
+            return self._get_basic_config()
+    
+    def _get_basic_config(self) -> Dict:
+        """Fallback basic configuration"""
         return {
-            # PRIORITY LEVEL 1 - CRITICAL TOOLS
             "nmap": {
                 "priority": 1,
-                "category": "network_scanning",
+                "category": "reconnaissance",
                 "description": "Network discovery and security auditing",
-                "install_method": "package_manager",  # Use system package manager
+                "license": "free",
+                "install_method": "package_manager",
                 "windows": {
                     "url": "https://nmap.org/dist/nmap-7.95-win32.zip",
                     "binary": "nmap.exe",
@@ -62,7 +73,7 @@ class BinaryDownloadManager:
                 "linux": {
                     "package_name": "nmap",
                     "binary": "nmap",
-                    "install_cmd": "apt-get install -y nmap || yum install -y nmap || pacman -S nmap",
+                    "install_cmd": "apt-get update && apt-get install -y nmap || yum install -y nmap || pacman -S nmap",
                     "size_mb": 5
                 },
                 "macos": {
@@ -70,122 +81,6 @@ class BinaryDownloadManager:
                     "binary": "nmap",
                     "install_cmd": "brew install nmap",
                     "size_mb": 5
-                }
-            },
-            
-            "sqlmap": {
-                "priority": 1,
-                "category": "web_exploitation",
-                "description": "Automatic SQL injection tool",
-                "install_method": "git_clone",
-                "windows": {
-                    "url": "https://github.com/sqlmapproject/sqlmap.git",
-                    "binary": "sqlmap.py",
-                    "wrapper": "sqlmap.bat",
-                    "size_mb": 8
-                },
-                "linux": {
-                    "url": "https://github.com/sqlmapproject/sqlmap.git",
-                    "binary": "sqlmap.py",
-                    "wrapper": "sqlmap",
-                    "size_mb": 8
-                },
-                "macos": {
-                    "url": "https://github.com/sqlmapproject/sqlmap.git",
-                    "binary": "sqlmap.py",
-                    "wrapper": "sqlmap",
-                    "size_mb": 8
-                }
-            },
-            
-            "nikto": {
-                "priority": 1,
-                "category": "web_scanning",
-                "description": "Web server scanner",
-                "install_method": "git_clone",
-                "windows": {
-                    "url": "https://github.com/sullo/nikto.git",
-                    "binary": "program/nikto.pl",
-                    "wrapper": "nikto.bat",
-                    "size_mb": 2
-                },
-                "linux": {
-                    "url": "https://github.com/sullo/nikto.git",
-                    "binary": "program/nikto.pl",
-                    "wrapper": "nikto",
-                    "size_mb": 2
-                },
-                "macos": {
-                    "url": "https://github.com/sullo/nikto.git",
-                    "binary": "program/nikto.pl",
-                    "wrapper": "nikto",
-                    "size_mb": 2
-                }
-            },
-            
-            # PRIORITY LEVEL 2 - IMPORTANT TOOLS
-            "hydra": {
-                "priority": 2,
-                "category": "password_attacks",
-                "description": "Login cracker",
-                "windows": {
-                    "url": "https://github.com/vanhauser-thc/thc-hydra/releases/download/v9.5/hydra-9.5-win64.zip",
-                    "binary": "hydra.exe",
-                    "size_mb": 15
-                },
-                "linux": {
-                    "url": "https://github.com/vanhauser-thc/thc-hydra/archive/refs/heads/master.tar.gz",
-                    "binary": "hydra",
-                    "compile": True,
-                    "size_mb": 5
-                },
-                "macos": {
-                    "url": "https://github.com/vanhauser-thc/thc-hydra/archive/refs/heads/master.tar.gz",
-                    "binary": "hydra",
-                    "compile": True,
-                    "size_mb": 5
-                }
-            },
-            
-            "hashcat": {
-                "priority": 2,
-                "category": "password_attacks",
-                "description": "GPU-accelerated password cracking",
-                "windows": {
-                    "url": "https://hashcat.net/files/hashcat-6.2.6.7z",
-                    "binary": "hashcat.exe",
-                    "size_mb": 45
-                },
-                "linux": {
-                    "url": "https://hashcat.net/files/hashcat-6.2.6.tar.gz",
-                    "binary": "hashcat",
-                    "size_mb": 8
-                },
-                "macos": {
-                    "url": "https://hashcat.net/files/hashcat-6.2.6.tar.gz",
-                    "binary": "hashcat",
-                    "size_mb": 8
-                }
-            },
-            
-            "nuclei": {
-                "priority": 2,
-                "category": "vulnerability_scanning",
-                "description": "Template-based vulnerability scanner",
-                "windows": {
-                    "url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.2.9/nuclei_3.2.9_windows_amd64.zip",
-                    "binary": "nuclei.exe",
-                    "size_mb": 50
-                },
-                "linux": {
-                    "url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.2.9/nuclei_3.2.9_linux_amd64.zip",
-                    "binary": "nuclei",
-                    "size_mb": 50
-                },
-                "macos": {
-                    "url": "https://github.com/projectdiscovery/nuclei/releases/download/v3.2.9/nuclei_3.2.9_darwin_amd64.zip",
-                    "binary": "nuclei",
-                    "size_mb": 50
                 }
             }
         }
