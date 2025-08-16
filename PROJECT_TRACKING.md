@@ -24,7 +24,7 @@ Phase 9  [░░░░░░░░░░░░░░░░░░░░]   0% - T
 Phase 10 [░░░░░░░░░░░░░░░░░░░░]   0% - Documentation
 Phase 11 [░░░░░░░░░░░░░░░░░░░░]   0% - Déploiement Final
 
-PROGRESSION TOTALE : 70% (134/191 jours)
+PROGRESSION TOTALE : 75% (143/191 jours)
 ```
 
 ---
