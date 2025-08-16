@@ -580,9 +580,13 @@ def main():
     parser = argparse.ArgumentParser(description='LeZelote-Toolkit Binary Installer')
     parser.add_argument('--tool', help='Install specific tool')
     parser.add_argument('--priority', type=int, help='Install tools by priority (1=critical, 2=important)')
+    parser.add_argument('--category', help='Install tools by category')
     parser.add_argument('--all', action='store_true', help='Install all tools')
+    parser.add_argument('--list-categories', action='store_true', help='List all available categories')
+    parser.add_argument('--license-check', help='Check license requirements for specific tool')
     parser.add_argument('--platform', choices=['windows', 'linux', 'macos'], 
                        help='Target platform (auto-detected if not specified)')
+    parser.add_argument('--dry-run', action='store_true', help='Show what would be installed without downloading')
     
     args = parser.parse_args()
     
@@ -592,36 +596,100 @@ def main():
     print("=" * 50)
     
     try:
-        if args.tool:
+        if args.list_categories:
+            # List all categories
+            categories = manager.list_categories()
+            from scripts.install.tools_config import get_tools_by_category, get_total_tool_count
+            
+            print("📋 Available Categories:")
+            print("-" * 30)
+            for category in categories:
+                tools = get_tools_by_category(category)
+                print(f"  {category:20} | {len(tools):3} tools")
+            
+            total_tools = get_total_tool_count()
+            print(f"\n📊 Total tools available: {total_tools}")
+            
+        elif args.license_check:
+            # Check license requirements
+            license_info = manager.check_license_requirements(args.license_check)
+            if 'error' in license_info:
+                print(f"❌ {license_info['error']}")
+            else:
+                print(f"🔍 License Information for {args.license_check}:")
+                print(f"   {license_info['recommendation']}")
+                if license_info['has_upgrade']:
+                    print(f"   💡 Upgrade options available")
+                    
+        elif args.tool:
             # Install specific tool
-            success = manager.install_tool(args.tool, args.platform)
-            print(f"Tool {args.tool}: {'✅ Success' if success else '❌ Failed'}")
+            if args.dry_run:
+                license_info = manager.check_license_requirements(args.tool)
+                print(f"Would install: {args.tool}")
+                print(f"License: {license_info.get('recommendation', 'Unknown')}")
+            else:
+                success = manager.install_tool(args.tool, args.platform)
+                print(f"Tool {args.tool}: {'✅ Success' if success else '❌ Failed'}")
             
         elif args.priority:
             # Install by priority
-            results = manager.install_priority_tools(args.priority, args.platform)
-            for tool, success in results.items():
-                print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
+            if args.dry_run:
+                from scripts.install.tools_config import get_priority_tools
+                tools = get_priority_tools(args.priority)
+                print(f"Would install Priority {args.priority} tools:")
+                for tool_name in tools:
+                    print(f"  - {tool_name}")
+            else:
+                results = manager.install_priority_tools(args.priority, args.platform)
+                for tool, success in results.items():
+                    print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
+                    
+        elif args.category:
+            # Install by category
+            if args.dry_run:
+                from scripts.install.tools_config import get_tools_by_category
+                tools = get_tools_by_category(args.category)
+                print(f"Would install {args.category} tools:")
+                for tool_name in tools:
+                    print(f"  - {tool_name}")
+            else:
+                results = manager.install_by_category(args.category, args.platform)
+                for tool, success in results.items():
+                    print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
                 
         elif args.all:
             # Install all tools
-            results = manager.install_all_tools(args.platform)
-            for tool, success in results.items():
-                print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
+            if args.dry_run:
+                print("Would install ALL configured tools")
+                print("Use --list-categories to see available tools")
+            else:
+                results = manager.install_all_tools(args.platform)
+                for tool, success in results.items():
+                    print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
                 
         else:
             # Default: Install priority 1 tools
             print("Installing Priority 1 (Critical) tools...")
-            results = manager.install_priority_tools(1, args.platform)
-            for tool, success in results.items():
-                print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
+            if args.dry_run:
+                from scripts.install.tools_config import get_priority_tools
+                tools = get_priority_tools(1)
+                print("Would install:")
+                for tool_name in tools:
+                    print(f"  - {tool_name}")
+            else:
+                results = manager.install_priority_tools(1, args.platform)
+                for tool, success in results.items():
+                    print(f"{tool}: {'✅ Success' if success else '❌ Failed'}")
         
-        print(manager.get_installation_summary())
+        if not args.dry_run and not args.list_categories and not args.license_check:
+            print(manager.get_installation_summary())
         
     except KeyboardInterrupt:
         print("\n\n⏹️  Installation interrupted by user")
     except Exception as e:
         print(f"\n❌ Installation error: {e}")
+        import traceback
+        traceback.print_exc()
         return 1
     
     return 0
