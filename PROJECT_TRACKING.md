@@ -362,10 +362,10 @@ TOTAL: 16,000/24,000 lignes (66.7%)
 - **Fonctionnalités complètes** : Empire, Sliver, PoshC2, Metasploit avec 13 types de persistance
 
 ### PROCHAINES DÉCISIONS REQUISES
-- [ ] **Phase 4** : Commencer intégration outils Python scripts et conteneurs Docker ?
-- [ ] **Priorités** : CLI interface vs Docker containers en premier ?
-- [ ] **Tests** : Lancer tests de validation des modules post-exploit complétés ?
-- [ ] **Documentation** : Mettre à jour docs techniques avec nouvelles fonctionnalités ?
+- [ ] **Phase 4.2** : Commencer création conteneurs Docker (Metasploit, Nessus, ZAP, OpenVAS, Nuclei, Burp, BloodHound, Kali-tools) ?
+- [ ] **Priorités** : Quel conteneur Docker créer en premier ? 
+- [ ] **Tests** : Tester les scripts Python créés dans l'étape 4.1 ?
+- [ ] **Documentation** : Mettre à jour docs techniques avec nouveaux scripts ?
 
 ---
 
