@@ -104,14 +104,13 @@ COMPLETE_TOOLS_CONFIG = {
         "description": "Modern, fast port scanner",
         "license": "free",
         "windows": {
-            "url": "https://github.com/RustScan/RustScan/releases/download/2.2.1/rustscan_2.2.1_amd64.exe",
+            "url": "https://github.com/RustScan/RustScan/releases/download/2.2.1/rustscan_2.2.1_x86_64-pc-windows-msvc.zip",
             "binary": "rustscan.exe",
             "size_mb": 8
         },
         "linux": {
-            "url": "https://github.com/RustScan/RustScan/releases/download/2.2.1/rustscan_2.2.1_amd64.deb",
+            "url": "https://github.com/RustScan/RustScan/releases/download/2.2.1/rustscan_2.2.1_x86_64-unknown-linux-gnu.tar.gz",
             "binary": "rustscan", 
-            "install_method": "deb_package",
             "size_mb": 4
         },
         "macos": {
