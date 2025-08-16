@@ -1,0 +1,40 @@
+{
+  "consents": {
+    "a604e0947f571410": {
+      "consent_id": "a604e0947f571410",
+      "target": "127.0.0.1",
+      "scope": [
+        "reconnaissance",
+        "vulnerability"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "email": "admin@test.local",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T10:24:41.655575",
+      "valid_until": "2025-09-15T10:24:41.655569",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    }
+  },
+  "audit_log": [
+    {
+      "timestamp": "2025-08-16T10:24:41.655580",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "a604e0947f571410",
+        "target": "127.0.0.1",
+        "scope": [
+          "reconnaissance",
+          "vulnerability"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    }
+  ],
+  "created": "2025-08-16T10:24:41.655408"
+}

@@ -1,0 +1,308 @@
+# Profils de Configuration des Outils - Pentest-USB Toolkit
+# Ce fichier définit les configurations et profils pour tous les outils intégrés
+
+# Profils de scan généraux
+scan_profiles:
+  quick:
+    name: "Quick Scan"
+    description: "Scan rapide pour reconnaissance de base"
+    duration_estimate: "5-15 minutes"
+    resource_usage: "low"
+    
+  standard:
+    name: "Standard Scan"
+    description: "Scan standard avec bonne couverture"
+    duration_estimate: "30-60 minutes" 
+    resource_usage: "medium"
+    
+  comprehensive:
+    name: "Comprehensive Scan"
+    description: "Scan complet et exhaustif"
+    duration_estimate: "2-8 heures"
+    resource_usage: "high"
+    
+  stealth:
+    name: "Stealth Scan"
+    description: "Scan furtif pour éviter la détection"
+    duration_estimate: "1-4 heures"
+    resource_usage: "low"
+
+# Configuration des outils de reconnaissance
+reconnaissance_tools:
+  nmap:
+    binary_paths:
+      windows: "tools/binaries/windows/nmap.exe"
+      linux: "tools/binaries/linux/nmap"
+      macos: "tools/binaries/macos/nmap"
+    
+    profiles:
+      quick:
+        arguments: "-sS -T4 -F"
+        ports: "top-100"
+        timing: "aggressive"
+        
+      standard:
+        arguments: "-sS -sV -T3 -p 1-65535"
+        ports: "all"
+        timing: "normal"
+        
+      stealth:
+        arguments: "-sS -T2 -f"
+        ports: "top-1000"
+        timing: "polite"
+        
+      comprehensive:
+        arguments: "-sS -sV -sC -O -A -T4 -p 1-65535"
+        ports: "all"
+        timing: "aggressive"
+        os_detection: true
+        service_version: true
+        scripts: "default,safe"
+
+  rustscan:
+    binary_paths:
+      windows: "tools/binaries/windows/rustscan.exe"
+      linux: "tools/binaries/linux/rustscan"
+      macos: "tools/binaries/macos/rustscan"
+    
+    profiles:
+      quick:
+        batch_size: 1000
+        timeout: 1000
+        ports: "1-1000"
+        
+      standard:
+        batch_size: 5000
+        timeout: 3000
+        ports: "1-65535"
+        
+      aggressive:
+        batch_size: 10000
+        timeout: 500
+        ports: "1-65535"
+
+  amass:
+    binary_paths:
+      windows: "tools/binaries/windows/amass.exe"
+      linux: "tools/binaries/linux/amass"
+      macos: "tools/binaries/macos/amass"
+    
+    profiles:
+      passive:
+        sources: "all"
+        timeout: 30
+        max_dns_queries: 1000
+        
+      active:
+        sources: "all"
+        brute_force: true
+        timeout: 60
+        max_dns_queries: 5000
+        
+      comprehensive:
+        sources: "all"
+        brute_force: true
+        alterations: true
+        timeout: 120
+        max_dns_queries: 10000
+
+# Configuration des outils de vulnérabilités
+vulnerability_tools:
+  nuclei:
+    binary_paths:
+      windows: "tools/binaries/windows/nuclei.exe"
+      linux: "tools/binaries/linux/nuclei"
+      macos: "tools/binaries/macos/nuclei"
+    
+    profiles:
+      quick:
+        templates: "cves,exposures,misconfigurations"
+        severity: "high,critical"
+        rate_limit: 100
+        
+      standard:
+        templates: "all"
+        severity: "medium,high,critical"
+        rate_limit: 50
+        
+      comprehensive:
+        templates: "all"
+        severity: "info,low,medium,high,critical"
+        rate_limit: 30
+
+  zaproxy:
+    binary_paths:
+      windows: "tools/binaries/windows/zaproxy.exe"
+      linux: "tools/binaries/linux/zaproxy"
+      macos: "tools/binaries/macos/zaproxy"
+    
+    profiles:
+      quick:
+        spider_max_depth: 3
+        spider_max_children: 10
+        active_scan: false
+        
+      standard:
+        spider_max_depth: 5
+        spider_max_children: 20
+        active_scan: true
+        attack_strength: "medium"
+        
+      comprehensive:
+        spider_max_depth: 10
+        spider_max_children: 50
+        active_scan: true
+        attack_strength: "high"
+        all_policies: true
+
+  nessus:
+    api_endpoints:
+      default: "https://localhost:8834"
+    
+    profiles:
+      basic_network:
+        policy: "Basic Network Scan"
+        target_type: "network"
+        
+      advanced_scan:
+        policy: "Advanced Scan"
+        target_type: "host"
+        
+      web_application:
+        policy: "Web Application Tests"
+        target_type: "web"
+
+# Configuration des outils d'exploitation
+exploitation_tools:
+  sqlmap:
+    binary_paths:
+      windows: "tools/binaries/windows/sqlmap.exe"
+      linux: "tools/binaries/linux/sqlmap"
+      macos: "tools/binaries/macos/sqlmap"
+    
+    profiles:
+      quick:
+        level: 1
+        risk: 1
+        threads: 1
+        
+      standard:
+        level: 3
+        risk: 2
+        threads: 3
+        
+      aggressive:
+        level: 5
+        risk: 3
+        threads: 5
+
+  metasploit:
+    paths:
+      msfconsole:
+        windows: "tools/binaries/windows/msfconsole.exe"
+        linux: "tools/binaries/linux/msfconsole"
+        macos: "tools/binaries/macos/msfconsole"
+    
+    database:
+      type: "postgresql"
+      host: "localhost"
+      port: 5432
+    
+    profiles:
+      safe:
+        auto_exploit: false
+        verify_exploits: true
+        
+      standard:
+        auto_exploit: true
+        verify_exploits: true
+        
+      aggressive:
+        auto_exploit: true
+        verify_exploits: false
+
+# Configuration des outils post-exploitation
+post_exploitation_tools:
+  mimikatz:
+    binary_paths:
+      windows: "tools/binaries/windows/mimikatz.exe"
+    
+    profiles:
+      standard:
+        log_to_file: true
+        privileges: "debug"
+        
+  bloodhound:
+    neo4j:
+      bolt_url: "bolt://localhost:7687"
+      username: "neo4j"
+      password: ""
+    
+    collectors:
+      sharphound:
+        windows: "tools/binaries/windows/sharphound.exe"
+        collection_methods: "All"
+
+# Configuration des ressources système
+resource_management:
+  cpu_limits:
+    quick: 50      # % CPU max
+    standard: 70   # % CPU max
+    comprehensive: 90  # % CPU max
+    
+  memory_limits:
+    quick: 2       # GB RAM max
+    standard: 4    # GB RAM max
+    comprehensive: 8   # GB RAM max
+    
+  network_limits:
+    quick: 10      # Mbps max
+    standard: 50   # Mbps max
+    comprehensive: 100 # Mbps max
+
+# Configuration des timeouts
+timeouts:
+  tool_startup: 30       # secondes
+  scan_per_host: 300     # secondes
+  total_scan: 3600       # secondes (1 heure)
+  api_request: 60        # secondes
+  database_query: 30     # secondes
+
+# Configuration des retry policies
+retry_policies:
+  network_tools:
+    max_retries: 3
+    backoff_factor: 2
+    
+  api_calls:
+    max_retries: 5
+    backoff_factor: 1.5
+    
+  database_operations:
+    max_retries: 2
+    backoff_factor: 1
+
+# Intégration avec les conteneurs Docker
+containers:
+  enabled: true
+  registry: "local"
+  
+  images:
+    metasploit:
+      name: "pentest-usb/metasploit"
+      tag: "latest"
+      
+    nessus:
+      name: "pentest-usb/nessus"
+      tag: "latest"
+      
+    zaproxy:
+      name: "pentest-usb/zaproxy"
+      tag: "latest"
+
+# Validation et vérification
+validation:
+  verify_tools_on_startup: true
+  check_tool_versions: true
+  validate_configurations: true
+  test_connectivity: true

@@ -1,0 +1,306 @@
+# Configuration des Bases de Données - Pentest-USB Toolkit
+# Gestion centralisée de toutes les bases de données du système
+
+# Configuration principale des bases de données
+databases:
+  # Base de données principale des projets
+  project_db:
+    type: "sqlite"
+    path: "data/databases/project_db.sqlite"
+    description: "Base de données des projets de pentest"
+    auto_create: true
+    backup:
+      enabled: true
+      frequency: "daily"
+      retention: 30  # jours
+      location: "data/databases/backups/"
+    
+    tables:
+      - name: "projects"
+        description: "Informations sur les projets"
+      - name: "targets"
+        description: "Cibles d'un projet"
+      - name: "scans"
+        description: "Historique des scans"
+      - name: "vulnerabilities"
+        description: "Vulnérabilités découvertes"
+      - name: "evidence"
+        description: "Preuves et captures d'écran"
+
+  # Base de données des vulnérabilités
+  vulnerability_db:
+    type: "sqlite"
+    path: "data/databases/vuln_db.sqlite"
+    description: "Base de données des vulnérabilités connues"
+    auto_create: true
+    auto_update: true
+    update_frequency: "weekly"
+    
+    sources:
+      - name: "NVD"
+        url: "https://nvd.nist.gov/feeds/json/cve/1.1/"
+        type: "json"
+      - name: "ExploitDB"
+        url: "https://www.exploit-db.com/"
+        type: "csv"
+      - name: "VulnDB" 
+        url: "https://vuldb.com/"
+        type: "json"
+
+  # Base de données CVE
+  cve_database:
+    type: "sqlite"
+    path: "data/databases/cve_database.db"
+    description: "Base de données CVE complète"
+    auto_create: true
+    
+    indexes:
+      - field: "cve_id"
+        type: "unique"
+      - field: "cvss_score"
+        type: "btree"
+      - field: "published_date"
+        type: "btree"
+
+  # Base de données des exploits
+  exploits_db:
+    type: "sqlite"
+    path: "data/databases/exploits_db.sqlite"
+    description: "Base de données des exploits"
+    auto_create: true
+    
+    categories:
+      - "web_application"
+      - "network_service"
+      - "operating_system"
+      - "mobile_application"
+      - "iot_device"
+
+  # Base de données des signatures
+  signatures_db:
+    type: "sqlite"
+    path: "data/databases/signatures_db.sqlite"
+    description: "Signatures d'attaques et détection"
+    auto_create: true
+    
+    signature_types:
+      - "network_patterns"
+      - "file_hashes"
+      - "behavioral_patterns"
+      - "yara_rules"
+
+  # Base de connaissances
+  knowledge_base:
+    type: "sqlite"
+    path: "data/databases/knowledge_base.db"
+    description: "Base de connaissances générale"
+    auto_create: true
+    
+    categories:
+      - "techniques"
+      - "tools"
+      - "methodologies"
+      - "best_practices"
+      - "legal_guidelines"
+
+# Configuration des connexions
+connection_settings:
+  # Pool de connexions SQLite
+  sqlite:
+    timeout: 20           # secondes
+    check_same_thread: false
+    isolation_level: null
+    detect_types: "PARSE_DECLTYPES|PARSE_COLNAMES"
+    
+    # Configuration WAL (Write-Ahead Logging)
+    wal_mode:
+      enabled: true
+      checkpoint_interval: 1000
+      
+    # Optimisations de performance
+    optimizations:
+      cache_size: 10000      # pages en mémoire
+      temp_store: "memory"
+      synchronous: "NORMAL"
+      journal_mode: "WAL"
+      mmap_size: 67108864    # 64MB
+
+  # Configuration pour bases PostgreSQL (future extension)
+  postgresql:
+    enabled: false
+    host: "localhost"
+    port: 5432
+    database: "pentest_toolkit"
+    username: ""
+    password: ""
+    ssl_mode: "prefer"
+    
+    pool_settings:
+      min_connections: 5
+      max_connections: 20
+      timeout: 30
+
+# Gestion des migrations
+migrations:
+  enabled: true
+  auto_migrate: true
+  migration_path: "core/db/migrations/"
+  version_table: "schema_versions"
+  
+  # Scripts de migration
+  scripts:
+    - version: "001"
+      description: "Initial schema creation"
+      file: "001_initial_schema.sql"
+    - version: "002"
+      description: "Add evidence table"
+      file: "002_add_evidence_table.sql"
+
+# Sauvegarde et restauration
+backup:
+  # Sauvegarde automatique
+  automatic:
+    enabled: true
+    frequency: "daily"     # daily, weekly, monthly
+    time: "02:00"         # heure de sauvegarde
+    retention_days: 30
+    
+  # Compression des sauvegardes
+  compression:
+    enabled: true
+    algorithm: "gzip"
+    level: 6              # niveau de compression
+    
+  # Localisation des sauvegardes
+  locations:
+    local:
+      enabled: true
+      path: "data/databases/backups/"
+      
+    usb:
+      enabled: false      # sauvegarde sur autre clé USB
+      path: "/mnt/backup/"
+      
+    cloud:
+      enabled: false      # sauvegarde cloud (si configuré)
+      provider: ""
+      credentials: ""
+
+# Sécurité des bases de données
+security:
+  # Chiffrement au repos
+  encryption:
+    enabled: true
+    algorithm: "AES-256"
+    key_derivation: "PBKDF2"
+    iterations: 100000
+    
+  # Contrôle d'accès
+  access_control:
+    enabled: true
+    require_authentication: false  # pour SQLite local
+    audit_queries: true
+    log_sensitive_operations: true
+    
+  # Protection contre les injections
+  injection_protection:
+    use_prepared_statements: true
+    validate_inputs: true
+    sanitize_queries: true
+
+# Monitoring et métriques
+monitoring:
+  # Métriques de performance
+  performance:
+    track_query_time: true
+    slow_query_threshold: 1000  # millisecondes
+    log_slow_queries: true
+    
+  # Utilisation de l'espace disque
+  storage:
+    monitor_size: true
+    alert_threshold: 80         # % d'utilisation
+    auto_cleanup: true
+    cleanup_threshold: 90       # %
+    
+  # Santé des bases de données
+  health_checks:
+    enabled: true
+    frequency: 300              # secondes (5 minutes)
+    check_connectivity: true
+    check_integrity: true
+    verify_backups: true
+
+# Optimisation et maintenance
+maintenance:
+  # Maintenance automatique
+  automatic:
+    enabled: true
+    frequency: "weekly"
+    vacuum_databases: true
+    update_statistics: true
+    check_integrity: true
+    
+  # Nettoyage des données
+  cleanup:
+    old_scan_results:
+      enabled: true
+      retention_days: 90
+      
+    temporary_data:
+      enabled: true
+      retention_hours: 24
+      
+    log_files:
+      enabled: true
+      retention_days: 30
+
+# Configuration spécifique par environnement
+environments:
+  development:
+    debug_mode: true
+    verbose_logging: true
+    auto_migrate: true
+    
+  production:
+    debug_mode: false
+    verbose_logging: false
+    auto_migrate: false
+    require_manual_migration: true
+    
+  portable:
+    # Configuration pour clé USB
+    minimal_logging: true
+    aggressive_cleanup: true
+    compact_databases: true
+
+# Intégration avec les outils
+tool_integration:
+  # Import de résultats d'outils externes
+  import_formats:
+    - "nmap_xml"
+    - "nessus_xml"
+    - "burp_json"
+    - "zap_json"
+    - "nuclei_json"
+    
+  # Export vers outils externes
+  export_formats:
+    - "json"
+    - "xml"
+    - "csv"
+    - "sqlite"
+
+# Validation et intégrité
+validation:
+  # Validation des données
+  data_validation:
+    enabled: true
+    strict_mode: true
+    validate_foreign_keys: true
+    
+  # Intégrité référentielle
+  referential_integrity:
+    enabled: true
+    cascade_deletes: false
+    prevent_orphans: true

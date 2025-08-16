@@ -1,0 +1,457 @@
+# Configuration des Rapports - Pentest-USB Toolkit
+# Paramètres pour la génération et personnalisation des rapports
+
+# Configuration générale des rapports
+general:
+  # Formats de sortie supportés
+  output_formats:
+    - name: "html"
+      description: "Rapport HTML interactif"
+      extension: ".html"
+      supports_interactive: true
+      
+    - name: "pdf"
+      description: "Rapport PDF professionnel"
+      extension: ".pdf"
+      supports_interactive: false
+      
+    - name: "docx"
+      description: "Document Word éditable"
+      extension: ".docx"
+      supports_interactive: false
+      
+    - name: "markdown"
+      description: "Document Markdown"
+      extension: ".md"
+      supports_interactive: false
+      
+    - name: "json"
+      description: "Données structurées JSON"
+      extension: ".json"
+      supports_interactive: false
+      
+    - name: "xml"
+      description: "Données structurées XML"
+      extension: ".xml"
+      supports_interactive: false
+      
+    - name: "xlsx"
+      description: "Tableur Excel"
+      extension: ".xlsx"
+      supports_interactive: false
+
+  # Répertoire de sortie par défaut
+  output_directory: "reports/"
+  
+  # Convention de nommage des fichiers
+  naming_convention: "{project_name}_{scan_type}_{date}_{time}"
+  
+  # Langue par défaut des rapports
+  default_language: "en"        # en, fr, es, de, it
+  
+  # Fuseau horaire
+  timezone: "UTC"
+
+# Templates de rapports
+templates:
+  # Template par défaut
+  default:
+    name: "Default Professional Template"
+    description: "Template professionnel standard"
+    file: "data/templates/reports/default.html"
+    supports_formats: ["html", "pdf"]
+    
+    sections:
+      - "cover_page"
+      - "executive_summary"
+      - "methodology"
+      - "findings"
+      - "detailed_analysis"
+      - "evidence"
+      - "recommendations"
+      - "appendices"
+      
+    styling:
+      primary_color: "#2E86AB"
+      secondary_color: "#A23B72"
+      accent_color: "#F18F01"
+      font_family: "Arial, sans-serif"
+      
+  # Template exécutif
+  executive:
+    name: "Executive Summary Template"
+    description: "Template orienté direction générale"
+    file: "data/templates/reports/executive_summary.html"
+    supports_formats: ["html", "pdf", "docx"]
+    
+    sections:
+      - "cover_page"
+      - "executive_summary"
+      - "risk_overview"
+      - "key_findings"
+      - "business_impact"
+      - "recommendations"
+      
+  # Template technique
+  technical:
+    name: "Technical Deep Dive Template"
+    description: "Template détaillé pour équipes techniques"
+    file: "data/templates/reports/technical_details.html"
+    supports_formats: ["html", "pdf"]
+    
+    sections:
+      - "methodology"
+      - "detailed_findings"
+      - "vulnerability_analysis"
+      - "exploit_details"
+      - "evidence"
+      - "technical_recommendations"
+      - "raw_data"
+      
+  # Template compliance
+  compliance:
+    name: "Compliance Report Template"
+    description: "Template pour audits de conformité"
+    file: "data/templates/reports/compliance_report.html"
+    supports_formats: ["html", "pdf", "docx"]
+    
+    sections:
+      - "compliance_overview"
+      - "standards_mapping"
+      - "gap_analysis"
+      - "risk_assessment"
+      - "remediation_roadmap"
+
+# Sections de rapport configurables
+sections:
+  # Page de couverture
+  cover_page:
+    enabled: true
+    include_logo: true
+    logo_path: "interfaces/web/static/img/logo.png"
+    include_date: true
+    include_version: true
+    include_classification: true
+    classification_levels:
+      - "PUBLIC"
+      - "INTERNAL"
+      - "CONFIDENTIAL"
+      - "RESTRICTED"
+      
+  # Résumé exécutif
+  executive_summary:
+    enabled: true
+    max_length: 2000          # caractères
+    include_risk_score: true
+    include_key_metrics: true
+    include_business_impact: true
+    auto_generate: true
+    
+  # Méthodologie
+  methodology:
+    enabled: true
+    include_scope: true
+    include_limitations: true
+    include_tools_used: true
+    include_timeline: true
+    
+  # Résultats détaillés
+  findings:
+    enabled: true
+    sort_by: "severity"       # severity, category, alphabetical
+    group_by: "category"      # category, severity, host
+    include_cvss_scores: true
+    include_cve_references: true
+    severity_filter: "all"    # all, critical, high, medium, low
+    
+  # Analyse détaillée
+  detailed_analysis:
+    enabled: true
+    include_attack_vectors: true
+    include_impact_analysis: true
+    include_exploitability: true
+    include_false_positives: false
+    
+  # Preuves et captures d'écran
+  evidence:
+    enabled: true
+    include_screenshots: true
+    include_command_outputs: true
+    include_log_excerpts: true
+    max_screenshot_size: "1920x1080"
+    screenshot_quality: 85    # 1-100
+    
+  # Recommandations
+  recommendations:
+    enabled: true
+    prioritize_by_risk: true
+    include_timelines: true
+    include_responsible_parties: false
+    include_cost_estimates: false
+    
+  # Annexes
+  appendices:
+    enabled: true
+    include_raw_data: false
+    include_tool_outputs: false
+    include_configuration_files: false
+
+# Personnalisation du contenu
+content:
+  # Informations sur l'organisation
+  organization:
+    name: "Your Organization Name"
+    logo_path: ""
+    contact_info:
+      address: ""
+      phone: ""
+      email: ""
+      website: ""
+      
+  # Informations sur le testeur
+  tester_info:
+    name: "Security Tester"
+    title: "Penetration Tester"
+    certifications: []
+    contact: ""
+    
+  # Disclaimers et notices légales
+  legal:
+    disclaimer: |
+      This report contains confidential information. Distribution should be limited 
+      to authorized personnel only. The findings in this report are based on the 
+      testing performed during the specified time period.
+      
+    confidentiality_notice: |
+      This document contains confidential and proprietary information. 
+      Any unauthorized review, use, disclosure or distribution is prohibited.
+      
+    limitation_of_liability: |
+      The security assessment was performed based on the scope and limitations 
+      agreed upon. Results may vary if the environment changes after testing.
+
+# Classification des vulnérabilités
+vulnerability_classification:
+  # Système de scoring
+  scoring_system: "CVSS_v3.1"   # CVSS_v3.1, CVSS_v2, Custom
+  
+  # Niveaux de sévérité
+  severity_levels:
+    critical:
+      score_range: [9.0, 10.0]
+      color: "#DC2626"          # Rouge
+      priority: 1
+      
+    high:
+      score_range: [7.0, 8.9]
+      color: "#EA580C"          # Orange foncé
+      priority: 2
+      
+    medium:
+      score_range: [4.0, 6.9]
+      color: "#D97706"          # Orange
+      priority: 3
+      
+    low:
+      score_range: [0.1, 3.9]
+      color: "#059669"          # Vert
+      priority: 4
+      
+    informational:
+      score_range: [0.0, 0.0]
+      color: "#6B7280"          # Gris
+      priority: 5
+      
+  # Catégories de vulnérabilités
+  categories:
+    - name: "Authentication"
+      description: "Issues related to authentication mechanisms"
+      
+    - name: "Authorization"
+      description: "Access control and privilege escalation issues"
+      
+    - name: "Input Validation"
+      description: "Injection and input validation vulnerabilities"
+      
+    - name: "Configuration"
+      description: "Security misconfigurations"
+      
+    - name: "Cryptography"
+      description: "Cryptographic implementation issues"
+      
+    - name: "Network Security"
+      description: "Network-level security issues"
+
+# Graphiques et visualisations
+visualizations:
+  # Types de graphiques disponibles
+  chart_types:
+    - name: "pie_chart"
+      description: "Graphique en secteurs"
+      use_for: ["severity_distribution", "category_distribution"]
+      
+    - name: "bar_chart"
+      description: "Graphique en barres"
+      use_for: ["findings_by_host", "findings_timeline"]
+      
+    - name: "radar_chart"
+      description: "Graphique radar"
+      use_for: ["security_posture", "compliance_scoring"]
+      
+    - name: "treemap"
+      description: "Carte arborescente"
+      use_for: ["risk_heatmap"]
+      
+  # Configuration des couleurs
+  color_schemes:
+    default:
+      critical: "#DC2626"
+      high: "#EA580C"
+      medium: "#D97706"
+      low: "#059669"
+      info: "#6B7280"
+      
+  # Graphiques par défaut à inclure
+  default_charts:
+    - "severity_distribution"
+    - "category_distribution"
+    - "findings_by_host"
+    - "risk_timeline"
+
+# Export et intégration
+export:
+  # Formats d'export des données
+  data_formats:
+    - name: "csv"
+      description: "Export CSV pour tableurs"
+      include_headers: true
+      
+    - name: "json"
+      description: "Export JSON structuré"
+      pretty_print: true
+      
+    - name: "xml"
+      description: "Export XML"
+      include_schema: true
+      
+  # Intégration avec des outils tiers
+  integrations:
+    jira:
+      enabled: false
+      server_url: ""
+      username: ""
+      api_token: ""
+      project_key: ""
+      issue_type: "Bug"
+      
+    slack:
+      enabled: false
+      webhook_url: ""
+      channel: "#security"
+      
+    email:
+      enabled: false
+      smtp_server: ""
+      smtp_port: 587
+      username: ""
+      password: ""
+
+# Génération automatique
+automation:
+  # Génération automatique de rapports
+  auto_generation:
+    enabled: true
+    trigger_on_scan_completion: true
+    default_format: "html"
+    
+  # Planification des rapports
+  scheduled_reports:
+    enabled: false
+    frequency: "weekly"       # daily, weekly, monthly
+    day_of_week: "monday"     # pour weekly
+    time: "09:00"
+    recipients: []
+    
+  # Archivage automatique
+  archiving:
+    enabled: true
+    archive_after_days: 90
+    compress_archives: true
+
+# Performance et optimisation
+performance:
+  # Génération parallèle
+  parallel_generation:
+    enabled: true
+    max_workers: 4
+    
+  # Cache des templates
+  template_caching:
+    enabled: true
+    cache_duration: 3600      # secondes
+    
+  # Optimisation des images
+  image_optimization:
+    enabled: true
+    compress_screenshots: true
+    compression_quality: 85
+    
+  # Limitations de taille
+  size_limits:
+    max_report_size: "100MB"
+    max_screenshots_per_report: 100
+    max_raw_data_size: "50MB"
+
+# Qualité et validation
+quality_assurance:
+  # Validation du contenu
+  content_validation:
+    check_spelling: false
+    validate_links: true
+    check_image_references: true
+    
+  # Métriques de qualité
+  quality_metrics:
+    track_generation_time: true
+    track_file_sizes: true
+    validate_output_format: true
+    
+  # Templates de test
+  test_templates:
+    enabled: true
+    sample_data_file: "data/templates/sample_data.json"
+
+# Sécurité des rapports
+security:
+  # Protection des rapports sensibles
+  sensitive_data_handling:
+    redact_credentials: true
+    mask_internal_ips: false
+    anonymize_hostnames: false
+    
+  # Chiffrement des rapports
+  encryption:
+    enabled: false
+    algorithm: "AES-256-GCM"
+    password_protected: false
+    
+  # Filigrane
+  watermarking:
+    enabled: false
+    text: "CONFIDENTIAL"
+    position: "bottom-right"
+    opacity: 0.3
+
+# Configuration par environnement
+environments:
+  development:
+    include_debug_info: true
+    verbose_logging: true
+    
+  production:
+    include_debug_info: false
+    optimized_generation: true
+    
+  demo:
+    anonymize_data: true
+    sample_data_only: true
