@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Pentest-USB Toolkit{% endblock %}
+
+{% block body_class %}login-page{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/auth.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Left Side - Branding -->
+            <div class="col-lg-6 login-branding d-none d-lg-flex">
+                <div class="branding-content">
+                    <div class="logo-section">
+                        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Pentest-USB Logo" class="main-logo">
+                        <h1 class="brand-title">Pentest-USB Toolkit</h1>
+                        <p class="brand-subtitle">Professional Penetration Testing Framework</p>
+                    </div>
+                    
+                    <div class="features-list">
+                        <div class="feature-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Comprehensive Security Testing</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-network-wired"></i>
+                            <span>Network & Web Assessment</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Real-time Monitoring</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Professional Reporting</span>
+                        </div>
+                    </div>
+                    
+                    <div class="security-notice">
+                        <i class="fas fa-lock"></i>
+                        <small>Secure authentication with encrypted sessions</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Login Form -->
+            <div class="col-lg-6 login-form-section">
+                <div class="login-form-container">
+                    <!-- Mobile Logo -->
+                    <div class="mobile-logo d-lg-none text-center mb-4">
+                        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="48">
+                        <h3 class="mt-2">Pentest-USB</h3>
+                    </div>
+                    
+                    <div class="login-form-wrapper">
+                        <h2 class="login-title">Welcome Back</h2>
+                        <p class="login-description">Sign in to your Pentest-USB account to continue</p>
+                        
+                        <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+                            {{ csrf_token() if csrf_token }}
+                            
+                            <div class="form-group mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="username" 
+                                           name="username" 
+                                           placeholder="Enter your username"
+                                           required 
+                                           autocomplete="username">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           placeholder="Enter your password"
+                                           required 
+                                           autocomplete="current-password">
+                                    <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember_me">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me for 30 days
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100 login-btn">
+                                <i class="fas fa-sign-in-alt me-2"></i>
+                                Sign In
+                            </button>
+                        </form>
+                        
+                        <div class="login-footer">
+                            <div class="divider">
+                                <span>or</span>
+                            </div>
+                            
+                            <div class="alternative-login">
+                                <button type="button" class="btn btn-outline-secondary w-100 mb-2" id="demoLogin">
+                                    <i class="fas fa-play me-2"></i>
+                                    Continue as Demo User
+                                </button>
+                            </div>
+                            
+                            <div class="help-links text-center">
+                                <a href="{{ url_for('auth.forgot_password') }}" class="help-link">
+                                    <i class="fas fa-question-circle me-1"></i>
+                                    Forgot Password?
+                                </a>
+                                <span class="separator">|</span>
+                                <a href="#" class="help-link" data-bs-toggle="modal" data-bs-target="#helpModal">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Need Help?
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-question-circle me-2"></i>
+                    Login Help
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Default Credentials:</h6>
+                <div class="credential-info">
+                    <p><strong>Username:</strong> <code>admin</code></p>
+                    <p><strong>Password:</strong> <code>pentest123</code></p>
+                </div>
+                
+                <hr>
+                
+                <h6>Demo Access:</h6>
+                <p>Click "Continue as Demo User" for limited read-only access to explore the interface.</p>
+                
+                <hr>
+                
+                <h6>Security Information:</h6>
+                <ul class="security-info">
+                    <li>All sessions are encrypted with HTTPS</li>
+                    <li>Automatic logout after 1 hour of inactivity</li>
+                    <li>Failed login attempts are monitored</li>
+                    <li>Change default password on first login</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Animation -->
+<div class="login-loading d-none" id="loginLoading">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Authenticating...</span>
+        </div>
+        <div class="mt-2">Authenticating...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const demoLogin = document.getElementById('demoLogin');
+    const loginLoading = document.getElementById('loginLoading');
+    
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+    
+    // Handle login form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success message
+                showToast('Login successful! Redirecting...', 'success');
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = data.redirect || '/dashboard';
+                }, 1000);
+            } else {
+                // Show error message
+                showToast(data.message || 'Login failed. Please try again.', 'error');
+                
+                // Reset form state
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Sign In';
+                
+                // Clear password field
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+            showToast('An error occurred. Please try again.', 'error');
+            
+            // Reset form state
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i>Sign In';
+        });
+    });
+    
+    // Handle demo login
+    demoLogin.addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading Demo...';
+        
+        fetch('/auth/demo-login', {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Demo access granted!', 'success');
+                setTimeout(() => {
+                    window.location.href = '/dashboard';
+                }, 1000);
+            } else {
+                showToast(data.message || 'Demo login failed.', 'error');
+                this.disabled = false;
+                this.innerHTML = '<i class="fas fa-play me-2"></i>Continue as Demo User';
+            }
+        })
+        .catch(error => {
+            console.error('Demo login error:', error);
+            showToast('Demo login failed. Please try again.', 'error');
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-play me-2"></i>Continue as Demo User';
+        });
+    });
+    
+    // Auto-focus username field
+    document.getElementById('username').focus();
+    
+    // Handle keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Alt + D for demo login
+        if (e.altKey && e.key === 'd') {
+            e.preventDefault();
+            demoLogin.click();
+        }
+        
+        // Escape to clear form
+        if (e.key === 'Escape') {
+            loginForm.reset();
+            document.getElementById('username').focus();
+        }
+    });
+});
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer');
+    const toastId = 'toast-' + Date.now();
+    
+    const toastHtml = `
+        <div class="toast align-items-center text-bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'primary'} border-0" 
+             role="alert" id="${toastId}">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-triangle' : type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+                    ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                        data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `;
+    
+    toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+    
+    const toastElement = document.getElementById(toastId);
+    const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: type === 'success' ? 3000 : 5000
+    });
+    
+    toast.show();
+    
+    // Remove toast element after it's hidden
+    toastElement.addEventListener('hidden.bs.toast', function() {
+        this.remove();
+    });
+}
+</script>
+{% endblock %}
