@@ -1,0 +1,138 @@
+{
+  "consents": {
+    "a604e0947f571410": {
+      "consent_id": "a604e0947f571410",
+      "target": "127.0.0.1",
+      "scope": [
+        "reconnaissance",
+        "vulnerability"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "email": "admin@test.local",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T10:24:41.655575",
+      "valid_until": "2025-09-15T10:24:41.655569",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 1,
+      "last_used": "2025-08-16T10:24:41.656081"
+    },
+    "4593aa87ff0e2380": {
+      "consent_id": "4593aa87ff0e2380",
+      "target": "example.com",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan"
+      ],
+      "authorization_doc": "/app/authorization.pdf",
+      "contact_info": {
+        "email": "security@example.com",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T10:26:14.145508",
+      "valid_until": "2025-09-15T10:26:14.145495",
+      "restrictions": [
+        "no_dos_attacks",
+        "business_hours_only"
+      ],
+      "status": "active",
+      "usage_count": 1,
+      "last_used": "2025-08-16T10:26:14.146284"
+    },
+    "0953dc121549d44a": {
+      "consent_id": "0953dc121549d44a",
+      "target": "example.com",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan"
+      ],
+      "authorization_doc": "/app/authorization.pdf",
+      "contact_info": {
+        "email": "security@example.com",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T13:13:29.171512",
+      "valid_until": "2025-09-15T13:13:29.171507",
+      "restrictions": [
+        "no_dos_attacks",
+        "business_hours_only"
+      ],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    }
+  },
+  "audit_log": [
+    {
+      "timestamp": "2025-08-16T10:24:41.655580",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "a604e0947f571410",
+        "target": "127.0.0.1",
+        "scope": [
+          "reconnaissance",
+          "vulnerability"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:24:41.656086",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "a604e0947f571410",
+        "target": "127.0.0.1",
+        "test_scope": "reconnaissance"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:26:14.145514",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "4593aa87ff0e2380",
+        "target": "example.com",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:26:14.146290",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "4593aa87ff0e2380",
+        "target": "example.com",
+        "test_scope": "reconnaissance"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T13:13:29.171520",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "0953dc121549d44a",
+        "target": "example.com",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-fab07cae-1307-4d30-8614-65a8f60e8aa0"
+    }
+  ],
+  "created": "2025-08-16T10:24:41.655408"
+}

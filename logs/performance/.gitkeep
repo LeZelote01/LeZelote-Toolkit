@@ -1,0 +1,6 @@
+# This file ensures the directory is tracked by git
+# Performance monitoring logs are stored here:
+# - cpu_usage.log
+# - memory_usage.log
+# - disk_usage.log
+# - network_usage.log

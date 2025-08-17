@@ -1,0 +1,85 @@
+# Security Settings for Pentest-USB Toolkit
+# ===========================================
+
+# Consent Management
+consent:
+  require_explicit_consent: true
+  consent_timeout: 3600  # seconds
+  require_reconfirmation: true
+  
+# Legal and Compliance
+legal:
+  disclaimer_required: true
+  scope_validation: true
+  authorization_check: true
+  
+# Stealth and Evasion
+stealth:
+  enabled: false
+  default_mode: "normal"
+  available_modes:
+    - "normal"
+    - "stealth"
+    - "aggressive"
+    
+evasion:
+  av_evasion: false
+  edr_evasion: false
+  memory_execution: false
+  process_injection: false
+  
+# Encryption Settings
+encryption:
+  encrypt_database: true
+  encrypt_outputs: false
+  encryption_algorithm: "AES-256"
+  key_derivation: "PBKDF2"
+  
+# Access Control
+access_control:
+  enable_authentication: false
+  session_timeout: 1800
+  max_failed_attempts: 3
+  lockout_duration: 300
+  
+# Audit Settings
+audit:
+  log_all_actions: true
+  log_tool_execution: true
+  log_file_access: true
+  log_network_activity: true
+  retention_days: 90
+  
+# Evidence Handling
+evidence:
+  chain_of_custody: true
+  digital_signatures: false
+  timestamping: true
+  secure_storage: true
+  
+# Network Security
+network_security:
+  use_tor: false
+  use_vpn: false
+  randomize_user_agent: true
+  randomize_source_port: false
+  
+# Cleanup and Sanitization
+cleanup:
+  secure_delete: true
+  overwrite_passes: 3
+  clear_memory: true
+  remove_temp_files: true
+  
+# Emergency Procedures
+emergency:
+  panic_button_enabled: false
+  emergency_cleanup: true
+  kill_switch_enabled: false
+  
+# Compliance Frameworks
+compliance:
+  pci_dss: false
+  hipaa: false
+  gdpr: true
+  sox: false

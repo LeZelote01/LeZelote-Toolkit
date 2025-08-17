@@ -1,0 +1,93 @@
+{
+  "verification_summary": {
+    "timestamp": "2025-08-17T18:14:25.852128",
+    "project_root": "/app",
+    "system_info": {
+      "system": "linux",
+      "machine": "aarch64",
+      "python_version": "3.11.13",
+      "platform": "Linux-6.6.72+-aarch64-with-glibc2.36"
+    },
+    "total_checks": 9,
+    "passed_checks": 5,
+    "failed_checks": 4,
+    "overall_score": 55.56,
+    "status": "FAIL"
+  },
+  "detailed_results": {
+    "directories": {
+      "total": 31,
+      "existing": 31,
+      "missing": [],
+      "success": true
+    },
+    "core_files": {
+      "total": 17,
+      "existing": 17,
+      "missing": [],
+      "success": true
+    },
+    "python_env": {
+      "venv_exists": true,
+      "python_executable": true,
+      "pip_executable": true,
+      "python_version_ok": true,
+      "success": true
+    },
+    "dependencies": {
+      "total": 36,
+      "installed": 29,
+      "missing": [
+        "python-nmap",
+        "dnspython",
+        "beautifulsoup4",
+        "pycryptodome",
+        "pyyaml",
+        "pillow",
+        "python-docx"
+      ],
+      "success": false
+    },
+    "config_files": {
+      "total": 9,
+      "existing": 9,
+      "valid": 9,
+      "missing": [],
+      "invalid": [],
+      "success": true
+    },
+    "cli_interface": {
+      "script_exists": true,
+      "python_available": true,
+      "cli_working": false,
+      "success": false
+    },
+    "system_tools": {
+      "total": 12,
+      "available": 3,
+      "missing": [
+        "nmap",
+        "sqlmap",
+        "nikto",
+        "dirb",
+        "gobuster",
+        "john",
+        "hashcat",
+        "hydra",
+        "aircrack-ng"
+      ],
+      "success": false
+    },
+    "docker_environment": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: 'docker'"
+    },
+    "permissions": {
+      "executable_scripts": 3,
+      "non_executable": [],
+      "writable_dirs": 4,
+      "non_writable_dirs": [],
+      "success": true
+    }
+  }
+}
