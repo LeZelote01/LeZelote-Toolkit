@@ -41,7 +41,7 @@ class SystemHealthChecker:
     
     def __init__(self):
         """Initialize the system health checker."""
-        self.logger = setup_logging(__name__)
+        self.logger = get_logger(__name__)
         self.project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
         
         self.health_report = {
