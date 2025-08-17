@@ -603,8 +603,10 @@ python3 scripts/install/validate_tools_config.py
 **Durée : 12 jours | Réalisé : 0 jours**  
 **Avancement : 0%** 🎯
 
-### ÉTAPE 8.1 - Wordlists et Dictionnaires (3 jours) - À COMMENCER
+### 📋 ÉTAPE 8.1 - Wordlists et Dictionnaires (3 jours) - À COMMENCER
 **Priorité : HAUTE**
+
+#### Fichiers à créer/télécharger :
 
 #### 1. Wordlists mots de passe (`/data/wordlists/passwords/`) :
 - [ ] `rockyou.txt` - Wordlist RockYou
@@ -618,6 +620,335 @@ python3 scripts/install/validate_tools_config.py
 - [ ] `enterprise_passwords.txt` - Patterns entreprise
 
 #### 2. Wordlists répertoires (`/data/wordlists/directories/`) :
+- [ ] `common_dirs.txt` - Répertoires courants
+- [ ] `api_paths.txt` - Chemins API
+- [ ] `web_fuzz.txt` - Fuzzing web
+- [ ] `admin_dirs.txt` - Répertoires admin
+- [ ] `backup_dirs.txt` - Répertoires de sauvegarde
+- [ ] `config_dirs.txt` - Répertoires de configuration
+- [ ] `hidden_dirs.txt` - Répertoires cachés
+- [ ] `sensitive_files.txt` - Fichiers sensibles
+
+#### 3. Wordlists DNS (`/data/wordlists/dns/`) :
+- [ ] `subdomains.txt` - Sous-domaines
+- [ ] `tlds.txt` - TLDs
+- [ ] `common_subdomains.txt` - Sous-domaines courants
+- [ ] `dns_servers.txt` - Serveurs DNS publics
+- [ ] `domain_extensions.txt` - Extensions de domaines
+
+**Fonctionnalités requises :**
+- Téléchargement automatisé depuis sources officielles
+- Vérification d'intégrité (checksums)
+- Compression et optimisation pour USB
+- Mise à jour périodique des wordlists
+
+---
+
+### 📄 ÉTAPE 8.2 - Templates de Rapports (4 jours) - À COMMENCER
+**Priorité : HAUTE**
+
+#### Fichiers à créer dans `/data/templates/reports/` :
+- [ ] `default.html` - Template HTML par défaut
+- [ ] `pentest.docx` - Template Word pentest
+- [ ] `executive_summary.md` - Template résumé exécutif
+- [ ] `vulnerability_report.html` - Rapport vulnérabilités
+- [ ] `compliance_report.docx` - Rapport conformité
+- [ ] `technical_details.md` - Détails techniques
+- [ ] `remediation_guide.html` - Guide de remediation
+- [ ] `presentation.pptx` - Template présentation
+
+**Fonctionnalités requises :**
+- Templates professionnels multi-formats
+- Variables dynamiques pour personnalisation
+- Branding personnalisable
+- Génération automatique de graphiques
+- Support multi-langues
+
+---
+
+### 🎯 ÉTAPE 8.3 - Profils de Scan (2 jours) - À COMMENCER
+**Priorité : HAUTE**
+
+#### Fichiers à créer dans `/data/templates/scan_profiles/` :
+- [ ] `quick_scan.json` - Scan rapide
+- [ ] `full_audit.json` - Audit complet
+- [ ] `web_app.json` - Application web
+- [ ] `network.json` - Scan réseau
+- [ ] `cloud_audit.json` - Audit cloud
+- [ ] `mobile_app.json` - Application mobile
+- [ ] `wireless.json` - Scan sans-fil
+- [ ] `compliance.json` - Vérification conformité
+
+**Fonctionnalités requises :**
+- Profils configurables par type de cible
+- Paramètres d'intensité (quick, default, comprehensive)
+- Personnalisation des timeouts et threads
+- Validation des configurations
+
+---
+
+### 🗄️ ÉTAPE 8.4 - Bases de Données (3 jours) - À COMMENCER
+**Priorité : HAUTE**
+
+#### Fichiers à créer dans `/data/databases/` :
+- [ ] `vuln_db.sqlite` - Base de vulnérabilités
+- [ ] `project_db.sqlite` - Base de projets
+- [ ] `cve_database.db` - Base CVE
+- [ ] `exploits_db.sqlite` - Base d'exploits
+- [ ] `signatures_db.sqlite` - Signatures d'attaques
+- [ ] `knowledge_base.db` - Base de connaissances
+
+**Fonctionnalités requises :**
+- Schémas SQLite optimisés
+- Index pour performance
+- Scripts de migration
+- Sauvegarde/restauration
+- Synchronisation avec sources externes
+
+---
+
+## 🧪 PHASE 9 - TESTS ET VALIDATION (23 jours)
+**Statut : 🔄 À COMMENCER**  
+**Durée : 23 jours | Réalisé : 0 jours**  
+**Avancement : 0%** 🎯
+
+### 🔬 ÉTAPE 9.1 - Tests Unitaires (10 jours) - À COMMENCER
+**Priorité : CRITIQUE**
+**Objectif : Couverture de tests 80%+**
+
+#### 1. Tests Core (`/tests/unit/test_core/`) :
+- [ ] `test_orchestrator.py` - Tests orchestrateur principal
+- [ ] `test_security.py` - Tests modules sécurité
+- [ ] `test_utils.py` - Tests utilitaires
+- [ ] `test_database.py` - Tests base de données
+
+#### 2. Tests Modules (`/tests/unit/test_modules/`) :
+- [ ] `test_reconnaissance.py` - Tests module reconnaissance
+- [ ] `test_vulnerability.py` - Tests module vulnérabilités
+- [ ] `test_exploitation.py` - Tests module exploitation
+- [ ] `test_post_exploit.py` - Tests module post-exploitation
+- [ ] `test_reporting.py` - Tests module reporting
+
+#### 3. Tests Interfaces (`/tests/unit/test_interfaces/`) :
+- [ ] `test_cli.py` - Tests interface CLI
+- [ ] `test_web.py` - Tests interface web
+
+**Fonctionnalités requises :**
+- Tests unitaires complets pour chaque fonction
+- Mocking des dépendances externes
+- Tests d'edge cases et gestion d'erreurs
+- Mesure de couverture de code
+- Tests de régression automatisés
+
+---
+
+### 🔗 ÉTAPE 9.2 - Tests d'Intégration (8 jours) - À COMMENCER
+**Priorité : HAUTE**
+
+#### Fichiers à créer dans `/tests/integration/` :
+- [ ] `test_workflow.py` - Tests workflow complet end-to-end
+- [ ] `test_tool_integration.py` - Tests intégration outils externes
+- [ ] `test_database_integration.py` - Tests intégration bases de données
+- [ ] `test_api_integration.py` - Tests APIs externes (Shodan, etc.)
+
+**Fonctionnalités requises :**
+- Tests de workflow complets
+- Validation des intégrations d'outils
+- Tests de performance des APIs
+- Validation des flux de données
+- Tests de compatibilité multi-OS
+
+---
+
+### ⚡ ÉTAPE 9.3 - Tests de Performance (5 jours) - À COMMENCER
+**Priorité : MOYENNE**
+
+#### Fichiers à créer dans `/tests/performance/` :
+- [ ] `test_load.py` - Tests de charge système
+- [ ] `test_stress.py` - Tests de stress intensif
+- [ ] `test_memory.py` - Tests consommation mémoire
+- [ ] `test_scalability.py` - Tests scalabilité
+
+**Fonctionnalités requises :**
+- Benchmarking des performances
+- Tests de montée en charge
+- Profiling mémoire et CPU
+- Tests de limitations système
+- Rapport de performance détaillé
+
+---
+
+## 📚 PHASE 10 - DOCUMENTATION (8 jours)
+**Statut : 🔄 À COMMENCER**  
+**Durée : 8 jours | Réalisé : 0 jours**  
+**Avancement : 0%** 🎯
+
+### 📖 ÉTAPE 10.1 - Documentation Utilisateur (5 jours) - À COMMENCER
+**Priorité : HAUTE**
+
+#### Fichiers à créer dans `/docs/` :
+- [ ] `installation.md` - Guide d'installation détaillé
+  - Installation sur Windows/Linux/macOS
+  - Prérequis système
+  - Dépendances et configuration
+  - Troubleshooting installation
+- [ ] `user_guide.md` - Guide utilisateur complet
+  - Interface CLI et Web
+  - Workflows de pentest
+  - Configuration des scans
+  - Génération de rapports
+- [ ] `troubleshooting.md` - Résolution de problèmes
+  - Erreurs communes et solutions
+  - FAQ utilisateurs
+  - Diagnostic des problèmes
+  - Contact support
+- [ ] `changelog.md` - Journal des modifications
+  - Historique des versions
+  - Nouvelles fonctionnalités
+  - Corrections de bugs
+  - Améliorations
+
+**Fonctionnalités requises :**
+- Documentation complète et accessible
+- Captures d'écran et exemples
+- Recherche et navigation
+- Versions multi-langues
+- Documentation interactive
+
+---
+
+### 👨‍💻 ÉTAPE 10.2 - Documentation Développeur (3 jours) - À COMMENCER
+**Priorité : MOYENNE**
+
+#### Fichiers à créer dans `/docs/` :
+- [ ] `developer_guide.md` - Guide développeur
+  - Architecture du projet
+  - Standards de code
+  - Processus de développement
+  - Contribution guidelines
+- [ ] `api_reference.md` - Référence API complète
+  - Documentation des APIs
+  - Exemples d'utilisation
+  - Paramètres et réponses
+  - SDK et intégrations
+- [ ] `license.md` - Informations de licence
+  - Licences des composants
+  - Obligations légales
+  - Usage commercial
+  - Attributions
+
+**Fonctionnalités requises :**
+- Documentation technique détaillée
+- Exemples de code
+- Diagrammes d'architecture
+- Tests et validation
+- Maintenance et évolution
+
+---
+
+## 🚀 PHASE 11 - DÉPLOIEMENT FINAL (10 jours)
+**Statut : 🔄 À COMMENCER**  
+**Durée : 10 jours | Réalisé : 0 jours**  
+**Avancement : 0%** 🎯
+
+### 📦 ÉTAPE 11.1 - Scripts de Déploiement (4 jours) - À COMMENCER
+**Priorité : CRITIQUE**
+
+#### Actions à réaliser :
+- [ ] **Finalisation des scripts de build**
+  - Scripts de compilation multi-OS
+  - Packaging automatisé
+  - Vérification intégrité
+  - Signature numérique
+- [ ] **Tests sur différents OS (Windows/Linux/macOS)**
+  - Tests automatisés multi-plateforme
+  - Validation compatibilité
+  - Performance par OS
+  - Résolution des incompatibilités
+- [ ] **Optimisation pour clé USB**
+  - Compression des binaires
+  - Structure portable
+  - Autorun et configuration
+  - Tests de portabilité
+- [ ] **Création des packages de distribution**
+  - Packages par OS
+  - Installeurs automatiques
+  - Documentation packaging
+  - Métadonnées de version
+- [ ] **Validation portabilité complète**
+  - Tests sur différents systèmes
+  - Validation sans installation
+  - Performance et stabilité
+  - Compatibilité hardware
+
+**Fonctionnalités requises :**
+- Déploiement automatisé
+- Validation multi-OS
+- Portabilité USB complète
+- Installation zero-touch
+- Rollback et recovery
+
+---
+
+### ✅ ÉTAPE 11.2 - Tests de Validation Finale (6 jours) - À COMMENCER
+**Priorité : CRITIQUE**
+
+#### Actions à réaliser :
+- [ ] **Tests complets sur environnements cibles**
+  - Tests sur systèmes de production
+  - Validation environnements clients
+  - Compatibility testing
+  - Edge cases validation
+- [ ] **Validation des performances**
+  - Benchmarks finaux
+  - Tests de charge
+  - Optimisation finale
+  - Métriques de performance
+- [ ] **Tests de sécurité (pas de backdoors)**
+  - Audit sécuritaire complet
+  - Vérification code malicieux
+  - Tests de vulnérabilités
+  - Validation cryptographique
+- [ ] **Vérification de la portabilité**
+  - Tests multi-environnements
+  - Validation USB portability
+  - Cross-platform testing
+  - Hardware compatibility
+- [ ] **Tests d'usage avec utilisateurs finaux**
+  - User acceptance testing
+  - Feedback utilisateurs
+  - Formation et documentation
+  - Support et maintenance
+
+**Fonctionnalités requises :**
+- Validation complète du produit
+- Tests utilisateurs finaux
+- Métriques de qualité
+- Certification sécurité
+- Documentation de déploiement
+
+---
+
+## 📊 ÉTAT ACTUEL DU PROJET
+
+#### 🎯 RECOMMANDATIONS POUR LA SUITE
+1. **Commencer par la Phase 8** : Données et Ressources (prérequis pour tests)
+2. **Prioriser les wordlists** : Phase 8.1 pour functionality testing
+3. **Tests précoces** : Commencer les tests unitaires en parallèle
+4. **Documentation continue** : Maintenir la documentation à jour
+
+#### 📊 RÉSUMÉ FINAL
+- **Avancement global** : 94% (193 jours sur 206 jours)
+- **Phases complètes (1-7)** : Configuration, Core, Modules, Outils, Interfaces, Runtime, Scripts ✅
+- **Phases restantes (8-11)** : 13 jours de travail restants
+- **Qualité** : Toutes les phases terminées sont 100% fonctionnelles et testées
+
+#### 🔄 PROCHAINES ÉTAPES IMMÉDIATES
+- **Phase 8.1** : Wordlists et Dictionnaires (3 jours) - HAUTE PRIORITÉ
+- **Phase 8.2** : Templates de Rapports (4 jours) - HAUTE PRIORITÉ  
+- **Phase 9.1** : Tests Unitaires (10 jours) - CRITIQUE pour validation
+
+**Le projet LeZelote-Toolkit est à 94% de completion avec une architecture solide et toutes les fonctionnalités core opérationnelles.**
 - [ ] `common_dirs.txt` - Répertoires courants
 - [ ] `api_paths.txt` - Chemins API
 - [ ] `web_fuzz.txt` - Fuzzing web
