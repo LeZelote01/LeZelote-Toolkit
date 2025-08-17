@@ -33,8 +33,8 @@ import platform
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from core.utils.logging_handler import setup_logging
-from core.utils.network_utils import check_network_connectivity, validate_ip_address
-from core.db.sqlite_manager import SQLiteManager as DatabaseManager
+from core.utils.network_utils import NetworkUtils, check_network_connectivity, validate_ip_address
+from core.db.sqlite_manager import SQLiteManager
 
 class SystemHealthChecker:
     """Comprehensive system health and status checker."""
