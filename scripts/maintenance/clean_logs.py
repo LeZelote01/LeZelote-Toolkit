@@ -506,13 +506,13 @@ def main():
             results = cleaner.clean_specific_category(args.category, args.dry_run)
             print(f"\nCleaning completed for {args.category} logs")
             print(f"Files processed: {results['files_cleaned'] + results['files_archived'] + results['files_deleted']}")
+            print(f"Space freed: {results.get('bytes_freed', 0):,} bytes")
         
         else:
             results = cleaner.clean_all_logs(args.dry_run)
             print("\nLog cleaning completed")
             print(f"Total files processed: {results['files_cleaned'] + results['files_archived'] + results['files_deleted']}")
-            
-        print(f"Space freed: {results.get('bytes_freed', 0):,} bytes")
+            print(f"Space freed: {results.get('bytes_freed', 0):,} bytes")
         
     except Exception as e:
         print(f"Error during log cleaning: {e}", file=sys.stderr)
