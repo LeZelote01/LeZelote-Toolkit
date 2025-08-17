@@ -31,7 +31,7 @@ import sqlite3
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from core.utils.logging_handler import setup_logging
+from core.utils.logging_handler import get_logger
 try:
     from core.db.sqlite_manager import SQLiteManager as DatabaseManager
 except ImportError:
@@ -68,7 +68,7 @@ class LogCleaner:
     
     def __init__(self, config_file: str = None):
         """Initialize the log cleaner with configuration."""
-        self.logger = setup_logging(__name__)
+        self.logger = get_logger(__name__)
         self.config_file = config_file or self._get_default_config()
         self.config = self._load_config()
         self.stats = {
