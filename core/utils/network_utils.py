@@ -495,3 +495,34 @@ class NetworkValidator:
             return False
         except (ValueError, AttributeError):
             return False
+
+
+# Standalone functions for backward compatibility
+def check_network_connectivity(host: str, port: int, timeout: int = 10) -> bool:
+    """
+    Check network connectivity to a host:port
+    
+    Args:
+        host: Target hostname or IP
+        port: Port number to check
+        timeout: Connection timeout in seconds
+        
+    Returns:
+        bool: True if connection successful
+    """
+    network_utils = NetworkUtils(timeout=timeout)
+    return network_utils.check_port(host, port, 'tcp')
+
+
+def validate_ip_address(ip: str) -> bool:
+    """
+    Validate IP address format
+    
+    Args:
+        ip: IP address string to validate
+        
+    Returns:
+        bool: True if valid IP address
+    """
+    network_utils = NetworkUtils()
+    return network_utils.validate_ip(ip)
