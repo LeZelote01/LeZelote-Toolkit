@@ -49,23 +49,7 @@ class NetworkUtils:
         self.session.mount("https://", adapter)
 
 
-def check_network_connectivity(host: str, port: int, timeout: int = 5) -> bool:
-    """Check if network connectivity to a host:port is available."""
-    try:
-        sock = socket.create_connection((host, port), timeout)
-        sock.close()
-        return True
-    except (socket.error, socket.timeout):
-        return False
-
-
-def validate_ip_address(ip: str) -> bool:
-    """Validate if string is a valid IP address."""
-    try:
-        ipaddress.ip_address(ip)
-        return True
-    except ValueError:
-        return False
+# Moved these functions inside the NetworkUtils class
     
     def validate_ip(self, ip: str) -> bool:
         """
