@@ -32,7 +32,7 @@ import platform
 # Add project root to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from core.utils.logging_handler import setup_logging
+from core.utils.logging_handler import setup_logging, get_logger
 from core.utils.network_utils import NetworkUtils, check_network_connectivity, validate_ip_address
 from core.db.sqlite_manager import SQLiteManager
 
