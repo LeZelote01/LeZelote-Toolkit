@@ -213,3 +213,26 @@ class NmapAPI:
     def vulnerability_scan(self, target: str) -> Dict[str, Any]:
         """Perform vulnerability scan with NSE scripts"""
         return self.scan(target, "--script vuln")
+    
+    def scan_host(self, target: str, scan_type: str = "basic") -> Dict[str, Any]:
+        """
+        Compatibility method: Scan a host with various scan types
+        
+        Args:
+            target (str): Target host to scan
+            scan_type (str): Type of scan ('basic', 'service', 'stealth', 'vuln')
+        
+        Returns:
+            Dict: Scan results
+        """
+        scan_types = {
+            'basic': "-sV -sC",
+            'service': "-sV",
+            'stealth': "-sS -T2", 
+            'vuln': "--script vuln",
+            'os': "-O",
+            'comprehensive': "-sV -sC -O -A"
+        }
+        
+        arguments = scan_types.get(scan_type, "-sV -sC")
+        return self.scan(target, arguments)
