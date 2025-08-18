@@ -469,3 +469,29 @@ class ReportGenerator:
     def generate_compliance_report(self, scan_data: Dict[str, Any], framework: str = "general", output_path: str = None) -> Dict[str, Any]:
         """Generate compliance-focused report"""
         return self.generate_report(scan_data, f"compliance_{framework}", "html", output_path)
+    
+    def generate_pentest_report(self, workflow_data: Dict[str, Any], output_path: str = None) -> str:
+        """Generate complete penetration testing report - API compatibility function"""
+        try:
+            self.logger.info("Generating complete pentesting report")
+            
+            # Use the main generate_report method with full report type
+            result = self.generate_report(workflow_data, "full", "html", output_path)
+            
+            if result.get('success', False):
+                report_path = result.get('report_path', '/tmp/pentest_report.html')
+                self.logger.info(f"Pentest report generated successfully: {report_path}")
+                return report_path
+            else:
+                raise PentestError(f"Report generation failed: {result.get('error', 'Unknown error')}")
+                
+        except Exception as e:
+            self.logger.error(f"generate_pentest_report failed: {str(e)}")
+            raise PentestError(f"Report generation failed: {str(e)}")
+
+
+# Module-level convenience functions for backwards compatibility
+def generate_pentest_report(workflow_data: Dict[str, Any], output_path: str = None) -> str:
+    """Module-level function for generating pentest reports"""
+    generator = ReportGenerator()
+    return generator.generate_pentest_report(workflow_data, output_path)
