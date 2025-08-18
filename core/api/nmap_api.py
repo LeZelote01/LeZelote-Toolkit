@@ -190,6 +190,17 @@ class NmapAPI:
             if osmatch is not None:
                 host_data["os"] = dict(osmatch.attrib)
         
+        # Add compatibility fields
+        # Extract primary IP address for easy access
+        if host_data["addresses"]:
+            for addr in host_data["addresses"]:
+                if addr.get("addrtype") == "ipv4":
+                    host_data["ip"] = addr["addr"]
+                    break
+            # Fallback to first address if no IPv4 found
+            if "ip" not in host_data and host_data["addresses"]:
+                host_data["ip"] = host_data["addresses"][0]["addr"]
+        
         return host_data
     
     def ping_sweep(self, network: str) -> Dict[str, Any]:
