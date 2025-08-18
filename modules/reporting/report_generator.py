@@ -478,8 +478,9 @@ class ReportGenerator:
             # Use the main generate_report method with full report type
             result = self.generate_report(workflow_data, "full", "html", output_path)
             
-            if result.get('success', False):
-                report_path = result.get('report_path', '/tmp/pentest_report.html')
+            # Check if report generation was successful (status: 'success')
+            if result.get('status') == 'success':
+                report_path = result.get('output_path', '/tmp/pentest_report.html')
                 self.logger.info(f"Pentest report generated successfully: {report_path}")
                 return report_path
             else:
