@@ -158,6 +158,9 @@ class PentestOrchestrator:
             self._update_state(WorkflowState.COMPLETE)
             self.workflow_data['end_time'] = datetime.now()
             
+            # Add state field for API compatibility
+            self.workflow_data['state'] = self.workflow_data.get('current_state', 'complete')
+            
             self.logger.info("Pentesting workflow completed successfully")
             return self.workflow_data
             
