@@ -33,7 +33,7 @@ from rich.tree import Tree
 from core.engine.orchestrator import PentestOrchestrator
 from modules.vulnerability.web_scanner import WebScanner
 from modules.vulnerability.network_vuln import NetworkVulnerabilityScanner
-from modules.vulnerability.cloud_audit import CloudAuditor
+from modules.vulnerability.cloud_audit import CloudSecurityAuditor as CloudAuditor
 from modules.vulnerability.static_analyzer import StaticAnalyzer
 from modules.vulnerability.mobile_audit import MobileAuditor
 from core.utils.logging_handler import LoggingHandler
