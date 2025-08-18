@@ -1,0 +1,268 @@
+{
+  "profile_name": "full_audit",
+  "display_name": "Comprehensive Security Audit",
+  "description": "Complete penetration test including all phases: reconnaissance, vulnerability assessment, exploitation, and post-exploitation",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17",
+  "estimated_duration": "4-8 hours",
+  "target_types": ["web", "network", "host", "domain"],
+  "risk_level": "high",
+  "stealth_mode": false,
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "comprehensive_port_scan",
+          "tool": "nmap",
+          "options": {
+            "scan_type": "comprehensive",
+            "all_ports": true,
+            "timing": "T3",
+            "arguments": "-sS -sV -O -A -p- -T3 --script=default,discovery,safe",
+            "timeout": 3600
+          }
+        },
+        {
+          "name": "service_enumeration",
+          "tool": "nmap",
+          "options": {
+            "version_detection": true,
+            "os_detection": true,
+            "script_scan": true,
+            "arguments": "-sV -O --script=banner,version,info",
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "subdomain_enum",
+          "tool": "amass",
+          "options": {
+            "passive": true,
+            "active": true,
+            "brute_force": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "dns_comprehensive",
+          "tool": "dnsx",
+          "options": {
+            "all_records": true,
+            "zone_transfer": true,
+            "reverse_dns": true,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "osint_gathering",
+          "tool": "theharvester",
+          "options": {
+            "data_sources": ["all"],
+            "search_limit": 500,
+            "timeout": 900
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 5
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "comprehensive_web_scan",
+          "tool": "zap",
+          "options": {
+            "spider_scan": true,
+            "active_scan": true,
+            "passive_scan": true,
+            "authentication": true,
+            "timeout": 7200
+          }
+        },
+        {
+          "name": "nuclei_comprehensive",
+          "tool": "nuclei",
+          "options": {
+            "templates": ["all"],
+            "rate_limit": "100",
+            "severity": ["critical", "high", "medium", "low", "info"],
+            "timeout": 3600
+          }
+        },
+        {
+          "name": "network_vulnerability",
+          "tool": "nessus",
+          "options": {
+            "policy": "advanced",
+            "all_plugins": true,
+            "safe_checks": false,
+            "timeout": 7200
+          }
+        },
+        {
+          "name": "ssl_tls_analysis",
+          "tool": "sslyze",
+          "options": {
+            "all_checks": true,
+            "certificate_info": true,
+            "timeout": 300
+          }
+        },
+        {
+          "name": "smb_enumeration",
+          "tool": "smbmap",
+          "options": {
+            "enumerate_shares": true,
+            "check_permissions": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 3
+    },
+    
+    "exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "automated_exploitation",
+          "tool": "metasploit",
+          "options": {
+            "auto_exploit": true,
+            "payload_selection": "automatic",
+            "session_management": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "web_exploitation",
+          "tool": "sqlmap",
+          "options": {
+            "level": 3,
+            "risk": 2,
+            "all_techniques": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "credential_attacks",
+          "tool": "hydra",
+          "options": {
+            "common_passwords": true,
+            "protocol_specific": true,
+            "timeout": 1200
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "post_exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "privilege_escalation",
+          "tool": "linpeas",
+          "options": {
+            "comprehensive_check": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "lateral_movement",
+          "tool": "crackmapexec",
+          "options": {
+            "smb_enum": true,
+            "password_spray": false,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "data_collection",
+          "tool": "custom",
+          "options": {
+            "sensitive_files": true,
+            "system_info": true,
+            "network_config": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "evidence_collection": true
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "comprehensive_report",
+          "formats": ["pdf", "html", "docx", "json"],
+          "include_screenshots": true,
+          "executive_summary": true,
+          "technical_details": true,
+          "compliance_mapping": true
+        }
+      ]
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 50,
+    "memory_limit": "8GB",
+    "cpu_limit": "80%",
+    "network_bandwidth": "unlimited",
+    "scan_intensity": "aggressive"
+  },
+  
+  "target_filters": {
+    "exclude_ports": [],
+    "exclude_hosts": [],
+    "include_only": [],
+    "skip_ping": false
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "real_time_updates": true,
+    "detailed_logging": true
+  },
+  
+  "compliance_checks": {
+    "enabled": true,
+    "frameworks": ["PCI-DSS", "HIPAA", "GDPR", "SOX", "NIST"]
+  },
+  
+  "notification_settings": {
+    "critical_findings": true,
+    "high_findings": true,
+    "medium_findings": true,
+    "completion_notification": true,
+    "phase_completion": true
+  },
+  
+  "safety_measures": {
+    "dos_protection": true,
+    "rate_limiting": true,
+    "blacklist_check": true,
+    "confirm_targets": true,
+    "backup_creation": true
+  },
+  
+  "advanced_options": {
+    "evasion_techniques": true,
+    "custom_payloads": true,
+    "manual_verification": true,
+    "forensic_mode": false
+  }
+}

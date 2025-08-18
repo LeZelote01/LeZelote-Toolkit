@@ -1,0 +1,19 @@
+auto_detect_usb: true
+backup_before_update: true
+compression_level: 6
+include_binaries: true
+include_configs: true
+include_databases: true
+include_wordlists: true
+rollback_enabled: true
+update_package_format: zip
+usb_mount_points:
+- /media/usb
+- /mnt/usb
+- E:\
+- F:\
+- G:\
+verification:
+  algorithm: sha256
+  create_manifest: true
+  enabled: true

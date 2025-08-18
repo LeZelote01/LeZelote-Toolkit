@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Test Report - {{CLIENT_NAME}}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #dc3545;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #dc3545;
+            font-size: 2.5em;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .header .subtitle {
+            color: #6c757d;
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        
+        .client-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #007bff;
+            margin: 30px 0;
+        }
+        
+        .section {
+            margin: 40px 0;
+            page-break-before: avoid;
+        }
+        
+        .section-title {
+            color: #dc3545;
+            font-size: 1.8em;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .subsection-title {
+            color: #007bff;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+        
+        .vulnerability {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .vuln-header {
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .vuln-critical { background-color: #dc3545; color: white; }
+        .vuln-high { background-color: #fd7e14; color: white; }
+        .vuln-medium { background-color: #ffc107; color: black; }
+        .vuln-low { background-color: #28a745; color: white; }
+        .vuln-info { background-color: #17a2b8; color: white; }
+        
+        .vuln-content {
+            padding: 20px;
+            background: white;
+        }
+        
+        .vuln-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        
+        .detail-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .recommendation {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .risk-matrix {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .risk-cell {
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-critical { color: #dc3545; }
+        .stat-high { color: #fd7e14; }
+        .stat-medium { color: #ffc107; }
+        .stat-low { color: #28a745; }
+        .stat-info { color: #17a2b8; }
+        
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: #6c757d;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        @media print {
+            body { background: white; }
+            .container { box-shadow: none; }
+            .page-break { page-break-before: always; }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .timeline {
+            margin: 20px 0;
+            padding: 0;
+        }
+        
+        .timeline-item {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border-left: 3px solid #007bff;
+            background: #f8f9fa;
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Penetration Test Report</h1>
+            <div class="subtitle">Security Assessment Report</div>
+            <div class="subtitle">{{CLIENT_NAME}} - {{TEST_DATE}}</div>
+        </div>
+
+        <!-- Client Information -->
+        <div class="client-info">
+            <h3>Assessment Details</h3>
+            <table>
+                <tr><td><strong>Client:</strong></td><td>{{CLIENT_NAME}}</td></tr>
+                <tr><td><strong>Assessment Period:</strong></td><td>{{START_DATE}} to {{END_DATE}}</td></tr>
+                <tr><td><strong>Assessment Type:</strong></td><td>{{ASSESSMENT_TYPE}}</td></tr>
+                <tr><td><strong>Scope:</strong></td><td>{{SCOPE}}</td></tr>
+                <tr><td><strong>Tester:</strong></td><td>{{TESTER_NAME}}</td></tr>
+                <tr><td><strong>Report Date:</strong></td><td>{{REPORT_DATE}}</td></tr>
+            </table>
+        </div>
+
+        <!-- Executive Summary -->
+        <div class="section">
+            <h2 class="section-title">Executive Summary</h2>
+            <p>{{EXECUTIVE_SUMMARY}}</p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number stat-critical">{{CRITICAL_COUNT}}</div>
+                    <div>Critical</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number stat-high">{{HIGH_COUNT}}</div>
+                    <div>High</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number stat-medium">{{MEDIUM_COUNT}}</div>
+                    <div>Medium</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number stat-low">{{LOW_COUNT}}</div>
+                    <div>Low</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number stat-info">{{INFO_COUNT}}</div>
+                    <div>Informational</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Methodology -->
+        <div class="section">
+            <h2 class="section-title">Assessment Methodology</h2>
+            <div class="subsection-title">Testing Approach</div>
+            <p>{{METHODOLOGY_DESCRIPTION}}</p>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Phase 1: Information Gathering</div>
+                    <div>Reconnaissance and information gathering about the target systems</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Phase 2: Vulnerability Assessment</div>
+                    <div>Systematic identification of security vulnerabilities</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Phase 3: Exploitation</div>
+                    <div>Attempted exploitation of identified vulnerabilities</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Phase 4: Post-Exploitation</div>
+                    <div>Assessment of potential impact and further compromise</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Phase 5: Reporting</div>
+                    <div>Documentation of findings and recommendations</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scope and Limitations -->
+        <div class="section">
+            <h2 class="section-title">Scope and Limitations</h2>
+            <div class="subsection-title">In Scope</div>
+            <ul>
+                {{#IN_SCOPE_ITEMS}}
+                <li>{{.}}</li>
+                {{/IN_SCOPE_ITEMS}}
+            </ul>
+            
+            <div class="subsection-title">Out of Scope</div>
+            <ul>
+                {{#OUT_OF_SCOPE_ITEMS}}
+                <li>{{.}}</li>
+                {{/OUT_OF_SCOPE_ITEMS}}
+            </ul>
+            
+            <div class="subsection-title">Limitations</div>
+            <p>{{LIMITATIONS}}</p>
+        </div>
+
+        <!-- Findings Section -->
+        <div class="section page-break">
+            <h2 class="section-title">Detailed Findings</h2>
+            
+            {{#VULNERABILITIES}}
+            <div class="vulnerability">
+                <div class="vuln-header vuln-{{SEVERITY_LOWER}}">
+                    {{TITLE}} - {{SEVERITY}} Risk
+                </div>
+                <div class="vuln-content">
+                    <div class="vuln-details">
+                        <div class="detail-item">
+                            <div class="detail-label">CVSS Score</div>
+                            <div>{{CVSS_SCORE}} ({{CVSS_VECTOR}})</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">CWE</div>
+                            <div>{{CWE}}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Affected Systems</div>
+                            <div>{{AFFECTED_SYSTEMS}}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Discovery Method</div>
+                            <div>{{DISCOVERY_METHOD}}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="subsection-title">Description</div>
+                    <p>{{DESCRIPTION}}</p>
+                    
+                    <div class="subsection-title">Technical Details</div>
+                    <p>{{TECHNICAL_DETAILS}}</p>
+                    
+                    {{#EVIDENCE}}
+                    <div class="subsection-title">Evidence</div>
+                    <div class="code-block">{{EVIDENCE}}</div>
+                    {{/EVIDENCE}}
+                    
+                    <div class="subsection-title">Impact</div>
+                    <p>{{IMPACT}}</p>
+                    
+                    <div class="recommendation">
+                        <div class="subsection-title">Recommendations</div>
+                        <p>{{RECOMMENDATIONS}}</p>
+                    </div>
+                    
+                    <div class="subsection-title">References</div>
+                    <ul>
+                        {{#REFERENCES}}
+                        <li><a href="{{URL}}" target="_blank">{{TITLE}}</a></li>
+                        {{/REFERENCES}}
+                    </ul>
+                </div>
+            </div>
+            {{/VULNERABILITIES}}
+        </div>
+
+        <!-- Risk Assessment -->
+        <div class="section page-break">
+            <h2 class="section-title">Risk Assessment</h2>
+            <div class="subsection-title">Risk Matrix</div>
+            <p>The following matrix shows the distribution of vulnerabilities by risk level:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Level</th>
+                        <th>Count</th>
+                        <th>Percentage</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background-color: #f8d7da;">
+                        <td><strong>Critical</strong></td>
+                        <td>{{CRITICAL_COUNT}}</td>
+                        <td>{{CRITICAL_PERCENTAGE}}%</td>
+                        <td>Immediate action required</td>
+                    </tr>
+                    <tr style="background-color: #fdebd0;">
+                        <td><strong>High</strong></td>
+                        <td>{{HIGH_COUNT}}</td>
+                        <td>{{HIGH_PERCENTAGE}}%</td>
+                        <td>Action required within 30 days</td>
+                    </tr>
+                    <tr style="background-color: #fff3cd;">
+                        <td><strong>Medium</strong></td>
+                        <td>{{MEDIUM_COUNT}}</td>
+                        <td>{{MEDIUM_PERCENTAGE}}%</td>
+                        <td>Action required within 90 days</td>
+                    </tr>
+                    <tr style="background-color: #d4edda;">
+                        <td><strong>Low</strong></td>
+                        <td>{{LOW_COUNT}}</td>
+                        <td>{{LOW_PERCENTAGE}}%</td>
+                        <td>Action required within 6 months</td>
+                    </tr>
+                    <tr style="background-color: #d1ecf1;">
+                        <td><strong>Informational</strong></td>
+                        <td>{{INFO_COUNT}}</td>
+                        <td>{{INFO_PERCENTAGE}}%</td>
+                        <td>No immediate action required</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <h2 class="section-title">Strategic Recommendations</h2>
+            <div class="subsection-title">Immediate Actions (0-30 days)</div>
+            <ul>
+                {{#IMMEDIATE_RECOMMENDATIONS}}
+                <li>{{.}}</li>
+                {{/IMMEDIATE_RECOMMENDATIONS}}
+            </ul>
+            
+            <div class="subsection-title">Short-term Actions (30-90 days)</div>
+            <ul>
+                {{#SHORT_TERM_RECOMMENDATIONS}}
+                <li>{{.}}</li>
+                {{/SHORT_TERM_RECOMMENDATIONS}}
+            </ul>
+            
+            <div class="subsection-title">Long-term Actions (90+ days)</div>
+            <ul>
+                {{#LONG_TERM_RECOMMENDATIONS}}
+                <li>{{.}}</li>
+                {{/LONG_TERM_RECOMMENDATIONS}}
+            </ul>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="section">
+            <h2 class="section-title">Conclusion</h2>
+            <p>{{CONCLUSION}}</p>
+        </div>
+
+        <!-- Appendices -->
+        <div class="section page-break">
+            <h2 class="section-title">Appendices</h2>
+            
+            <div class="subsection-title">Appendix A: Testing Tools Used</div>
+            <ul>
+                {{#TOOLS_USED}}
+                <li><strong>{{NAME}}:</strong> {{DESCRIPTION}}</li>
+                {{/TOOLS_USED}}
+            </ul>
+            
+            <div class="subsection-title">Appendix B: Vulnerability Definitions</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Risk Level</th>
+                        <th>CVSS Score Range</th>
+                        <th>Definition</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Critical</td>
+                        <td>9.0 - 10.0</td>
+                        <td>Vulnerabilities that allow immediate system compromise</td>
+                    </tr>
+                    <tr>
+                        <td>High</td>
+                        <td>7.0 - 8.9</td>
+                        <td>Vulnerabilities that could lead to system compromise</td>
+                    </tr>
+                    <tr>
+                        <td>Medium</td>
+                        <td>4.0 - 6.9</td>
+                        <td>Vulnerabilities that could aid in system compromise</td>
+                    </tr>
+                    <tr>
+                        <td>Low</td>
+                        <td>0.1 - 3.9</td>
+                        <td>Vulnerabilities with minimal impact</td>
+                    </tr>
+                    <tr>
+                        <td>Informational</td>
+                        <td>0.0</td>
+                        <td>Information disclosure with no direct security impact</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>This report was generated by LeZelote Pentest-USB Toolkit</p>
+            <p>Report generated on {{GENERATION_DATE}} | Version {{REPORT_VERSION}}</p>
+            <p><strong>CONFIDENTIAL:</strong> This document contains sensitive security information and should be treated as confidential</p>
+        </div>
+    </div>
+</body>
+</html>

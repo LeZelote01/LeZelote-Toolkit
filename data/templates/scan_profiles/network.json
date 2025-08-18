@@ -1,0 +1,296 @@
+{
+  "profile_name": "network",
+  "display_name": "Network Security Assessment", 
+  "description": "Comprehensive network infrastructure security testing focusing on network devices, services, and protocols",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17",
+  "estimated_duration": "1-3 hours",
+  "target_types": ["network", "host", "service"],
+  "risk_level": "medium",
+  "stealth_mode": true,
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "network_discovery",
+          "tool": "nmap",
+          "options": {
+            "ping_scan": true,
+            "host_discovery": "all_methods",
+            "arguments": "-sn -PS21,22,25,53,80,110,111,135,139,143,443,993,995,1723,3389,5900",
+            "timeout": 600
+          }
+        },
+        {
+          "name": "port_scan_comprehensive", 
+          "tool": "nmap",
+          "options": {
+            "scan_type": "syn",
+            "all_ports": true,
+            "timing": "T3",
+            "arguments": "-sS -p- -T3 --max-retries=2",
+            "timeout": 3600
+          }
+        },
+        {
+          "name": "service_version_detection",
+          "tool": "nmap",
+          "options": {
+            "version_detection": true,
+            "os_detection": true,
+            "arguments": "-sV -O --version-intensity=5",
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "udp_scan",
+          "tool": "nmap", 
+          "options": {
+            "scan_type": "udp",
+            "top_udp_ports": 1000,
+            "arguments": "-sU --top-ports=1000",
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "snmp_enumeration",
+          "tool": "snmpwalk",
+          "options": {
+            "community_strings": ["public", "private", "community"],
+            "versions": ["1", "2c"],
+            "timeout": 300
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 4
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "nmap_vulnerability_scan",
+          "tool": "nmap",
+          "options": {
+            "script_categories": ["vuln", "safe", "default"],
+            "arguments": "--script=vuln,safe,default --script-timeout=300s",
+            "timeout": 2400
+          }
+        },
+        {
+          "name": "smb_enumeration",
+          "tool": "smbclient",
+          "options": {
+            "list_shares": true,
+            "check_null_session": true,
+            "check_guest_access": true,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "ssl_tls_testing",
+          "tool": "sslyze",
+          "options": {
+            "certificate_info": true,
+            "protocol_support": true,
+            "cipher_suites": true,
+            "vulnerabilities": ["heartbleed", "crime", "breach", "poodle"],
+            "timeout": 300
+          }
+        },
+        {
+          "name": "dns_security_check",
+          "tool": "dnsrecon",
+          "options": {
+            "zone_transfer": true,
+            "reverse_lookup": true,
+            "brute_force": false,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "network_protocols",
+          "tool": "nmap",
+          "options": {
+            "scripts": [
+              "ftp-anon", "ssh-hostkey", "ssh-auth-methods",
+              "smtp-enum-users", "http-title", "pop3-capabilities",
+              "imap-capabilities", "ssl-cert", "ssl-enum-ciphers"
+            ],
+            "timeout": 900
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 3
+    },
+    
+    "exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "default_credentials",
+          "tool": "hydra",
+          "options": {
+            "services": ["ssh", "ftp", "telnet", "http", "https", "smb", "snmp"],
+            "username_list": "common_users",
+            "password_list": "default_passwords",
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "smb_attacks",
+          "tool": "smbclient",
+          "options": {
+            "null_session_check": true,
+            "share_enumeration": true,
+            "file_discovery": true,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "snmp_attacks",
+          "tool": "snmpwalk",
+          "options": {
+            "community_brute_force": true,
+            "community_list": "extended",
+            "information_gathering": true,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "network_service_exploits",
+          "tool": "metasploit",
+          "options": {
+            "auxiliary_modules": true,
+            "service_specific": true,
+            "safe_checks": true,
+            "timeout": 1800
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Network assessment focuses on service enumeration and basic exploitation"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "network_security_report",
+          "formats": ["html", "pdf", "json"],
+          "include_screenshots": false,
+          "network_topology": true,
+          "service_matrix": true,
+          "executive_summary": true,
+          "technical_details": true
+        }
+      ]
+    }
+  },
+  
+  "network_specific_options": {
+    "scanning_techniques": {
+      "syn_scan": true,
+      "connect_scan": false,
+      "udp_scan": true,
+      "ack_scan": false,
+      "window_scan": false,
+      "idle_scan": false
+    },
+    
+    "timing_templates": {
+      "default": "T3",
+      "stealth": "T1",
+      "aggressive": "T4"
+    },
+    
+    "host_discovery": {
+      "ping_sweep": true,
+      "tcp_ping": true,
+      "udp_ping": true,
+      "arp_ping": true,
+      "icmp_ping": true
+    },
+    
+    "service_detection": {
+      "version_intensity": 5,
+      "probe_open_ports": true,
+      "probe_closed_ports": false,
+      "rpc_scan": true,
+      "os_detection": true
+    },
+    
+    "protocol_analysis": {
+      "ipv4": true,
+      "ipv6": true,
+      "icmp": true,
+      "tcp": true,
+      "udp": true,
+      "sctp": false
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 30,
+    "memory_limit": "4GB",
+    "cpu_limit": "60%",
+    "network_bandwidth": "50Mbps",
+    "scan_intensity": "normal",
+    "packet_rate": "1000/sec"
+  },
+  
+  "target_filters": {
+    "exclude_ports": [],
+    "exclude_hosts": ["127.0.0.1", "::1"],
+    "include_only": [],
+    "skip_ping": false,
+    "private_networks_only": false
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "real_time_updates": true,
+    "packet_capture": false
+  },
+  
+  "compliance_checks": {
+    "enabled": true,
+    "frameworks": ["NIST", "CIS"]
+  },
+  
+  "notification_settings": {
+    "open_ports": false,
+    "vulnerable_services": true,
+    "critical_findings": true,
+    "completion_notification": true
+  },
+  
+  "safety_measures": {
+    "dos_protection": true,
+    "rate_limiting": true,
+    "blacklist_check": true,
+    "confirm_targets": true,
+    "respect_firewalls": true
+  },
+  
+  "advanced_options": {
+    "fragment_packets": false,
+    "decoy_scanning": false,
+    "source_port_manipulation": false,
+    "timing_evasion": true,
+    "firewall_evasion": false
+  }
+}

@@ -1,0 +1,366 @@
+{
+  "profile_name": "compliance",
+  "display_name": "Compliance and Regulatory Assessment",
+  "description": "Multi-framework compliance checking against industry standards and regulatory requirements",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17",
+  "estimated_duration": "2-6 hours",
+  "target_types": ["compliance", "regulatory", "standards"],
+  "risk_level": "low",
+  "stealth_mode": true,
+  
+  "compliance_frameworks": {
+    "pci_dss": {
+      "enabled": true,
+      "version": "4.0",
+      "scope": ["cardholder_data", "payment_processing", "network_security"],
+      "requirements": "all",
+      "merchant_level": "any"
+    },
+    "hipaa": {
+      "enabled": true,
+      "scope": ["phi_protection", "access_controls", "audit_logs"],
+      "rules": ["privacy", "security", "breach_notification"],
+      "covered_entities": true
+    },
+    "gdpr": {
+      "enabled": true,
+      "scope": ["data_protection", "privacy_rights", "data_processing"],
+      "articles": ["25", "32", "33", "34"],
+      "lawful_basis": "all"
+    },
+    "sox": {
+      "enabled": true,
+      "sections": ["302", "404", "409"],
+      "scope": ["financial_reporting", "internal_controls"],
+      "public_companies": true
+    },
+    "nist_csf": {
+      "enabled": true,
+      "version": "1.1",
+      "functions": ["identify", "protect", "detect", "respond", "recover"],
+      "implementation_tiers": "all"
+    },
+    "iso_27001": {
+      "enabled": true,
+      "version": "2013",
+      "domains": "all",
+      "certification_focus": false
+    },
+    "cis_controls": {
+      "enabled": true,
+      "version": "8.0",
+      "implementation_groups": ["IG1", "IG2", "IG3"],
+      "priority": "high"
+    }
+  },
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "asset_inventory",
+          "tool": "nmap",
+          "options": {
+            "comprehensive_discovery": true,
+            "service_detection": true,
+            "os_fingerprinting": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "data_flow_mapping",
+          "tool": "custom",
+          "options": {
+            "network_topology": true,
+            "data_classification": true,
+            "processing_locations": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "system_documentation_review",
+          "tool": "custom",
+          "options": {
+            "policy_review": true,
+            "procedure_analysis": true,
+            "configuration_baselines": true,
+            "timeout": 1200
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 2
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "pci_dss_assessment",
+          "tool": "custom",
+          "options": {
+            "network_segmentation": true,
+            "encryption_validation": true,
+            "access_controls": true,
+            "logging_audit": true,
+            "vulnerability_management": true,
+            "timeout": 2400
+          }
+        },
+        {
+          "name": "hipaa_security_assessment",
+          "tool": "custom",
+          "options": {
+            "administrative_safeguards": true,
+            "physical_safeguards": true,
+            "technical_safeguards": true,
+            "phi_protection": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "gdpr_compliance_check",
+          "tool": "custom",
+          "options": {
+            "data_protection_by_design": true,
+            "privacy_impact_assessment": true,
+            "consent_mechanisms": true,
+            "data_subject_rights": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "nist_framework_assessment",
+          "tool": "custom",
+          "options": {
+            "cybersecurity_framework": true,
+            "risk_management": true,
+            "control_effectiveness": true,
+            "maturity_assessment": true,
+            "timeout": 2400
+          }
+        },
+        {
+          "name": "cis_controls_evaluation",
+          "tool": "custom",
+          "options": {
+            "basic_controls": true,
+            "foundational_controls": true,
+            "organizational_controls": true,
+            "implementation_assessment": true,
+            "timeout": 2400
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "exploitation": {
+      "enabled": false,
+      "reason": "Compliance assessment is non-intrusive and focuses on configuration validation"
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Compliance assessment does not involve exploitation activities"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "compliance_report",
+          "formats": ["pdf", "html", "docx", "json"],
+          "include_executive_summary": true,
+          "compliance_matrix": true,
+          "gap_analysis": true,
+          "remediation_roadmap": true,
+          "audit_evidence": true
+        }
+      ]
+    }
+  },
+  
+  "assessment_methodology": {
+    "approach": "risk_based",
+    "sampling_strategy": "statistical",
+    "evidence_collection": "comprehensive",
+    "testing_procedures": "standardized",
+    "validation_methods": ["technical", "administrative", "physical"]
+  },
+  
+  "pci_dss_requirements": {
+    "requirement_1": {
+      "name": "Firewall Configuration",
+      "checks": ["firewall_rules", "network_segmentation", "dmz_configuration"],
+      "evidence": ["configurations", "rule_sets", "network_diagrams"]
+    },
+    "requirement_2": {
+      "name": "Default Security Parameters",
+      "checks": ["default_passwords", "unnecessary_services", "system_hardening"],
+      "evidence": ["configuration_files", "service_listings", "security_baselines"]
+    },
+    "requirement_3": {
+      "name": "Cardholder Data Protection",
+      "checks": ["data_encryption", "key_management", "data_retention"],
+      "evidence": ["encryption_status", "key_procedures", "data_inventory"]
+    },
+    "requirement_4": {
+      "name": "Encryption in Transit",
+      "checks": ["ssl_tls_configuration", "secure_protocols", "key_exchange"],
+      "evidence": ["ssl_certificates", "protocol_analysis", "cipher_suites"]
+    },
+    "requirement_6": {
+      "name": "Secure Development",
+      "checks": ["vulnerability_management", "secure_coding", "change_control"],
+      "evidence": ["vulnerability_scans", "code_reviews", "change_procedures"]
+    },
+    "requirement_7": {
+      "name": "Access Control",
+      "checks": ["need_to_know", "access_restrictions", "role_based_access"],
+      "evidence": ["access_matrices", "user_accounts", "privilege_assignments"]
+    },
+    "requirement_8": {
+      "name": "User Authentication",
+      "checks": ["unique_ids", "strong_authentication", "password_policies"],
+      "evidence": ["user_accounts", "authentication_methods", "password_policies"]
+    },
+    "requirement_9": {
+      "name": "Physical Access",
+      "checks": ["facility_security", "media_controls", "device_security"],
+      "evidence": ["facility_tours", "access_logs", "media_procedures"]
+    },
+    "requirement_10": {
+      "name": "Logging and Monitoring",
+      "checks": ["audit_trails", "log_review", "time_synchronization"],
+      "evidence": ["log_samples", "review_procedures", "time_server_config"]
+    },
+    "requirement_11": {
+      "name": "Security Testing",
+      "checks": ["vulnerability_scanning", "penetration_testing", "ids_ips"],
+      "evidence": ["scan_reports", "test_procedures", "security_monitoring"]
+    },
+    "requirement_12": {
+      "name": "Information Security Policy",
+      "checks": ["security_policy", "risk_assessment", "incident_response"],
+      "evidence": ["policy_documents", "risk_assessments", "incident_procedures"]
+    }
+  },
+  
+  "hipaa_safeguards": {
+    "administrative": {
+      "security_officer": true,
+      "workforce_training": true,
+      "access_authorization": true,
+      "workforce_clearance": true,
+      "information_access_management": true
+    },
+    "physical": {
+      "facility_access_controls": true,
+      "workstation_use": true,
+      "device_media_controls": true,
+      "equipment_disposal": true
+    },
+    "technical": {
+      "access_control": true,
+      "audit_controls": true,
+      "integrity": true,
+      "person_authentication": true,
+      "transmission_security": true
+    }
+  },
+  
+  "gdpr_compliance_areas": {
+    "lawfulness": {
+      "legal_basis": true,
+      "consent_management": true,
+      "legitimate_interest": true
+    },
+    "data_subject_rights": {
+      "access_requests": true,
+      "rectification": true,
+      "erasure": true,
+      "portability": true,
+      "objection": true
+    },
+    "data_protection_principles": {
+      "purpose_limitation": true,
+      "data_minimization": true,
+      "accuracy": true,
+      "storage_limitation": true,
+      "security": true,
+      "accountability": true
+    }
+  },
+  
+  "evidence_collection": {
+    "documentation_review": {
+      "policies": true,
+      "procedures": true,
+      "risk_assessments": true,
+      "training_records": false
+    },
+    "technical_validation": {
+      "configuration_review": true,
+      "vulnerability_scanning": true,
+      "log_analysis": true,
+      "network_testing": true
+    },
+    "interviews": {
+      "management": false,
+      "technical_staff": false,
+      "end_users": false
+    },
+    "observations": {
+      "physical_security": false,
+      "processes": false,
+      "controls": true
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 10,
+    "memory_limit": "3GB",
+    "cpu_limit": "50%",
+    "scan_intensity": "thorough",
+    "evidence_retention": "6_months"
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "audit_trail": true,
+    "evidence_package": true
+  },
+  
+  "notification_settings": {
+    "critical_gaps": true,
+    "high_risk_findings": true,
+    "compliance_violations": true,
+    "completion_notification": true,
+    "milestone_updates": true
+  },
+  
+  "quality_assurance": {
+    "peer_review": false,
+    "technical_validation": true,
+    "evidence_verification": true,
+    "finding_validation": true
+  },
+  
+  "reporting_options": {
+    "executive_summary": true,
+    "technical_findings": true,
+    "compliance_matrix": true,
+    "gap_analysis": true,
+    "remediation_plan": true,
+    "implementation_timeline": true,
+    "cost_benefit_analysis": false,
+    "risk_register": true
+  }
+}

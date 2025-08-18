@@ -1,0 +1,454 @@
+# Profils de Scan - Pentest-USB Toolkit
+# Définition des différents profils de scan prédéfinis
+
+# Profils généraux de scan
+profiles:
+  # Scan rapide pour reconnaissance initiale
+  quick_scan:
+    name: "Quick Scan"
+    description: "Scan rapide pour reconnaissance de base (5-15 minutes)"
+    category: "reconnaissance"
+    estimated_duration: 900       # 15 minutes en secondes
+    resource_usage: "low"
+    stealth_level: "medium"
+    
+    modules:
+      reconnaissance:
+        enabled: true
+        priority: 1
+        tools:
+          - name: "nmap"
+            arguments: "-sS -T4 -F"
+            timeout: 300
+          - name: "rustscan"
+            arguments: "--batch-size 1000 --timeout 1000"
+            timeout: 120
+            
+      vulnerability:
+        enabled: true
+        priority: 2
+        tools:
+          - name: "nuclei"
+            arguments: "-severity high,critical"
+            timeout: 300
+            
+      exploitation:
+        enabled: false
+        
+      post_exploitation:
+        enabled: false
+        
+    targets:
+      max_hosts: 256
+      port_range: "1-1000"
+      
+    reporting:
+      auto_generate: true
+      format: "html"
+      include_screenshots: false
+
+  # Scan standard équilibré
+  standard_scan:
+    name: "Standard Scan"
+    description: "Scan équilibré avec bonne couverture (30-60 minutes)"
+    category: "comprehensive"
+    estimated_duration: 3600      # 1 heure
+    resource_usage: "medium"
+    stealth_level: "medium"
+    
+    modules:
+      reconnaissance:
+        enabled: true
+        priority: 1
+        tools:
+          - name: "nmap"
+            arguments: "-sS -sV -T3 -p 1-65535"
+            timeout: 1800
+          - name: "amass"
+            arguments: "enum -passive"
+            timeout: 600
+          - name: "subfinder"
+            arguments: "-all"
+            timeout: 300
+            
+      vulnerability:
+        enabled: true
+        priority: 2
+        tools:
+          - name: "nuclei"
+            arguments: "-severity medium,high,critical"
+            timeout: 1200
+          - name: "nessus"
+            policy: "Basic Network Scan"
+            timeout: 2400
+            
+      exploitation:
+        enabled: false  # Désactivé par défaut pour sécurité
+        
+      post_exploitation:
+        enabled: false
+        
+    targets:
+      max_hosts: 1024
+      port_range: "1-65535"
+      
+    reporting:
+      auto_generate: true
+      format: "pdf"
+      include_screenshots: true
+
+  # Scan compréhensif exhaustif
+  comprehensive_scan:
+    name: "Comprehensive Scan"
+    description: "Scan exhaustif et complet (2-8 heures)"
+    category: "comprehensive"
+    estimated_duration: 14400     # 4 heures
+    resource_usage: "high"
+    stealth_level: "low"
+    
+    modules:
+      reconnaissance:
+        enabled: true
+        priority: 1
+        tools:
+          - name: "nmap"
+            arguments: "-sS -sV -sC -O -A -T4 -p 1-65535"
+            timeout: 3600
+          - name: "amass"
+            arguments: "enum -active"
+            timeout: 1800
+          - name: "subfinder"
+            arguments: "-all -recursive"
+            timeout: 900
+          - name: "theHarvester"
+            arguments: "-b all"
+            timeout: 1200
+            
+      vulnerability:
+        enabled: true
+        priority: 2
+        tools:
+          - name: "nuclei"
+            arguments: "-severity info,low,medium,high,critical"
+            timeout: 3600
+          - name: "nessus"
+            policy: "Advanced Scan"
+            timeout: 7200
+          - name: "openvas"
+            scan_config: "Full and fast"
+            timeout: 5400
+            
+      exploitation:
+        enabled: false  # Nécessite confirmation manuelle
+        
+      post_exploitation:
+        enabled: false
+        
+    targets:
+      max_hosts: 4096
+      port_range: "1-65535"
+      
+    reporting:
+      auto_generate: true
+      format: "docx"
+      include_screenshots: true
+      include_raw_output: true
+
+  # Scan furtif pour éviter la détection
+  stealth_scan:
+    name: "Stealth Scan"
+    description: "Scan furtif pour éviter la détection (1-4 heures)"
+    category: "stealth"
+    estimated_duration: 7200      # 2 heures
+    resource_usage: "low"
+    stealth_level: "high"
+    
+    modules:
+      reconnaissance:
+        enabled: true
+        priority: 1
+        tools:
+          - name: "nmap"
+            arguments: "-sS -T2 -f --scan-delay 10ms"
+            timeout: 7200
+          - name: "amass"
+            arguments: "enum -passive -timeout 30"
+            timeout: 1800
+            
+      vulnerability:
+        enabled: true
+        priority: 2
+        tools:
+          - name: "nuclei"
+            arguments: "-rate-limit 5 -severity high,critical"
+            timeout: 3600
+            
+      exploitation:
+        enabled: false
+        
+      post_exploitation:
+        enabled: false
+        
+    evasion_techniques:
+      packet_fragmentation: true
+      decoy_scanning: true
+      randomize_scan_order: true
+      source_port_randomization: true
+      timing_delays:
+        min_delay: 100            # millisecondes
+        max_delay: 1000
+        
+    targets:
+      max_hosts: 256
+      port_range: "1-1000"
+
+# Profils spécialisés par type de cible
+
+# Profil pour applications web
+web_application:
+  name: "Web Application Security Test"
+  description: "Test de sécurité spécialisé pour applications web"
+  category: "web"
+  estimated_duration: 3600
+  resource_usage: "medium"
+  stealth_level: "medium"
+  
+  modules:
+    reconnaissance:
+      enabled: true
+      priority: 1
+      tools:
+        - name: "nmap"
+          arguments: "-p 80,443,8000,8080,8443 -sV"
+          timeout: 600
+        - name: "subfinder"
+          arguments: "-all"
+          timeout: 300
+          
+    vulnerability:
+      enabled: true
+      priority: 2
+      tools:
+        - name: "zaproxy"
+          mode: "active_scan"
+          timeout: 2400
+        - name: "nuclei"
+          arguments: "-tags web,owasp"
+          timeout: 1800
+        - name: "nikto"
+          arguments: "-C all"
+          timeout: 1200
+          
+    exploitation:
+      enabled: false
+      tools:
+        - name: "sqlmap"
+          arguments: "--batch --level 3 --risk 2"
+          requires_confirmation: true
+
+# Profil pour infrastructure réseau
+network_infrastructure:
+  name: "Network Infrastructure Assessment"
+  description: "Évaluation complète de l'infrastructure réseau"
+  category: "network"
+  estimated_duration: 5400      # 1.5 heures
+  resource_usage: "medium"
+  stealth_level: "medium"
+  
+  modules:
+    reconnaissance:
+      enabled: true
+      priority: 1
+      tools:
+        - name: "nmap"
+          arguments: "-sS -sV -O -p 1-65535"
+          timeout: 3600
+        - name: "masscan"
+          arguments: "--rate 1000"
+          timeout: 600
+          
+    vulnerability:
+      enabled: true
+      priority: 2
+      tools:
+        - name: "nessus"
+          policy: "Basic Network Scan"
+          timeout: 3600
+        - name: "nuclei"
+          arguments: "-tags network"
+          timeout: 1200
+
+# Profil pour audit cloud
+cloud_security:
+  name: "Cloud Security Assessment"
+  description: "Audit de sécurité pour environnements cloud"
+  category: "cloud"
+  estimated_duration: 2700      # 45 minutes
+  resource_usage: "low"
+  stealth_level: "high"
+  
+  modules:
+    reconnaissance:
+      enabled: true
+      priority: 1
+      tools:
+        - name: "amass"
+          arguments: "enum -passive"
+          timeout: 600
+        - name: "subfinder"
+          arguments: "-all -recursive"
+          timeout: 600
+          
+    vulnerability:
+      enabled: true
+      priority: 2
+      tools:
+        - name: "prowler"
+          provider: "aws"
+          timeout: 1800
+        - name: "scoutsuite"
+          providers: ["aws", "azure", "gcp"]
+          timeout: 1800
+        - name: "nuclei"
+          arguments: "-tags cloud,aws,azure,gcp"
+          timeout: 900
+
+# Profil pour applications mobiles
+mobile_application:
+  name: "Mobile Application Security Test"
+  description: "Test de sécurité pour applications mobiles"
+  category: "mobile"
+  estimated_duration: 3600
+  resource_usage: "medium"
+  stealth_level: "low"
+  
+  modules:
+    reconnaissance:
+      enabled: true
+      priority: 1
+      tools:
+        - name: "mobsf"
+          mode: "static_analysis"
+          timeout: 1800
+          
+    vulnerability:
+      enabled: true
+      priority: 2
+      tools:
+        - name: "mobsf"
+          mode: "dynamic_analysis"
+          timeout: 1800
+        - name: "nuclei"
+          arguments: "-tags mobile"
+          timeout: 600
+
+# Profil pour tests de compliance
+compliance_audit:
+  name: "Compliance Audit"
+  description: "Audit de conformité réglementaire"
+  category: "compliance"
+  estimated_duration: 7200      # 2 heures
+  resource_usage: "medium"
+  stealth_level: "high"
+  
+  standards:
+    - "PCI-DSS"
+    - "HIPAA"
+    - "GDPR"
+    - "SOC2"
+    - "ISO27001"
+    
+  modules:
+    vulnerability:
+      enabled: true
+      priority: 1
+      tools:
+        - name: "nessus"
+          policy: "PCI DSS Audit"
+          timeout: 3600
+        - name: "lynis"
+          arguments: "--auditor"
+          timeout: 1800
+        - name: "nuclei"
+          arguments: "-tags compliance"
+          timeout: 1200
+          
+  reporting:
+    compliance_mapping: true
+    include_recommendations: true
+    executive_summary: true
+
+# Configuration des environnements de scan
+environments:
+  # Environnement de laboratoire
+  lab:
+    allow_aggressive_scans: true
+    enable_exploitation: true
+    relaxed_timeouts: true
+    detailed_logging: true
+    
+  # Environnement de production
+  production:
+    require_explicit_approval: true
+    limit_resource_usage: true
+    mandatory_stealth: true
+    enhanced_logging: true
+    
+  # Environnement de test
+  testing:
+    moderate_aggression: true
+    standard_timeouts: true
+    balanced_stealth: true
+
+# Personnalisation des profils
+customization:
+  # Possibilité de créer des profils personnalisés
+  allow_custom_profiles: true
+  
+  # Héritage des profils
+  profile_inheritance:
+    enabled: true
+    base_profiles:
+      - "quick_scan"
+      - "standard_scan"
+      - "comprehensive_scan"
+      - "stealth_scan"
+      
+  # Variables personnalisables
+  variables:
+    - name: "target_range"
+      type: "string"
+      default: "1-1000"
+      description: "Plage de ports à scanner"
+      
+    - name: "scan_intensity"
+      type: "integer"
+      range: [1, 10]
+      default: 5
+      description: "Intensité du scan (1=faible, 10=maximum)"
+      
+    - name: "stealth_mode"
+      type: "boolean"
+      default: false
+      description: "Activer le mode furtif"
+
+# Validation des profils
+validation:
+  # Vérification de la cohérence des profils
+  validate_on_load: true
+  
+  # Contraintes
+  constraints:
+    max_duration: 28800         # 8 heures maximum
+    max_targets: 65536          # Maximum d'hôtes
+    required_fields:
+      - "name"
+      - "description"
+      - "estimated_duration"
+      - "resource_usage"
+      
+  # Tests de profils
+  testing:
+    dry_run_available: true
+    estimate_resources: true
+    validate_tool_availability: true

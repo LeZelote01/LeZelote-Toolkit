@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+
+{% block title %}New Scan - Pentest-USB Toolkit{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/scan.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 text-white mb-0">
+                        <i class="fas fa-search me-2 text-primary"></i>
+                        New Security Scan
+                    </h1>
+                    <p class="text-muted mb-0">Configure and launch a comprehensive security assessment</p>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb bg-transparent mb-0">
+                        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url_for('scan_results') }}">Scanning</a></li>
+                        <li class="breadcrumb-item active">New Scan</li>
+                    </ol>
+                </nav>
+            </div>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Scan Configuration Form -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-cog me-2"></i>
+                                Scan Configuration
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" id="scanForm" class="needs-validation" novalidate>
+                                <!-- Target Configuration -->
+                                <div class="row mb-4">
+                                    <div class="col-md-8">
+                                        <label for="target" class="form-label text-white">
+                                            <i class="fas fa-bullseye me-1"></i>
+                                            Target *
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control bg-dark text-white border-secondary" 
+                                               id="target" 
+                                               name="target" 
+                                               placeholder="192.168.1.1, example.com, 10.0.0.0/24"
+                                               required>
+                                        <div class="form-text">IP address, hostname, or CIDR range</div>
+                                        <div class="invalid-feedback">
+                                            Please provide a valid target.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="ports" class="form-label text-white">
+                                            <i class="fas fa-network-wired me-1"></i>
+                                            Port Range
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control bg-dark text-white border-secondary" 
+                                               id="ports" 
+                                               name="ports" 
+                                               placeholder="1-1000"
+                                               value="1-1000">
+                                        <div class="form-text">Port range to scan (e.g., 1-1000, 80,443)</div>
+                                    </div>
+                                </div>
+
+                                <!-- Scan Type and Options -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label for="scan_type" class="form-label text-white">
+                                            <i class="fas fa-list-ul me-1"></i>
+                                            Scan Type
+                                        </label>
+                                        <select class="form-select bg-dark text-white border-secondary" id="scan_type" name="scan_type">
+                                            <option value="quick">Quick Scan (Top 1000 ports)</option>
+                                            <option value="comprehensive">Comprehensive Scan</option>
+                                            <option value="stealth">Stealth Scan</option>
+                                            <option value="aggressive">Aggressive Scan</option>
+                                            <option value="custom">Custom Configuration</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="threads" class="form-label text-white">
+                                            <i class="fas fa-stream me-1"></i>
+                                            Threads
+                                        </label>
+                                        <select class="form-select bg-dark text-white border-secondary" id="threads" name="threads">
+                                            <option value="5">5 (Slow, Stealthy)</option>
+                                            <option value="10" selected>10 (Balanced)</option>
+                                            <option value="20">20 (Fast)</option>
+                                            <option value="50">50 (Aggressive)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Modules Selection -->
+                                <div class="mb-4">
+                                    <label class="form-label text-white">
+                                        <i class="fas fa-puzzle-piece me-1"></i>
+                                        Scan Modules
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_nmap" name="modules" value="nmap" checked>
+                                                <label class="form-check-label text-white" for="module_nmap">
+                                                    <i class="fas fa-network-wired me-1 text-info"></i>
+                                                    Network Discovery (Nmap)
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_vulnerability" name="modules" value="vulnerability" checked>
+                                                <label class="form-check-label text-white" for="module_vulnerability">
+                                                    <i class="fas fa-bug me-1 text-warning"></i>
+                                                    Vulnerability Assessment
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_web" name="modules" value="web">
+                                                <label class="form-check-label text-white" for="module_web">
+                                                    <i class="fas fa-globe me-1 text-success"></i>
+                                                    Web Application Scanning
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_osint" name="modules" value="osint">
+                                                <label class="form-check-label text-white" for="module_osint">
+                                                    <i class="fas fa-search me-1 text-primary"></i>
+                                                    OSINT Gathering
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_brute" name="modules" value="brute">
+                                                <label class="form-check-label text-white" for="module_brute">
+                                                    <i class="fas fa-key me-1 text-danger"></i>
+                                                    Brute Force Testing
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="module_exploit" name="modules" value="exploit">
+                                                <label class="form-check-label text-white" for="module_exploit">
+                                                    <i class="fas fa-bomb me-1 text-warning"></i>
+                                                    Exploitation Modules
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Options -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <label for="description" class="form-label text-white">
+                                            <i class="fas fa-comment me-1"></i>
+                                            Description
+                                        </label>
+                                        <textarea class="form-control bg-dark text-white border-secondary" 
+                                                  id="description" 
+                                                  name="description" 
+                                                  rows="3"
+                                                  placeholder="Optional description for this scan..."></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Options Checkboxes -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="save_project" name="save_project" checked>
+                                            <label class="form-check-label text-white" for="save_project">
+                                                <i class="fas fa-save me-1"></i>
+                                                Save as Project
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="notifications" name="notifications" checked>
+                                            <label class="form-check-label text-white" for="notifications">
+                                                <i class="fas fa-bell me-1"></i>
+                                                Real-time Notifications
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                                            <i class="fas fa-undo me-1"></i>
+                                            Reset
+                                        </button>
+                                        <button type="button" class="btn btn-outline-primary" onclick="loadTemplate()">
+                                            <i class="fas fa-template me-1"></i>
+                                            Load Template
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-warning me-2" onclick="validateOnly()">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Validate
+                                        </button>
+                                        <button type="submit" class="btn btn-primary" id="startScanBtn">
+                                            <i class="fas fa-play me-1"></i>
+                                            <span id="startScanText">Start Scan</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scan Preview Panel -->
+                <div class="col-lg-4">
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-eye me-2"></i>
+                                Scan Preview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Configuration Summary
+                                </h6>
+                                <div id="scanPreview">
+                                    <div class="text-muted">
+                                        <small>Configure your scan parameters to see a preview...</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <h6 class="text-success">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Estimated Time
+                                </h6>
+                                <div id="estimatedTime" class="text-white">
+                                    <small class="text-muted">Will be calculated based on configuration</small>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info border-0" style="background-color: rgba(13, 202, 240, 0.1);">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-lightbulb me-1"></i>
+                                    Quick Tips
+                                </h6>
+                                <small>
+                                    • Use CIDR notation for network ranges<br>
+                                    • Start with Quick scan for initial assessment<br>
+                                    • Enable stealth mode for sensitive targets<br>
+                                    • Save as project for recurring scans
+                                </small>
+                            </div>
+
+                            <!-- Recent Targets -->
+                            <div class="mt-4">
+                                <h6 class="text-warning">
+                                    <i class="fas fa-history me-1"></i>
+                                    Recent Targets
+                                </h6>
+                                <div class="list-group list-group-flush">
+                                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white border-secondary small"
+                                       onclick="fillTarget('192.168.1.1')">
+                                        <i class="fas fa-server me-2"></i>192.168.1.1
+                                        <span class="text-muted float-end">2 hours ago</span>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white border-secondary small"
+                                       onclick="fillTarget('example.com')">
+                                        <i class="fas fa-globe me-2"></i>example.com
+                                        <span class="text-muted float-end">1 day ago</span>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action bg-transparent text-white border-secondary small"
+                                       onclick="fillTarget('10.0.0.0/24')">
+                                        <i class="fas fa-network-wired me-2"></i>10.0.0.0/24
+                                        <span class="text-muted float-end">3 days ago</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="scanStartModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="text-white mb-2">Starting Security Scan</h5>
+                <p class="text-muted mb-0">Initializing scan modules and preparing target assessment...</p>
+                <div class="progress mt-3" style="height: 6px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%" id="initProgress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+// Form validation and preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('scanForm');
+    const targetInput = document.getElementById('target');
+    const scanTypeSelect = document.getElementById('scan_type');
+    const threadsSelect = document.getElementById('threads');
+    const previewDiv = document.getElementById('scanPreview');
+    const estimatedTimeDiv = document.getElementById('estimatedTime');
+
+    // Update preview when form changes
+    [targetInput, scanTypeSelect, threadsSelect].forEach(element => {
+        element.addEventListener('change', updatePreview);
+        element.addEventListener('input', updatePreview);
+    });
+
+    function updatePreview() {
+        const target = targetInput.value;
+        const scanType = scanTypeSelect.value;
+        const threads = threadsSelect.value;
+        
+        if (target) {
+            const selectedModules = Array.from(document.querySelectorAll('input[name="modules"]:checked'))
+                .map(cb => cb.nextElementSibling.textContent.trim());
+            
+            previewDiv.innerHTML = `
+                <div class="small">
+                    <div><strong>Target:</strong> ${target}</div>
+                    <div><strong>Type:</strong> ${scanType.charAt(0).toUpperCase() + scanType.slice(1)}</div>
+                    <div><strong>Threads:</strong> ${threads}</div>
+                    <div><strong>Modules:</strong> ${selectedModules.length} selected</div>
+                </div>
+            `;
+            
+            // Estimate time based on configuration
+            let estimatedMinutes = 5; // Base time
+            if (scanType === 'comprehensive') estimatedMinutes *= 3;
+            if (scanType === 'aggressive') estimatedMinutes *= 2;
+            if (scanType === 'stealth') estimatedMinutes *= 1.5;
+            
+            estimatedMinutes = Math.round(estimatedMinutes * (50 / parseInt(threads)));
+            
+            estimatedTimeDiv.innerHTML = `<span class="text-success">${estimatedMinutes} minutes</span>`;
+        } else {
+            previewDiv.innerHTML = '<div class="text-muted"><small>Enter a target to see preview...</small></div>';
+            estimatedTimeDiv.innerHTML = '<small class="text-muted">N/A</small>';
+        }
+    }
+
+    // Form submission handling
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (form.checkValidity()) {
+            const modal = new bootstrap.Modal(document.getElementById('scanStartModal'));
+            modal.show();
+            
+            // Simulate progress
+            let progress = 0;
+            const progressBar = document.getElementById('initProgress');
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 100) progress = 100;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        modal.hide();
+                        form.submit(); // Actually submit the form
+                    }, 1000);
+                }
+            }, 200);
+        } else {
+            form.classList.add('was-validated');
+        }
+    });
+});
+
+// Utility functions
+function resetForm() {
+    document.getElementById('scanForm').reset();
+    document.getElementById('scanForm').classList.remove('was-validated');
+    updatePreview();
+}
+
+function validateOnly() {
+    const form = document.getElementById('scanForm');
+    if (form.checkValidity()) {
+        alert('✅ Configuration is valid and ready to launch!');
+    } else {
+        form.classList.add('was-validated');
+        alert('❌ Please fix the validation errors before proceeding.');
+    }
+}
+
+function loadTemplate() {
+    // This would open a template selection modal in a full implementation
+    alert('Template functionality would be implemented here');
+}
+
+function fillTarget(target) {
+    document.getElementById('target').value = target;
+    updatePreview();
+}
+
+function updatePreview() {
+    // Implementation moved to DOMContentLoaded for proper scoping
+}
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}LeZelote Toolkit - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-shield-alt mr-2"></i>
+                        Welcome to LeZelote Toolkit
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="info-box bg-primary">
+                                <span class="info-box-icon"><i class="fas fa-search"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Reconnaissance</span>
+                                    <span class="info-box-number">Network Discovery</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="info-box bg-warning">
+                                <span class="info-box-icon"><i class="fas fa-bug"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Vulnerabilities</span>
+                                    <span class="info-box-number">Security Scanning</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="info-box bg-success">
+                                <span class="info-box-icon"><i class="fas fa-chart-line"></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Reports</span>
+                                    <span class="info-box-number">Analysis Results</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-info-circle"></i> Quick Start</h5>
+                                <p>Welcome to the LeZelote Toolkit web interface. This comprehensive penetration testing platform provides you with professional-grade security assessment tools.</p>
+                                <ul class="mb-0">
+                                    <li>Start by creating a new project</li>
+                                    <li>Configure your target scope and consent documentation</li>
+                                    <li>Run reconnaissance and vulnerability scans</li>
+                                    <li>Generate detailed reports for your findings</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

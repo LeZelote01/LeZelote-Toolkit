@@ -1,0 +1,247 @@
+{
+  "consents": {
+    "0acdd5b7dc3c172c": {
+      "consent_id": "0acdd5b7dc3c172c",
+      "target": "192.168.1.100",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.068996",
+      "valid_until": "2026-08-18T07:35:07.068960",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    },
+    "08e25158130de1fe": {
+      "consent_id": "08e25158130de1fe",
+      "target": "example.com",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.069425",
+      "valid_until": "2026-08-18T07:35:07.069409",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    },
+    "7cffe0c158456585": {
+      "consent_id": "7cffe0c158456585",
+      "target": "testsite.local",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.070133",
+      "valid_until": "2026-08-18T07:35:07.070115",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    },
+    "e4661beac253a037": {
+      "consent_id": "e4661beac253a037",
+      "target": "integration-test.local",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.070875",
+      "valid_until": "2026-08-18T07:35:07.070856",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    },
+    "ec950e3664ce8930": {
+      "consent_id": "ec950e3664ce8930",
+      "target": "*.local",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.071590",
+      "valid_until": "2026-08-18T07:35:07.071571",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    },
+    "2ea4129ec66ee03e": {
+      "consent_id": "2ea4129ec66ee03e",
+      "target": "192.168.1.0/24",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan",
+        "network_scan",
+        "reporting"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "name": "Test Administrator",
+        "email": "test@example.com",
+        "phone": "+1-555-0123"
+      },
+      "created": "2025-08-18T07:35:07.072375",
+      "valid_until": "2026-08-18T07:35:07.072358",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    }
+  },
+  "audit_log": [
+    {
+      "timestamp": "2025-08-18T07:35:07.069003",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "0acdd5b7dc3c172c",
+        "target": "192.168.1.100",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    },
+    {
+      "timestamp": "2025-08-18T07:35:07.069431",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "08e25158130de1fe",
+        "target": "example.com",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    },
+    {
+      "timestamp": "2025-08-18T07:35:07.070138",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "7cffe0c158456585",
+        "target": "testsite.local",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    },
+    {
+      "timestamp": "2025-08-18T07:35:07.070880",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "e4661beac253a037",
+        "target": "integration-test.local",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    },
+    {
+      "timestamp": "2025-08-18T07:35:07.071595",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "ec950e3664ce8930",
+        "target": "*.local",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    },
+    {
+      "timestamp": "2025-08-18T07:35:07.072381",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "2ea4129ec66ee03e",
+        "target": "192.168.1.0/24",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan",
+          "network_scan",
+          "reporting"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-ef889cd2-5741-4c76-b465-de28b5277e38"
+    }
+  ],
+  "created": "2025-08-18T07:35:07.068837"
+}

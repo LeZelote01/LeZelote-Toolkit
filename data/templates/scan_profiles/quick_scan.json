@@ -1,0 +1,144 @@
+{
+  "profile_name": "quick_scan",
+  "display_name": "Quick Security Scan",
+  "description": "Fast security assessment focusing on critical vulnerabilities with minimal system impact",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17",
+  "estimated_duration": "30-60 minutes",
+  "target_types": ["web", "network", "host"],
+  "risk_level": "low",
+  "stealth_mode": true,
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "port_scan",
+          "tool": "nmap",
+          "options": {
+            "scan_type": "fast",
+            "top_ports": 1000,
+            "timing": "T4",
+            "arguments": "-sV --top-ports=1000 -T4 --max-retries=1",
+            "timeout": 600
+          }
+        },
+        {
+          "name": "service_detection",
+          "tool": "nmap",
+          "options": {
+            "version_detection": true,
+            "os_detection": false,
+            "arguments": "-sV --version-intensity=2",
+            "timeout": 300
+          }
+        },
+        {
+          "name": "dns_recon",
+          "tool": "dnsx",
+          "options": {
+            "subdomain_enum": false,
+            "dns_resolution": true,
+            "basic_records": ["A", "AAAA", "MX", "NS"],
+            "timeout": 120
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 3
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "web_scan",
+          "tool": "nuclei",
+          "options": {
+            "templates": ["cves", "vulnerabilities", "default-logins"],
+            "rate_limit": "50",
+            "arguments": "-t cves/ -t vulnerabilities/ -t default-logins/ -rl 50",
+            "timeout": 900
+          }
+        },
+        {
+          "name": "network_vuln",
+          "tool": "nmap",
+          "options": {
+            "scripts": ["vuln", "default"],
+            "script_categories": ["safe"],
+            "arguments": "--script=vuln,default --script-args=unsafe=1",
+            "timeout": 600
+          }
+        }
+      ],
+      "skip_intensive_checks": true,
+      "parallel_execution": true,
+      "max_concurrent": 2
+    },
+    
+    "exploitation": {
+      "enabled": false,
+      "reason": "Quick scan focuses on identification only"
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Quick scan does not include post-exploitation"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "basic_report",
+          "formats": ["html", "json"],
+          "include_screenshots": false,
+          "executive_summary": true,
+          "technical_details": false
+        }
+      ]
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 10,
+    "memory_limit": "2GB",
+    "cpu_limit": "50%",
+    "network_bandwidth": "10Mbps",
+    "scan_intensity": "light"
+  },
+  
+  "target_filters": {
+    "exclude_ports": [25, 465, 587, 993, 995],
+    "exclude_hosts": [],
+    "include_only": [],
+    "skip_ping": false
+  },
+  
+  "output_options": {
+    "verbose": false,
+    "save_raw_output": true,
+    "compress_results": true,
+    "real_time_updates": true
+  },
+  
+  "compliance_checks": {
+    "enabled": false
+  },
+  
+  "notification_settings": {
+    "critical_findings": true,
+    "high_findings": false,
+    "completion_notification": true
+  },
+  
+  "safety_measures": {
+    "dos_protection": true,
+    "rate_limiting": true,
+    "blacklist_check": true,
+    "confirm_targets": true
+  }
+}

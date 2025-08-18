@@ -1,0 +1,271 @@
+{
+  "profile_name": "web_app",
+  "display_name": "Web Application Security Assessment",
+  "description": "Comprehensive security testing focused specifically on web applications including OWASP Top 10 and beyond",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17",
+  "estimated_duration": "2-4 hours",
+  "target_types": ["web", "api"],
+  "risk_level": "medium",
+  "stealth_mode": false,
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "web_discovery",
+          "tool": "dirb",
+          "options": {
+            "wordlist": "common",
+            "recursive": true,
+            "extensions": [".php", ".asp", ".aspx", ".js", ".html", ".jsp"],
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "subdomain_enum",
+          "tool": "subfinder",
+          "options": {
+            "sources": ["all"],
+            "silent": false,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "technology_detection",
+          "tool": "wappalyzer",
+          "options": {
+            "deep_scan": true,
+            "timeout": 300
+          }
+        },
+        {
+          "name": "robots_sitemap",
+          "tool": "custom",
+          "options": {
+            "check_robots": true,
+            "check_sitemap": true,
+            "check_security_txt": true,
+            "timeout": 120
+          }
+        }
+      ],
+      "parallel_execution": true,
+      "max_concurrent": 3
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "owasp_zap_scan",
+          "tool": "zap",
+          "options": {
+            "spider_scan": true,
+            "active_scan": true,
+            "passive_scan": true,
+            "ajax_spider": true,
+            "authentication_scan": true,
+            "scan_policy": "OWASP_Top_10",
+            "timeout": 3600
+          }
+        },
+        {
+          "name": "nuclei_web_scan",
+          "tool": "nuclei",
+          "options": {
+            "templates": [
+              "cves",
+              "vulnerabilities", 
+              "default-logins",
+              "exposed-panels",
+              "exposures",
+              "technologies",
+              "takeovers",
+              "misconfiguration"
+            ],
+            "severity": ["critical", "high", "medium"],
+            "rate_limit": "100",
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "nikto_scan",
+          "tool": "nikto",
+          "options": {
+            "all_checks": true,
+            "plugins": "ALL",
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "ssl_security",
+          "tool": "sslyze",
+          "options": {
+            "certificate_info": true,
+            "ssl_versions": true,
+            "cipher_suites": true,
+            "vulnerabilities": true,
+            "timeout": 300
+          }
+        },
+        {
+          "name": "http_methods",
+          "tool": "nmap",
+          "options": {
+            "scripts": ["http-methods", "http-trace", "http-options"],
+            "timeout": 300
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "sql_injection",
+          "tool": "sqlmap",
+          "options": {
+            "level": 3,
+            "risk": 2,
+            "techniques": ["B", "E", "U", "S", "T"],
+            "batch_mode": false,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "xss_testing",
+          "tool": "xsstrike",
+          "options": {
+            "crawl": true,
+            "blind_xss": true,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "command_injection",
+          "tool": "commix",
+          "options": {
+            "all_techniques": true,
+            "batch_mode": false,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "lfi_rfi_testing",
+          "tool": "custom",
+          "options": {
+            "payloads": "comprehensive",
+            "encoding": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "csrf_testing",
+          "tool": "custom",
+          "options": {
+            "token_analysis": true,
+            "referer_check": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Web application assessment focuses on identification and proof of concept"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "web_security_report",
+          "formats": ["html", "pdf", "json"],
+          "include_screenshots": true,
+          "owasp_mapping": true,
+          "executive_summary": true,
+          "technical_details": true,
+          "remediation_guide": true
+        }
+      ]
+    }
+  },
+  
+  "web_specific_options": {
+    "authentication": {
+      "enabled": true,
+      "methods": ["form_based", "http_basic", "cookie_based"],
+      "session_management": true,
+      "logout_detection": true
+    },
+    
+    "crawling": {
+      "max_depth": 10,
+      "max_pages": 1000,
+      "follow_redirects": true,
+      "parse_javascript": true,
+      "parse_comments": true,
+      "respect_robots": false
+    },
+    
+    "input_vectors": {
+      "url_parameters": true,
+      "post_parameters": true,
+      "http_headers": true,
+      "cookies": true,
+      "json_parameters": true,
+      "xml_parameters": true
+    },
+    
+    "file_extensions": {
+      "scan": [".php", ".asp", ".aspx", ".jsp", ".js", ".json", ".xml", ".txt", ".bak", ".old"],
+      "ignore": [".jpg", ".jpeg", ".png", ".gif", ".css", ".ico", ".pdf", ".doc", ".docx"]
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 20,
+    "memory_limit": "4GB",
+    "cpu_limit": "70%",
+    "request_delay": "100ms",
+    "scan_intensity": "normal"
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "real_time_updates": true,
+    "request_response_logging": true
+  },
+  
+  "compliance_checks": {
+    "enabled": true,
+    "frameworks": ["OWASP", "PCI-DSS"]
+  },
+  
+  "notification_settings": {
+    "critical_findings": true,
+    "high_findings": true,
+    "completion_notification": true,
+    "payload_success": true
+  },
+  
+  "safety_measures": {
+    "dos_protection": true,
+    "rate_limiting": true,
+    "blacklist_check": true,
+    "confirm_targets": true,
+    "safe_mode": false
+  }
+}

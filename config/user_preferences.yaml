@@ -1,0 +1,329 @@
+# Préférences Utilisateur - Pentest-USB Toolkit
+# Configuration des préférences par défaut pour les utilisateurs
+
+# Interface utilisateur
+ui:
+  # Mode d'interface préféré
+  preferred_interface: "cli"      # cli, web, both
+  
+  # Thème de l'interface
+  theme:
+    cli_theme: "dark"             # dark, light, auto
+    web_theme: "dark"             # dark, light, auto
+    color_scheme: "default"       # default, high-contrast, colorblind
+    
+  # Langue de l'interface
+  language: "en"                  # en, fr, es, de, it
+  
+  # Affichage
+  display:
+    show_progress_bars: true
+    show_timestamps: true
+    show_detailed_output: false
+    auto_refresh_dashboard: true
+    refresh_interval: 5           # secondes
+
+# Comportement par défaut des scans
+scanning_defaults:
+  # Profil de scan par défaut
+  default_profile: "standard"    # quick, standard, comprehensive, stealth
+  
+  # Confirmation avant scan
+  require_confirmation: true
+  confirm_aggressive_scans: true
+  confirm_exploitation: true
+  
+  # Sauvegarde automatique
+  auto_save_results: true
+  save_raw_output: true
+  compress_results: true
+  
+  # Timeout par défaut
+  default_timeout: 300            # secondes (5 minutes)
+  
+  # Gestion des erreurs
+  continue_on_error: true
+  retry_failed_scans: true
+  max_retry_attempts: 3
+
+# Notifications
+notifications:
+  # Notifications de fin de scan
+  scan_completion:
+    enabled: true
+    method: "desktop"             # desktop, sound, email, webhook
+    sound_file: "sounds/scan_complete.wav"
+    
+  # Notifications de vulnérabilités critiques
+  critical_vulnerabilities:
+    enabled: true
+    method: "desktop"
+    immediate_alert: true
+    
+  # Notifications d'erreur
+  errors:
+    enabled: true
+    method: "desktop"
+    include_stack_trace: false
+    
+  # Canaux de notification
+  channels:
+    desktop:
+      enabled: true
+      duration: 5000              # millisecondes
+      
+    email:
+      enabled: false
+      smtp_server: ""
+      smtp_port: 587
+      username: ""
+      password: ""
+      recipient: ""
+      
+    webhook:
+      enabled: false
+      url: ""
+      method: "POST"
+
+# Rapports
+reporting:
+  # Format de rapport par défaut
+  default_format: "html"          # html, pdf, docx, json, xml
+  
+  # Modèle de rapport par défaut
+  default_template: "default"
+  
+  # Contenu du rapport
+  include_sections:
+    executive_summary: true
+    methodology: true
+    findings: true
+    evidence: true
+    recommendations: true
+    appendices: true
+    
+  # Détail des vulnérabilités
+  vulnerability_details:
+    include_screenshots: true
+    include_raw_output: false
+    include_exploit_code: false
+    severity_filter: "medium"     # all, critical, high, medium, low
+    
+  # Génération automatique
+  auto_generate: true
+  auto_open_report: true
+
+# Sécurité et confidentialité
+security:
+  # Masquage des données sensibles
+  data_masking:
+    mask_credentials: true
+    mask_private_ips: false
+    mask_internal_hostnames: false
+    
+  # Chiffrement des données stockées
+  encrypt_stored_data: true
+  
+  # Nettoyage automatique
+  auto_cleanup:
+    cleanup_on_exit: true
+    cleanup_temp_files: true
+    cleanup_old_scans: false
+    retention_days: 30
+    
+  # Consentement et légalité
+  consent:
+    require_target_authorization: true
+    show_legal_warnings: true
+    log_authorization_consent: true
+
+# Performance et ressources
+performance:
+  # Utilisation des ressources
+  resource_limits:
+    max_cpu_usage: 70             # pourcentage
+    max_memory_usage: 80          # pourcentage
+    max_disk_usage: 90            # pourcentage
+    
+  # Parallélisation
+  parallel_execution:
+    max_concurrent_scans: 5
+    max_threads_per_scan: 10
+    adaptive_threading: true
+    
+  # Cache
+  caching:
+    enable_result_cache: true
+    cache_duration: 3600          # secondes (1 heure)
+    max_cache_size: 1000          # MB
+
+# Logging et débogage
+logging:
+  # Niveau de log par défaut
+  log_level: "INFO"               # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  # Fichiers de log
+  log_files:
+    enable_file_logging: true
+    log_rotation: true
+    max_file_size: "10MB"
+    backup_count: 5
+    
+  # Logs détaillés
+  detailed_logging:
+    log_all_commands: false
+    log_network_traffic: false
+    log_api_calls: true
+    
+  # Logs de debug
+  debug_mode:
+    enabled: false
+    verbose_output: false
+    save_debug_info: false
+
+# Intégrations externes
+integrations:
+  # Éditeurs de texte/IDE
+  text_editor:
+    preferred_editor: "nano"      # nano, vim, emacs, code, notepad++
+    auto_open_configs: false
+    
+  # Navigateurs web
+  web_browser:
+    preferred_browser: "default"  # default, chrome, firefox, edge, safari
+    auto_open_reports: true
+    
+  # Outils de terminal
+  terminal:
+    preferred_terminal: "default" # default, gnome-terminal, xterm, powershell
+    terminal_colors: true
+
+# Raccourcis et automatisation
+shortcuts:
+  # Raccourcis clavier (pour l'interface CLI)
+  keyboard:
+    quick_scan: "F1"
+    stop_scan: "F2"
+    view_results: "F3"
+    generate_report: "F4"
+    exit_app: "F10"
+    
+  # Commandes rapides
+  quick_commands:
+    enabled: true
+    custom_commands:
+      - name: "quick_web_scan"
+        description: "Scan web rapide"
+        command: "scan --profile web_quick --target"
+      - name: "network_discovery"
+        description: "Découverte réseau"
+        command: "scan --profile network_discovery --target"
+
+# Historique et favoris
+history:
+  # Historique des commandes
+  command_history:
+    enabled: true
+    max_entries: 1000
+    persist_across_sessions: true
+    
+  # Historique des scans
+  scan_history:
+    enabled: true
+    max_entries: 100
+    auto_cleanup_old: true
+    
+  # Cibles favorites
+  favorite_targets:
+    enabled: true
+    max_favorites: 50
+
+# Mise à jour et maintenance
+updates:
+  # Vérification automatique des mises à jour
+  auto_check_updates: true
+  check_frequency: "weekly"       # daily, weekly, monthly, never
+  
+  # Installation automatique (non recommandé)
+  auto_install_updates: false
+  
+  # Mise à jour des bases de données
+  auto_update_databases: true
+  database_update_frequency: "weekly"
+
+# Sauvegarde et synchronisation
+backup:
+  # Sauvegarde automatique des préférences
+  auto_backup_preferences: true
+  backup_frequency: "daily"
+  
+  # Synchronisation entre appareils (si configurée)
+  sync_preferences: false
+  sync_service: ""                # cloud service or custom endpoint
+
+# Accessibilité
+accessibility:
+  # Support pour lecteurs d'écran
+  screen_reader_support: false
+  
+  # Contraste élevé
+  high_contrast_mode: false
+  
+  # Taille de police
+  font_size: "normal"             # small, normal, large, extra-large
+  
+  # Raccourcis d'accessibilité
+  accessibility_shortcuts: true
+
+# Environnements spécifiques
+environments:
+  # Mode portable (sur clé USB)
+  portable:
+    minimize_disk_writes: true
+    use_temp_for_cache: true
+    aggressive_cleanup: true
+    
+  # Mode laboratoire
+  lab:
+    relaxed_security: true
+    extended_timeouts: true
+    detailed_logging: true
+    
+  # Mode production
+  production:
+    strict_security: true
+    minimal_logging: true
+    auto_cleanup: true
+
+# Profils utilisateur prédéfinis
+user_profiles:
+  beginner:
+    preferred_interface: "web"
+    default_profile: "quick"
+    require_confirmation: true
+    show_detailed_output: false
+    
+  intermediate:
+    preferred_interface: "cli"
+    default_profile: "standard"
+    require_confirmation: true
+    show_detailed_output: true
+    
+  expert:
+    preferred_interface: "cli"
+    default_profile: "comprehensive"
+    require_confirmation: false
+    show_detailed_output: true
+    debug_mode: true
+
+# Migration et compatibilité
+migration:
+  # Version de configuration
+  config_version: "1.0"
+  
+  # Migration automatique
+  auto_migrate: true
+  backup_before_migration: true
+  
+  # Compatibilité avec anciennes versions
+  maintain_compatibility: true

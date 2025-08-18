@@ -1,0 +1,330 @@
+{
+  "profile_name": "mobile_app",
+  "display_name": "Mobile Application Security Testing",
+  "description": "Comprehensive mobile app security assessment covering Android APK and iOS IPA analysis",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit", 
+  "last_updated": "2025-08-17",
+  "estimated_duration": "2-4 hours",
+  "target_types": ["mobile", "apk", "ipa", "android", "ios"],
+  "risk_level": "medium",
+  "stealth_mode": false,
+  
+  "supported_platforms": {
+    "android": {
+      "enabled": true,
+      "file_types": [".apk", ".aab"],
+      "analysis_depth": "comprehensive"
+    },
+    "ios": {
+      "enabled": true,
+      "file_types": [".ipa"],
+      "analysis_depth": "comprehensive"
+    },
+    "hybrid": {
+      "enabled": true,
+      "frameworks": ["cordova", "phonegap", "ionic", "react_native", "xamarin", "flutter"]
+    }
+  },
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "app_metadata_extraction",
+          "tool": "mobsf",
+          "options": {
+            "extract_manifest": true,
+            "extract_certificates": true,
+            "extract_permissions": true,
+            "timeout": 300
+          }
+        },
+        {
+          "name": "file_structure_analysis",
+          "tool": "jadx",
+          "options": {
+            "decompile_sources": true,
+            "extract_resources": true,
+            "decode_manifest": true,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "binary_analysis",
+          "tool": "binwalk", 
+          "options": {
+            "extract_filesystem": true,
+            "analyze_signatures": true,
+            "deep_extraction": false,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "dependency_analysis",
+          "tool": "custom",
+          "options": {
+            "third_party_libraries": true,
+            "outdated_components": true,
+            "vulnerability_mapping": true,
+            "timeout": 300
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "static_code_analysis",
+          "tool": "mobsf",
+          "options": {
+            "owasp_mobile_top10": true,
+            "code_quality_checks": true,
+            "hardcoded_secrets": true,
+            "cryptographic_issues": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "android_specific_checks",
+          "tool": "mobsf",
+          "options": {
+            "manifest_analysis": true,
+            "permission_analysis": true,
+            "activity_analysis": true,
+            "service_analysis": true,
+            "broadcast_receiver_analysis": true,
+            "content_provider_analysis": true,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "ios_specific_checks",
+          "tool": "mobsf",
+          "options": {
+            "plist_analysis": true,
+            "entitlements_analysis": true,
+            "arc_analysis": true,
+            "stack_canary_check": true,
+            "pie_check": true,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "secret_scanning",
+          "tool": "trufflehog",
+          "options": {
+            "scan_source_code": true,
+            "scan_resources": true,
+            "scan_assets": true,
+            "entropy_analysis": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "network_security_analysis",
+          "tool": "custom",
+          "options": {
+            "ssl_pinning_check": true,
+            "certificate_validation": true,
+            "network_permissions": true,
+            "cleartext_traffic": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "dynamic_analysis_setup",
+          "tool": "frida",
+          "options": {
+            "runtime_manipulation": true,
+            "api_hooking": true,
+            "ssl_unpinning": true,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "reverse_engineering",
+          "tool": "jadx",
+          "options": {
+            "full_decompilation": true,
+            "obfuscation_analysis": true,
+            "anti_debugging_check": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "runtime_security_bypass",
+          "tool": "objection",
+          "options": {
+            "root_detection_bypass": true,
+            "ssl_pinning_bypass": true,
+            "jailbreak_detection_bypass": true,
+            "timeout": 900
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Mobile app assessment focuses on static and dynamic analysis"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "mobile_security_report",
+          "formats": ["html", "pdf", "json"],
+          "include_screenshots": true,
+          "owasp_mobile_mapping": true,
+          "executive_summary": true,
+          "technical_details": true,
+          "remediation_guide": true,
+          "code_snippets": true
+        }
+      ]
+    }
+  },
+  
+  "analysis_categories": {
+    "owasp_mobile_top_10": {
+      "m1_improper_platform_usage": true,
+      "m2_insecure_data_storage": true,
+      "m3_insecure_communication": true,
+      "m4_insecure_authentication": true,
+      "m5_insufficient_cryptography": true,
+      "m6_insecure_authorization": true,
+      "m7_client_code_quality": true,
+      "m8_code_tampering": true,
+      "m9_reverse_engineering": true,
+      "m10_extraneous_functionality": true
+    },
+    
+    "android_security_checks": {
+      "dangerous_permissions": true,
+      "custom_permissions": true,
+      "exported_components": true,
+      "intent_filters": true,
+      "deeplinks": true,
+      "backup_settings": true,
+      "debug_settings": true,
+      "certificate_pinning": true,
+      "root_detection": true,
+      "obfuscation": true
+    },
+    
+    "ios_security_checks": {
+      "app_transport_security": true,
+      "keychain_usage": true,
+      "data_protection": true,
+      "jailbreak_detection": true,
+      "binary_protections": true,
+      "url_schemes": true,
+      "entitlements": true,
+      "certificate_pinning": true,
+      "anti_debugging": true,
+      "code_signing": true
+    },
+    
+    "network_security": {
+      "ssl_tls_implementation": true,
+      "certificate_validation": true,
+      "pinning_bypass": true,
+      "cleartext_protocols": true,
+      "weak_encryption": true,
+      "api_security": true
+    },
+    
+    "data_protection": {
+      "local_storage": true,
+      "database_encryption": true,
+      "keychain_security": true,
+      "session_management": true,
+      "sensitive_data_exposure": true,
+      "logging_sensitive_data": true
+    }
+  },
+  
+  "tools_configuration": {
+    "mobsf": {
+      "analysis_timeout": 1800,
+      "dynamic_analysis": false,
+      "api_fuzzing": false,
+      "malware_analysis": true
+    },
+    
+    "jadx": {
+      "deobfuscation": true,
+      "resource_extraction": true,
+      "string_extraction": true,
+      "method_analysis": true
+    },
+    
+    "frida": {
+      "script_timeout": 300,
+      "ssl_kill_switch": true,
+      "anti_anti_debug": true,
+      "memory_dumping": false
+    },
+    
+    "objection": {
+      "runtime_hooks": true,
+      "filesystem_exploration": true,
+      "keychain_dumping": false,
+      "screenshot_capture": false
+    }
+  },
+  
+  "performance_settings": {
+    "max_threads": 5,
+    "memory_limit": "4GB",
+    "cpu_limit": "60%",
+    "analysis_timeout": 7200,
+    "scan_intensity": "thorough"
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "extract_source_code": true,
+    "save_decompiled_code": true,
+    "include_resources": true
+  },
+  
+  "compliance_checks": {
+    "enabled": true,
+    "frameworks": ["OWASP_Mobile", "NIST_Mobile"]
+  },
+  
+  "notification_settings": {
+    "critical_findings": true,
+    "high_findings": true,
+    "hardcoded_secrets": true,
+    "completion_notification": true
+  },
+  
+  "safety_measures": {
+    "sandbox_analysis": true,
+    "malware_detection": true,
+    "safe_decompilation": true,
+    "resource_limits": true
+  }
+}
