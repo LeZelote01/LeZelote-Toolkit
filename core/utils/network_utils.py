@@ -83,6 +83,25 @@ class NetworkUtils:
         except ValueError:
             return False
     
+    def validate_hostname(self, hostname: str) -> bool:
+        """
+        Validate hostname format
+        
+        Args:
+            hostname: Hostname to validate
+            
+        Returns:
+            bool: True if valid hostname format
+        """
+        import re
+        # Simple hostname validation regex
+        hostname_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
+        
+        if not hostname or len(hostname) > 253:
+            return False
+            
+        return bool(re.match(hostname_pattern, hostname))
+    
     def expand_network(self, network: str) -> List[str]:
         """
         Expand network CIDR to list of IP addresses
