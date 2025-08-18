@@ -280,21 +280,24 @@ class NmapAPI:
         try:
             result = self.scan(target, arguments)
             
-            # Extract services from hosts for easier access
-            services = []
+            # Extract services from hosts for easier access as dict by port
+            services = {}
             if result.get('hosts'):
                 for host in result['hosts']:
                     for port in host.get('ports', []):
-                        service_info = {
+                        port_id = port['portid']
+                        services[port_id] = {
                             'host': host.get('ip', target),
-                            'port': int(port['portid']),
+                            'port': int(port_id),
                             'protocol': port['protocol'],
                             'state': port['state']['state'],
+                            'name': port.get('service', {}).get('name', 'unknown'),
+                            'version': port.get('service', {}).get('version'),
+                            'product': port.get('service', {}).get('product'),
                             'service': port.get('service', {})
                         }
-                        services.append(service_info)
             
-            # Add services list to result for compatibility
+            # Add services dict to result for compatibility
             result['services'] = services
             return result
             
