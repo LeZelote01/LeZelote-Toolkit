@@ -408,6 +408,71 @@ class PentestOrchestrator:
         else:
             self._update_state(WorkflowState.EXPLOIT_COMPLETE)
     
+    def execute_phase(self, phase_name: str, config: Dict[str, Any] = None) -> Dict[str, Any]:
+        """
+        Execute a specific phase of the pentesting workflow
+        
+        Args:
+            phase_name (str): Name of the phase to execute ('reconnaissance', 'vulnerability', 'exploitation', etc.)
+            config (Dict): Optional configuration for the phase
+            
+        Returns:
+            Dict: Phase execution results
+        """
+        try:
+            self.logger.info(f"Executing phase: {phase_name}")
+            
+            # Update workflow data with phase config if provided
+            if config:
+                self.workflow_data.setdefault('phase_configs', {})[phase_name] = config
+            
+            # Map phase names to internal methods
+            phase_methods = {
+                'reconnaissance': self._run_reconnaissance,
+                'recon': self._run_reconnaissance,
+                'vulnerability': self._run_vulnerability_assessment,
+                'vuln': self._run_vulnerability_assessment,
+                'vulnerability_assessment': self._run_vulnerability_assessment,
+                'exploitation': self._run_exploitation,
+                'exploit': self._run_exploitation,
+                'post_exploitation': self._run_post_exploitation,
+                'post-exploitation': self._run_post_exploitation,
+                'reporting': self._generate_report,
+                'report': self._generate_report
+            }
+            
+            if phase_name not in phase_methods:
+                raise PentestError(f"Unknown phase: {phase_name}")
+            
+            # Execute the requested phase
+            phase_methods[phase_name]()
+            
+            # Add state compatibility
+            self.workflow_data['state'] = self.workflow_data.get('current_state', 'running')
+            
+            result = {
+                'success': True,
+                'phase': phase_name,
+                'state': self.workflow_data.get('current_state', 'running'),
+                'current_state': self.workflow_data.get('current_state', 'running'),
+                'message': f"Phase '{phase_name}' executed successfully",
+                'data': self.workflow_data
+            }
+            
+            self.logger.info(f"Phase '{phase_name}' executed successfully")
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"Phase execution failed for '{phase_name}': {str(e)}")
+            error_result = {
+                'success': False,
+                'phase': phase_name,
+                'error': str(e),
+                'state': 'failed',
+                'current_state': 'failed'
+            }
+            return error_result
+    
     def initialize_project(self, project_config: Dict[str, Any]) -> Dict[str, Any]:
         """
         Initialize a new project with the given configuration
