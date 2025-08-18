@@ -95,9 +95,11 @@ class NmapAPI:
             
             # Parse results
             if output_format == "xml":
-                return self._parse_xml_output(result.stdout)
+                parsed_results = self._parse_xml_output(result.stdout)
+                parsed_results['success'] = True
+                return parsed_results
             else:
-                return {"raw_output": result.stdout}
+                return {"raw_output": result.stdout, "success": True}
                 
         except subprocess.TimeoutExpired:
             raise PentestError("Nmap scan timeout")
