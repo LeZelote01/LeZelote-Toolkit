@@ -306,5 +306,5 @@ class NmapAPI:
                 'success': False,
                 'error': str(e),
                 'target': target,
-                'services': []
+                'services': {}
             }
