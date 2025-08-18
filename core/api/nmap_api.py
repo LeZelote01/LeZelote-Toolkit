@@ -276,5 +276,32 @@ class NmapAPI:
             arguments = f"-p {port_str} -sV -sC"
         else:
             arguments = "-sV -sC"
+        
+        try:
+            result = self.scan(target, arguments)
             
-        return self.scan(target, arguments)
+            # Extract services from hosts for easier access
+            services = []
+            if result.get('hosts'):
+                for host in result['hosts']:
+                    for port in host.get('ports', []):
+                        service_info = {
+                            'host': host.get('ip', target),
+                            'port': int(port['portid']),
+                            'protocol': port['protocol'],
+                            'state': port['state']['state'],
+                            'service': port.get('service', {})
+                        }
+                        services.append(service_info)
+            
+            # Add services list to result for compatibility
+            result['services'] = services
+            return result
+            
+        except PentestError as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'target': target,
+                'services': []
+            }
