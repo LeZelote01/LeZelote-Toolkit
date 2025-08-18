@@ -1,0 +1,345 @@
+{
+  "profile_name": "wireless",
+  "display_name": "Wireless Network Security Assessment",
+  "description": "Comprehensive wireless security testing including WiFi, Bluetooth, and RF analysis",
+  "version": "1.0",
+  "created_by": "LeZelote Toolkit",
+  "last_updated": "2025-08-17", 
+  "estimated_duration": "1-3 hours",
+  "target_types": ["wireless", "wifi", "bluetooth", "rf"],
+  "risk_level": "medium",
+  "stealth_mode": true,
+  
+  "wireless_technologies": {
+    "wifi": {
+      "enabled": true,
+      "standards": ["802.11a", "802.11b", "802.11g", "802.11n", "802.11ac", "802.11ax"],
+      "security_protocols": ["WEP", "WPA", "WPA2", "WPA3", "WPS", "Open"]
+    },
+    "bluetooth": {
+      "enabled": true,
+      "versions": ["1.x", "2.x", "3.x", "4.x", "5.x"],
+      "modes": ["classic", "low_energy"]
+    },
+    "rf_spectrum": {
+      "enabled": false,
+      "frequencies": ["2.4GHz", "5GHz", "6GHz"],
+      "analysis_depth": "basic"
+    },
+    "zigbee": {
+      "enabled": false,
+      "frequency": "2.4GHz"
+    },
+    "nfc": {
+      "enabled": false,
+      "frequency": "13.56MHz"
+    }
+  },
+  
+  "phases": {
+    "reconnaissance": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "wifi_discovery",
+          "tool": "aircrack-ng",
+          "options": {
+            "monitor_mode": true,
+            "channel_hopping": true,
+            "all_channels": true,
+            "capture_handshakes": false,
+            "timeout": 600
+          }
+        },
+        {
+          "name": "wireless_survey",
+          "tool": "kismet",
+          "options": {
+            "passive_monitoring": true,
+            "device_tracking": true,
+            "signal_analysis": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "bluetooth_discovery",
+          "tool": "hcitool",
+          "options": {
+            "device_scan": true,
+            "service_discovery": true,
+            "inquiry_scan": true,
+            "timeout": 300
+          }
+        },
+        {
+          "name": "access_point_analysis",
+          "tool": "airodump-ng",
+          "options": {
+            "detailed_info": true,
+            "client_tracking": true,
+            "beacon_analysis": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1,
+      "monitor_mode_required": true
+    },
+    
+    "vulnerability_assessment": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "wep_analysis",
+          "tool": "aircrack-ng",
+          "options": {
+            "statistical_attack": true,
+            "fudge_factor": 2,
+            "key_length": ["64", "128"],
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "wpa_security_analysis",
+          "tool": "aircrack-ng",
+          "options": {
+            "handshake_capture": true,
+            "dictionary_attack": false,
+            "pmkid_attack": true,
+            "timeout": 1200
+          }
+        },
+        {
+          "name": "wps_assessment",
+          "tool": "reaver",
+          "options": {
+            "pixie_dust_attack": true,
+            "brute_force_pin": false,
+            "timeout_per_pin": 60,
+            "max_attempts": 10,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "enterprise_wifi_analysis",
+          "tool": "custom",
+          "options": {
+            "eap_methods": ["PEAP", "EAP-TLS", "EAP-TTLS"],
+            "certificate_analysis": true,
+            "radius_security": true,
+            "timeout": 900
+          }
+        },
+        {
+          "name": "bluetooth_security_scan",
+          "tool": "btscanner",
+          "options": {
+            "service_enumeration": true,
+            "vulnerability_check": true,
+            "pairing_analysis": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "parallel_execution": false,
+      "max_concurrent": 1
+    },
+    
+    "exploitation": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "wep_cracking",
+          "tool": "aircrack-ng",
+          "options": {
+            "arp_replay": false,
+            "fragmentation_attack": false,
+            "chopchop_attack": false,
+            "safe_mode": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "wpa_handshake_capture",
+          "tool": "aircrack-ng",
+          "options": {
+            "deauth_attack": false,
+            "passive_capture": true,
+            "pmkid_capture": true,
+            "timeout": 1800
+          }
+        },
+        {
+          "name": "evil_twin_setup",
+          "tool": "hostapd",
+          "options": {
+            "fake_ap_creation": false,
+            "captive_portal": false,
+            "credential_harvesting": false,
+            "demonstration_only": true,
+            "timeout": 0
+          }
+        },
+        {
+          "name": "bluetooth_attacks",
+          "tool": "spooftooph",
+          "options": {
+            "bluejacking": false,
+            "bluesnarfing": false,
+            "device_cloning": false,
+            "service_discovery": true,
+            "timeout": 600
+          }
+        }
+      ],
+      "require_confirmation": true,
+      "parallel_execution": false,
+      "max_concurrent": 1,
+      "ethical_restrictions": true
+    },
+    
+    "post_exploitation": {
+      "enabled": false,
+      "reason": "Wireless assessment focuses on access and vulnerability identification"
+    },
+    
+    "reporting": {
+      "enabled": true,
+      "modules": [
+        {
+          "name": "wireless_security_report",
+          "formats": ["html", "pdf", "json"],
+          "include_screenshots": true,
+          "network_map": true,
+          "signal_strength_analysis": true,
+          "executive_summary": true,
+          "technical_details": true
+        }
+      ]
+    }
+  },
+  
+  "wifi_specific_options": {
+    "security_analysis": {
+      "encryption_strength": true,
+      "authentication_methods": true,
+      "key_management": true,
+      "protocol_vulnerabilities": true
+    },
+    
+    "configuration_checks": {
+      "default_credentials": true,
+      "ssid_broadcasting": true,
+      "mac_filtering": true,
+      "guest_network_isolation": true,
+      "wps_status": true,
+      "firmware_version": true
+    },
+    
+    "attack_vectors": {
+      "dictionary_attacks": false,
+      "rainbow_tables": false,
+      "brute_force": false,
+      "social_engineering": false,
+      "rogue_ap_detection": true
+    },
+    
+    "client_analysis": {
+      "device_fingerprinting": true,
+      "probe_request_analysis": true,
+      "roaming_behavior": true,
+      "preferred_networks": true
+    }
+  },
+  
+  "bluetooth_specific_options": {
+    "device_discovery": {
+      "discoverable_devices": true,
+      "hidden_devices": true,
+      "device_classification": true,
+      "signal_strength": true
+    },
+    
+    "service_enumeration": {
+      "sdp_browsing": true,
+      "service_profiles": true,
+      "characteristic_discovery": true,
+      "attribute_reading": true
+    },
+    
+    "security_analysis": {
+      "pairing_methods": true,
+      "authentication": true,
+      "authorization": true,
+      "encryption": true,
+      "key_management": true
+    }
+  },
+  
+  "hardware_requirements": {
+    "wifi_adapter": {
+      "monitor_mode_support": true,
+      "packet_injection": true,
+      "dual_band_support": false,
+      "suggested_chipsets": ["Atheros", "Ralink", "Realtek"]
+    },
+    
+    "bluetooth_adapter": {
+      "version_support": "4.0+",
+      "low_energy_support": true,
+      "class_support": "all"
+    },
+    
+    "antenna": {
+      "directional": false,
+      "omnidirectional": true,
+      "gain_requirement": "5dBi+"
+    }
+  },
+  
+  "legal_considerations": {
+    "authorization_required": true,
+    "passive_scanning_only": false,
+    "no_client_disruption": true,
+    "no_data_interception": true,
+    "ethical_guidelines": true
+  },
+  
+  "performance_settings": {
+    "max_threads": 3,
+    "memory_limit": "2GB",
+    "cpu_limit": "50%",
+    "scan_intensity": "moderate",
+    "channel_dwell_time": "250ms"
+  },
+  
+  "output_options": {
+    "verbose": true,
+    "save_raw_output": true,
+    "compress_results": true,
+    "pcap_files": true,
+    "real_time_updates": false
+  },
+  
+  "compliance_checks": {
+    "enabled": true,
+    "frameworks": ["NIST", "PCI-DSS"]
+  },
+  
+  "notification_settings": {
+    "weak_encryption": true,
+    "default_credentials": true,
+    "wps_enabled": true,
+    "open_networks": true,
+    "completion_notification": true
+  },
+  
+  "safety_measures": {
+    "passive_mode_default": true,
+    "no_disruption_guarantee": true,
+    "legal_compliance": true,
+    "ethical_scanning": true,
+    "permission_verification": true
+  }
+}

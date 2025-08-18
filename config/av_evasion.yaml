@@ -1,0 +1,190 @@
+# Configuration d'Évasion Antivirus - Pentest-USB Toolkit
+# AVERTISSEMENT: Ce fichier contient des techniques d'évasion à des fins légitimes de test de sécurité
+# Usage uniquement avec autorisation explicite sur vos propres systèmes ou environnements autorisés
+
+# Techniques d'obfuscation
+obfuscation:
+  # Chiffrement dynamique du code
+  dynamic_encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    key_derivation: "PBKDF2"
+    iterations: 100000
+    rotate_keys: true
+    rotation_interval: 3600  # secondes
+
+  # Polymorphisme de code
+  code_polymorphism:
+    enabled: true
+    mutation_rate: 0.3
+    preserve_functionality: true
+    randomize_variable_names: true
+    randomize_function_order: true
+
+# Living Off The Land (LOTL) techniques
+lotl:
+  # Binaires légitimes à utiliser
+  legitimate_binaries:
+    windows:
+      - "powershell.exe"
+      - "cmd.exe"
+      - "wmic.exe"
+      - "rundll32.exe"
+      - "regsvr32.exe"
+      - "mshta.exe"
+      - "cscript.exe"
+      - "wscript.exe"
+    
+    linux:
+      - "/bin/bash"
+      - "/usr/bin/python3"
+      - "/usr/bin/curl"
+      - "/bin/nc"
+      - "/usr/bin/wget"
+
+  # Techniques d'exécution
+  execution_methods:
+    windows:
+      preferred: "powershell"
+      fallback: "cmd"
+      encoding: "base64"
+      
+    linux:
+      preferred: "python3"
+      fallback: "bash"
+      encoding: "hex"
+
+# Détection d'environnements surveillés
+detection:
+  # Solutions EDR/AV à détecter
+  security_solutions:
+    - name: "Windows Defender"
+      processes: ["MsMpEng.exe", "MpCmdRun.exe"]
+      services: ["WinDefend", "WdNisSvc"]
+      
+    - name: "CrowdStrike"
+      processes: ["CSFalconService.exe", "CSFalconContainer.exe"]
+      services: ["CSFalconService"]
+      
+    - name: "SentinelOne"
+      processes: ["SentinelAgent.exe", "SentinelServiceHost.exe"]
+      services: ["SentinelAgent"]
+
+  # Détection de sandbox
+  sandbox_detection:
+    enabled: true
+    checks:
+      - vm_artifacts
+      - user_interaction
+      - system_uptime
+      - installed_programs
+      - network_adapters
+      
+    vm_artifacts:
+      - "VirtualBox"
+      - "VMware"
+      - "QEMU"
+      - "Xen"
+      - "Hyper-V"
+
+# Techniques de communication discrète
+communication:
+  # Chiffrement des communications
+  encryption:
+    enabled: true
+    protocols: ["TLS 1.3", "AES-256"]
+    certificate_pinning: true
+    
+  # Tunneling discret
+  tunneling:
+    dns_tunneling:
+      enabled: false  # Désactivé par défaut
+      domain: ""
+      
+    http_tunneling:
+      enabled: true
+      user_agents:
+        - "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+        - "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
+
+# Stratégies d'évasion par étape
+evasion_strategies:
+  reconnaissance:
+    # Techniques pour éviter la détection lors de la reconnaissance
+    timing:
+      slow_scan: true
+      random_delays: true
+      min_delay: 1      # secondes
+      max_delay: 10     # secondes
+      
+    source_ip:
+      rotation: true
+      decoy_scans: true
+      max_decoys: 5
+
+  exploitation:
+    # Techniques pour éviter la détection lors de l'exploitation
+    payload_encoding:
+      enabled: true
+      multiple_encoders: true
+      custom_encoders: true
+      
+    traffic_obfuscation:
+      enabled: true
+      mimic_legitimate: true
+
+# Configuration des logs d'évasion
+logging:
+  # Éviter de laisser des traces
+  minimize_logs: true
+  encrypt_logs: true
+  auto_cleanup: true
+  cleanup_interval: 3600  # secondes
+  
+  # Logs des tentatives d'évasion
+  evasion_logs:
+    enabled: true
+    level: "INFO"
+    file: "logs/evasion.log"
+    max_size: "10MB"
+    backup_count: 3
+
+# Paramètres de sécurité
+security:
+  # Auto-destruction en cas de détection
+  self_destruct:
+    enabled: false  # Désactivé par défaut pour sécurité
+    triggers:
+      - "debugger_detected"
+      - "analysis_tools_detected"
+      - "manual_trigger"
+      
+  # Protection contre l'analyse
+  anti_analysis:
+    enabled: true
+    techniques:
+      - "anti_debugging"
+      - "anti_vm"
+      - "packing"
+      - "control_flow_obfuscation"
+
+# IMPORTANT: Considérations légales et éthiques
+legal:
+  notice: |
+    Ces techniques d'évasion sont fournies uniquement à des fins légitimes de test de sécurité.
+    L'utilisateur est entièrement responsable de s'assurer qu'il possède les autorisations 
+    appropriées avant d'utiliser ces fonctionnalités.
+    
+    Usage autorisé uniquement sur :
+    - Vos propres systèmes
+    - Systèmes avec autorisation écrite explicite
+    - Environnements de laboratoire dédiés
+    
+    Toute utilisation non autorisée est strictement interdite et peut violer les lois locales.
+
+# Validation de la configuration
+validation:
+  require_explicit_consent: true
+  log_all_activities: true
+  periodic_security_checks: true

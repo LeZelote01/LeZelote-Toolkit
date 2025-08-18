@@ -1,0 +1,426 @@
+{
+  "consents": {
+    "a604e0947f571410": {
+      "consent_id": "a604e0947f571410",
+      "target": "127.0.0.1",
+      "scope": [
+        "reconnaissance",
+        "vulnerability"
+      ],
+      "authorization_doc": "/app/test_authorization.txt",
+      "contact_info": {
+        "email": "admin@test.local",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T10:24:41.655575",
+      "valid_until": "2025-09-15T10:24:41.655569",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 1,
+      "last_used": "2025-08-16T10:24:41.656081"
+    },
+    "4593aa87ff0e2380": {
+      "consent_id": "4593aa87ff0e2380",
+      "target": "example.com",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan"
+      ],
+      "authorization_doc": "/app/authorization.pdf",
+      "contact_info": {
+        "email": "security@example.com",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T10:26:14.145508",
+      "valid_until": "2025-09-15T10:26:14.145495",
+      "restrictions": [
+        "no_dos_attacks",
+        "business_hours_only"
+      ],
+      "status": "active",
+      "usage_count": 1,
+      "last_used": "2025-08-16T10:26:14.146284"
+    },
+    "0953dc121549d44a": {
+      "consent_id": "0953dc121549d44a",
+      "target": "example.com",
+      "scope": [
+        "reconnaissance",
+        "vulnerability",
+        "web_scan"
+      ],
+      "authorization_doc": "/app/authorization.pdf",
+      "contact_info": {
+        "email": "security@example.com",
+        "phone": "+33123456789"
+      },
+      "created": "2025-08-16T13:13:29.171512",
+      "valid_until": "2025-09-15T13:13:29.171507",
+      "restrictions": [
+        "no_dos_attacks",
+        "business_hours_only"
+      ],
+      "status": "active",
+      "usage_count": 1,
+      "last_used": "2025-08-16T13:13:29.172392"
+    },
+    "6911915bdd063969": {
+      "consent_id": "6911915bdd063969",
+      "target": "192.168.1.100",
+      "scope": [
+        "network_scanning"
+      ],
+      "authorization_doc": "validation_test_doc",
+      "contact_info": {
+        "name": "Platform Validation",
+        "email": "test@localhost"
+      },
+      "created": "2025-08-17T23:59:13.010480",
+      "valid_until": "2025-09-16T23:59:13.010475",
+      "restrictions": [],
+      "status": "revoked",
+      "usage_count": 1,
+      "last_used": "2025-08-17T23:59:13.011333",
+      "revoked_at": "2025-08-17T23:59:13.012099",
+      "revocation_reason": "manual_revocation"
+    },
+    "bd4f8ec2e8aa7de1": {
+      "consent_id": "bd4f8ec2e8aa7de1",
+      "target": "127.0.0.1",
+      "scope": [
+        "network_scanning",
+        "service_discovery"
+      ],
+      "authorization_doc": "end_user_test_scenario_1",
+      "contact_info": {
+        "name": "End User Test",
+        "email": "test@localhost"
+      },
+      "created": "2025-08-18T00:00:11.148750",
+      "valid_until": "2025-09-17T00:00:11.148746",
+      "restrictions": [],
+      "status": "revoked",
+      "usage_count": 1,
+      "last_used": "2025-08-18T00:00:11.149667",
+      "revoked_at": "2025-08-18T00:00:11.150481",
+      "revocation_reason": "manual_revocation"
+    },
+    "be640d1724465659": {
+      "consent_id": "be640d1724465659",
+      "target": "expired-test.com",
+      "scope": [
+        "test"
+      ],
+      "authorization_doc": "test_doc",
+      "contact_info": {
+        "name": "Test",
+        "email": "test@test.com"
+      },
+      "created": "2025-08-18T00:00:12.776109",
+      "valid_until": "2025-08-17T00:00:12.776081",
+      "restrictions": [],
+      "status": "revoked",
+      "usage_count": 0,
+      "last_used": null,
+      "revoked_at": "2025-08-18T00:00:12.777161",
+      "revocation_reason": "manual_revocation"
+    },
+    "e4a34f8389508305": {
+      "consent_id": "e4a34f8389508305",
+      "target": "127.0.0.1",
+      "scope": [
+        "network_scanning",
+        "service_discovery"
+      ],
+      "authorization_doc": "end_user_test_scenario_1",
+      "contact_info": {
+        "name": "End User Test",
+        "email": "test@localhost"
+      },
+      "created": "2025-08-18T00:01:41.435023",
+      "valid_until": "2025-09-17T00:01:41.435017",
+      "restrictions": [],
+      "status": "revoked",
+      "usage_count": 1,
+      "last_used": "2025-08-18T00:01:41.436064",
+      "revoked_at": "2025-08-18T00:01:41.437093",
+      "revocation_reason": "manual_revocation"
+    },
+    "3cce93887368c0c3": {
+      "consent_id": "3cce93887368c0c3",
+      "target": "expired-test.com",
+      "scope": [
+        "test"
+      ],
+      "authorization_doc": "test_doc",
+      "contact_info": {
+        "name": "Test",
+        "email": "test@test.com"
+      },
+      "created": "2025-08-18T00:01:43.058301",
+      "valid_until": "2025-08-17T00:01:43.058271",
+      "restrictions": [],
+      "status": "active",
+      "usage_count": 0,
+      "last_used": null
+    }
+  },
+  "audit_log": [
+    {
+      "timestamp": "2025-08-16T10:24:41.655580",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "a604e0947f571410",
+        "target": "127.0.0.1",
+        "scope": [
+          "reconnaissance",
+          "vulnerability"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:24:41.656086",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "a604e0947f571410",
+        "target": "127.0.0.1",
+        "test_scope": "reconnaissance"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:26:14.145514",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "4593aa87ff0e2380",
+        "target": "example.com",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T10:26:14.146290",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "4593aa87ff0e2380",
+        "target": "example.com",
+        "test_scope": "reconnaissance"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-788b1b5c-b426-4c1d-b5fc-55858093fa95"
+    },
+    {
+      "timestamp": "2025-08-16T13:13:29.171520",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "0953dc121549d44a",
+        "target": "example.com",
+        "scope": [
+          "reconnaissance",
+          "vulnerability",
+          "web_scan"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-fab07cae-1307-4d30-8614-65a8f60e8aa0"
+    },
+    {
+      "timestamp": "2025-08-16T13:13:29.172397",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "0953dc121549d44a",
+        "target": "example.com",
+        "test_scope": "reconnaissance"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-fab07cae-1307-4d30-8614-65a8f60e8aa0"
+    },
+    {
+      "timestamp": "2025-08-17T23:59:13.010487",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "6911915bdd063969",
+        "target": "192.168.1.100",
+        "scope": [
+          "network_scanning"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-17T23:59:13.011339",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "6911915bdd063969",
+        "target": "192.168.1.100",
+        "test_scope": null
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-17T23:59:13.012106",
+      "action": "consent_revoked",
+      "details": {
+        "consent_id": "6911915bdd063969",
+        "target": "192.168.1.100",
+        "reason": "manual_revocation"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:11.148757",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "bd4f8ec2e8aa7de1",
+        "target": "127.0.0.1",
+        "scope": [
+          "network_scanning",
+          "service_discovery"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:11.149673",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "bd4f8ec2e8aa7de1",
+        "target": "127.0.0.1",
+        "test_scope": null
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:11.150487",
+      "action": "consent_revoked",
+      "details": {
+        "consent_id": "bd4f8ec2e8aa7de1",
+        "target": "127.0.0.1",
+        "reason": "manual_revocation"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:12.776055",
+      "action": "consent_verification_failed",
+      "details": {
+        "target": "unauthorized-target.com",
+        "test_scope": null,
+        "reason": "no_valid_consent"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:12.776114",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "be640d1724465659",
+        "target": "expired-test.com",
+        "scope": [
+          "test"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:12.777143",
+      "action": "consent_verification_failed",
+      "details": {
+        "target": "expired-test.com",
+        "test_scope": null,
+        "reason": "no_valid_consent"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:00:12.777164",
+      "action": "consent_revoked",
+      "details": {
+        "consent_id": "be640d1724465659",
+        "target": "expired-test.com",
+        "reason": "manual_revocation"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:01:41.435029",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "e4a34f8389508305",
+        "target": "127.0.0.1",
+        "scope": [
+          "network_scanning",
+          "service_discovery"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:01:41.436070",
+      "action": "consent_verified",
+      "details": {
+        "consent_id": "e4a34f8389508305",
+        "target": "127.0.0.1",
+        "test_scope": null
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:01:41.437100",
+      "action": "consent_revoked",
+      "details": {
+        "consent_id": "e4a34f8389508305",
+        "target": "127.0.0.1",
+        "reason": "manual_revocation"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:01:43.058242",
+      "action": "consent_verification_failed",
+      "details": {
+        "target": "unauthorized-target.com",
+        "test_scope": null,
+        "reason": "no_valid_consent"
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    },
+    {
+      "timestamp": "2025-08-18T00:01:43.058307",
+      "action": "consent_added",
+      "details": {
+        "consent_id": "3cce93887368c0c3",
+        "target": "expired-test.com",
+        "scope": [
+          "test"
+        ]
+      },
+      "user": "unknown",
+      "hostname": "agent-env-2be765cc-ce0a-4ed2-b50c-60f577f7c2f4"
+    }
+  ],
+  "created": "2025-08-16T10:24:41.655408"
+}

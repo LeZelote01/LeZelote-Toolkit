@@ -1,0 +1,555 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - Pentest-USB Toolkit{% endblock %}
+
+{% block css %}
+<link href="{{ url_for('static', filename='css/settings.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="page-title">
+                        <i class="fas fa-cog me-3"></i>Settings
+                    </h1>
+                    <p class="page-subtitle mb-0">Configure your Pentest-USB Toolkit preferences</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-danger" onclick="resetToDefaults()">
+                        <i class="fas fa-undo me-2"></i>Reset to Defaults
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="saveAllSettings()">
+                        <i class="fas fa-save me-2"></i>Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Settings Navigation -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>Categories
+                    </h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#general" class="list-group-item list-group-item-action active" data-bs-toggle="pill">
+                        <i class="fas fa-cog me-2"></i>General
+                    </a>
+                    <a href="#security" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-shield-alt me-2"></i>Security
+                    </a>
+                    <a href="#scanning" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-search me-2"></i>Scanning
+                    </a>
+                    <a href="#reporting" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-file-alt me-2"></i>Reporting
+                    </a>
+                    <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </a>
+                    <a href="#tools" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-tools me-2"></i>Tools
+                    </a>
+                    <a href="#advanced" class="list-group-item list-group-item-action" data-bs-toggle="pill">
+                        <i class="fas fa-sliders-h me-2"></i>Advanced
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="col-md-9">
+            <div class="tab-content">
+                <!-- General Settings -->
+                <div class="tab-pane fade show active" id="general">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-cog me-2"></i>General Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="timezone" class="form-label">Timezone</label>
+                                    <select class="form-select" id="timezone">
+                                        <option value="UTC">UTC</option>
+                                        <option value="America/New_York">Eastern Time</option>
+                                        <option value="America/Chicago">Central Time</option>
+                                        <option value="America/Denver">Mountain Time</option>
+                                        <option value="America/Los_Angeles">Pacific Time</option>
+                                        <option value="Europe/London">London</option>
+                                        <option value="Europe/Paris">Paris</option>
+                                        <option value="Asia/Tokyo">Tokyo</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="dateFormat" class="form-label">Date Format</label>
+                                    <select class="form-select" id="dateFormat">
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                        <option value="DD MMM YYYY">DD MMM YYYY</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="theme" class="form-label">Theme</label>
+                                    <select class="form-select" id="theme">
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                        <option value="auto">Auto (System)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="language" class="form-label">Language</label>
+                                    <select class="form-select" id="language">
+                                        <option value="en">English</option>
+                                        <option value="fr">French</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="de">German</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="autoSave" checked>
+                                    <label class="form-check-label" for="autoSave">
+                                        Auto-save settings changes
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="confirmActions" checked>
+                                    <label class="form-check-label" for="confirmActions">
+                                        Confirm destructive actions
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div class="tab-pane fade" id="security">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>Security Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="sessionTimeout" class="form-label">Session Timeout (minutes)</label>
+                                    <input type="number" class="form-control" id="sessionTimeout" value="60" min="5" max="1440">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxLoginAttempts" class="form-label">Max Login Attempts</label>
+                                    <input type="number" class="form-control" id="maxLoginAttempts" value="3" min="1" max="10">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableAuditLog" checked>
+                                    <label class="form-check-label" for="enableAuditLog">
+                                        Enable audit logging
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="requireStrongPassword" checked>
+                                    <label class="form-check-label" for="requireStrongPassword">
+                                        Require strong passwords
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableTwoFactor">
+                                    <label class="form-check-label" for="enableTwoFactor">
+                                        Enable two-factor authentication
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6>Change Password</h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <input type="password" class="form-control" id="currentPassword">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <input type="password" class="form-control" id="newPassword">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                                    <input type="password" class="form-control" id="confirmNewPassword">
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="btn btn-warning" onclick="changePassword()">
+                                <i class="fas fa-key me-2"></i>Change Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scanning Settings -->
+                <div class="tab-pane fade" id="scanning">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-search me-2"></i>Scanning Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="defaultScanType" class="form-label">Default Scan Type</label>
+                                    <select class="form-select" id="defaultScanType">
+                                        <option value="quick">Quick Scan</option>
+                                        <option value="comprehensive">Comprehensive</option>
+                                        <option value="stealth">Stealth Mode</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxConcurrentScans" class="form-label">Max Concurrent Scans</label>
+                                    <input type="number" class="form-control" id="maxConcurrentScans" value="3" min="1" max="10">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="scanTimeout" class="form-label">Scan Timeout (minutes)</label>
+                                    <input type="number" class="form-control" id="scanTimeout" value="30" min="5" max="180">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="defaultPorts" class="form-label">Default Port Range</label>
+                                    <input type="text" class="form-control" id="defaultPorts" value="1-1000">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="autoSaveResults" checked>
+                                    <label class="form-check-label" for="autoSaveResults">
+                                        Auto-save scan results
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableStealthMode">
+                                    <label class="form-check-label" for="enableStealthMode">
+                                        Enable stealth mode by default
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reporting Settings -->
+                <div class="tab-pane fade" id="reporting">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-file-alt me-2"></i>Reporting Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="defaultReportFormat" class="form-label">Default Report Format</label>
+                                    <select class="form-select" id="defaultReportFormat">
+                                        <option value="pdf">PDF</option>
+                                        <option value="html">HTML</option>
+                                        <option value="docx">Word Document</option>
+                                        <option value="json">JSON</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="reportTemplate" class="form-label">Default Template</label>
+                                    <select class="form-select" id="reportTemplate">
+                                        <option value="executive">Executive Summary</option>
+                                        <option value="technical">Technical Report</option>
+                                        <option value="compliance">Compliance Report</option>
+                                        <option value="remediation">Remediation Guide</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="companyName" class="form-label">Company Name</label>
+                                <input type="text" class="form-control" id="companyName" placeholder="Your company name">
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="reportAuthor" class="form-label">Default Author</label>
+                                    <input type="text" class="form-control" id="reportAuthor" placeholder="Report author name">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="reportLogo" class="form-label">Company Logo</label>
+                                    <input type="file" class="form-control" id="reportLogo" accept="image/*">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="includeExecutiveSummary" checked>
+                                    <label class="form-check-label" for="includeExecutiveSummary">
+                                        Include executive summary by default
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="includeScreenshots" checked>
+                                    <label class="form-check-label" for="includeScreenshots">
+                                        Include screenshots in reports
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings -->
+                <div class="tab-pane fade" id="notifications">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-bell me-2"></i>Notification Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableNotifications" checked>
+                                    <label class="form-check-label" for="enableNotifications">
+                                        Enable notifications
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="scanCompletionNotify" checked>
+                                    <label class="form-check-label" for="scanCompletionNotify">
+                                        Notify when scans complete
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="vulnFoundNotify" checked>
+                                    <label class="form-check-label" for="vulnFoundNotify">
+                                        Notify when vulnerabilities are found
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="systemAlertsNotify" checked>
+                                    <label class="form-check-label" for="systemAlertsNotify">
+                                        System alerts and warnings
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6>Email Notifications</h6>
+                            <div class="mb-3">
+                                <label for="notificationEmail" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="notificationEmail" placeholder="your@email.com">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableEmailNotify">
+                                    <label class="form-check-label" for="enableEmailNotify">
+                                        Enable email notifications
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools Settings -->
+                <div class="tab-pane fade" id="tools">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-tools me-2"></i>Tools Configuration
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="tool-config">
+                                <h6>Enabled Tools</h6>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableNmap" checked>
+                                            <label class="form-check-label" for="enableNmap">Nmap</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableSQLMap" checked>
+                                            <label class="form-check-label" for="enableSQLMap">SQLMap</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableZAP" checked>
+                                            <label class="form-check-label" for="enableZAP">OWASP ZAP</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableNikto" checked>
+                                            <label class="form-check-label" for="enableNikto">Nikto</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableMetasploit" checked>
+                                            <label class="form-check-label" for="enableMetasploit">Metasploit</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableNessus">
+                                            <label class="form-check-label" for="enableNessus">Nessus</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableOpenVAS">
+                                            <label class="form-check-label" for="enableOpenVAS">OpenVAS</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="enableBurp">
+                                            <label class="form-check-label" for="enableBurp">Burp Suite</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="tab-pane fade" id="advanced">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-sliders-h me-2"></i>Advanced Settings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Warning:</strong> These are advanced settings. Changing them may affect system performance or functionality.
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxMemoryUsage" class="form-label">Max Memory Usage (%)</label>
+                                    <input type="number" class="form-control" id="maxMemoryUsage" value="80" min="50" max="95">
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="maxCpuUsage" class="form-label">Max CPU Usage (%)</label>
+                                    <input type="number" class="form-control" id="maxCpuUsage" value="80" min="50" max="95">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="logLevel" class="form-label">Log Level</label>
+                                    <select class="form-select" id="logLevel">
+                                        <option value="ERROR">Error</option>
+                                        <option value="WARNING">Warning</option>
+                                        <option value="INFO">Info</option>
+                                        <option value="DEBUG">Debug</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="logRetention" class="form-label">Log Retention (days)</label>
+                                    <input type="number" class="form-control" id="logRetention" value="30" min="1" max="365">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enableDebugMode">
+                                    <label class="form-check-label" for="enableDebugMode">
+                                        Enable debug mode
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="enablePerformanceMetrics" checked>
+                                    <label class="form-check-label" for="enablePerformanceMetrics">
+                                        Enable performance metrics collection
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6>System Maintenance</h6>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-outline-primary" onclick="clearCache()">
+                                    <i class="fas fa-trash me-2"></i>Clear Cache
+                                </button>
+                                <button type="button" class="btn btn-outline-warning" onclick="exportSettings()">
+                                    <i class="fas fa-download me-2"></i>Export Settings
+                                </button>
+                                <button type="button" class="btn btn-outline-info" onclick="importSettings()">
+                                    <i class="fas fa-upload me-2"></i>Import Settings
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}

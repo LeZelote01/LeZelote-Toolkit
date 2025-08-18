@@ -1,0 +1,5 @@
+# LeZelote Toolkit v1.0.0 - Package Checksums
+# Generated: 2025-08-17T23:56:50.123555
+# Algorithm: SHA256
+
+cf4f28e124b764df13f7e6e66b89b7bd841fbcda69624be383d12e2c039e09be  lezelote-toolkit-1.0.0-universal-portable.zip
