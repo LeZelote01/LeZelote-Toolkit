@@ -181,6 +181,14 @@ class NmapAPI:
                 if state is not None:
                     port_data["state"] = dict(state.attrib)
                 
+                # Script results (NSE)
+                scripts = []
+                for script in port.findall('script'):
+                    script_data = dict(script.attrib)
+                    scripts.append(script_data)
+                if scripts:
+                    port_data["scripts"] = scripts
+                
                 host_data["ports"].append(port_data)
         
         # OS detection
