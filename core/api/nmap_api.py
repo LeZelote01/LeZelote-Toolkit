@@ -249,3 +249,22 @@ class NmapAPI:
         
         arguments = scan_types.get(scan_type, "-sV -sC")
         return self.scan(target, arguments)
+    
+    def scan_services(self, target: str, ports: List[int] = None) -> Dict[str, Any]:
+        """
+        Compatibility method: Scan services on specific ports
+        
+        Args:
+            target (str): Target host to scan
+            ports (List[int]): List of ports to scan
+        
+        Returns:
+            Dict: Scan results with service information
+        """
+        if ports:
+            port_str = ",".join(map(str, ports))
+            arguments = f"-p {port_str} -sV -sC"
+        else:
+            arguments = "-sV -sC"
+            
+        return self.scan(target, arguments)
