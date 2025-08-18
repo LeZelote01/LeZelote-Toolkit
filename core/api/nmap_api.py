@@ -225,7 +225,38 @@ class NmapAPI:
     
     def vulnerability_scan(self, target: str) -> Dict[str, Any]:
         """Perform vulnerability scan with NSE scripts"""
-        return self.scan(target, "--script vuln")
+        try:
+            result = self.scan(target, "--script vuln")
+            
+            # Extract vulnerabilities from NSE script results
+            vulnerabilities = []
+            if result.get('hosts'):
+                for host in result['hosts']:
+                    for port in host.get('ports', []):
+                        # Look for script results that indicate vulnerabilities
+                        for script in port.get('scripts', []):
+                            if 'vuln' in script.get('id', '').lower() or 'cve' in script.get('output', '').lower():
+                                vuln = {
+                                    'host': host.get('ip', target),
+                                    'port': int(port['portid']),
+                                    'protocol': port['protocol'],
+                                    'script': script.get('id', 'unknown'),
+                                    'description': script.get('output', ''),
+                                    'severity': 'medium'  # Default severity
+                                }
+                                vulnerabilities.append(vuln)
+            
+            # Add vulnerabilities to result for compatibility  
+            result['vulnerabilities'] = vulnerabilities
+            return result
+            
+        except PentestError as e:
+            return {
+                'success': False,
+                'error': str(e),
+                'target': target,
+                'vulnerabilities': []
+            }
     
     def scan_host(self, target: str, scan_type: str = "basic") -> Dict[str, Any]:
         """
