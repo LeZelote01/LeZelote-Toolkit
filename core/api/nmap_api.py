@@ -236,7 +236,7 @@ class NmapAPI:
             scan_type (str): Type of scan ('basic', 'service', 'stealth', 'vuln')
         
         Returns:
-            Dict: Scan results
+            Dict: Scan results (with success/error handling)
         """
         scan_types = {
             'basic': "-sV -sC",
@@ -248,7 +248,17 @@ class NmapAPI:
         }
         
         arguments = scan_types.get(scan_type, "-sV -sC")
-        return self.scan(target, arguments)
+        
+        try:
+            return self.scan(target, arguments)
+        except PentestError as e:
+            # Return error as dict instead of raising exception for compatibility
+            return {
+                'success': False,
+                'error': str(e),
+                'target': target,
+                'scan_type': scan_type
+            }
     
     def scan_services(self, target: str, ports: List[int] = None) -> Dict[str, Any]:
         """
