@@ -1,9 +1,0 @@
-{
-  "key_name": "lezelote_test",
-  "algorithm": "RSA",
-  "key_size": 4096,
-  "created_at": "2025-08-18T00:23:32.285078",
-  "public_key_file": "security_keys/lezelote_test_public.pem",
-  "private_key_file": "security_keys/lezelote_test_private.pem",
-  "fingerprint": "tEPiuC7xN6sJaFOgsJmUWUJ+c5/Ug/NS"
-}
